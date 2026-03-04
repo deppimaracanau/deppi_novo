@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NotificationComponent } from './components/notification/notification.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -8,12 +10,15 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    NotificationComponent,
+    LoadingComponent
   ],
   exports: [
     CommonModule,
-    RouterModule
-    // Shared components will be exported here
+    RouterModule,
+    NotificationComponent,
+    LoadingComponent
   ]
 })
 export class SharedModule {

@@ -8,6 +8,12 @@ import { ThemeService } from './core/services/theme.service';
   selector: 'app-root',
   template: `
     <div class="app-container">
+      <!-- Loading Indicators -->
+      <app-loading></app-loading>
+      
+      <!-- Feedback Notifications -->
+      <app-notification></app-notification>
+
       <!-- Header -->
       <app-header></app-header>
 
@@ -39,7 +45,7 @@ export class AppComponent implements OnInit {
   constructor(
     private store: Store,
     private themeService: ThemeService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Inicializar tema do sistema
