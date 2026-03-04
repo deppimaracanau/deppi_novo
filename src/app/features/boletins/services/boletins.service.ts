@@ -17,6 +17,14 @@ export class BoletinsService {
             `${this.apiUrl}?page=${page}&limit=${limit}`
         );
     }
+    /**
+     * Busca todos os boletins do admin
+     */
+    getAdminAll(page = 1, limit = 10): Observable<ApiResponse<Boletim[]>> {
+        return this.http.get<ApiResponse<Boletim[]>>(
+            `${this.apiUrl}/admin/all?page=${page}&limit=${limit}`
+        );
+    }
 
     /**
      * Busca um boletim pelo ID
