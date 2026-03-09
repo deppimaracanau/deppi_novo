@@ -1,8 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { BoletinsService } from '../../services/boletins.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { Boletim } from '../../../../shared/models';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-boletim-list',
@@ -10,9 +11,18 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="boletim-list-page animate-in">
       <header class="list-header">
-        <div class="badge">Informativos Oficiais</div>
-        <h1 class="list-title">Central de <span class="highlight">Boletins</span></h1>
-        <p class="list-subtitle">Acompanhe as últimas atualizações, projetos e conquistas do DEPPI no IFCE Maracanaú.</p>
+        <div class="header-content">
+          <div>
+            <div class="badge">Informativos Oficiais</div>
+            <h1 class="list-title">Central de <span class="highlight">Boletins</span></h1>
+            <p class="list-subtitle">Acompanhe as últimas atualizações, projetos e conquistas do DEPPI no IFCE Maracanaú.</p>
+          </div>
+          <div class="actions-header" *ngIf="isAuthenticated">
+            <button class="btn btn-primary" (click)="createNew()">
+              <span class="icon">+</span> Novo Boletim
+            </button>
+          </div>
+        </div>
       </header>
 
       <div class="loading-state" *ngIf="loading">
@@ -29,7 +39,7 @@ import { CommonModule } from '@angular/common';
         </div>
       </div>
 
-      <div class="boletins-grid" *ngIf="!loading && !error">
+      <div class="boletins-grid" *ngIf="!loading && !error && boletins.length > 0">
         <div class="boletim-card surface" *ngFor="let b of boletins" (click)="openBoletim(b.id)">
           <div class="card-header">
             <span class="card-badge" [class.featured]="b.isFeatured">
@@ -45,22 +55,33 @@ import { CommonModule } from '@angular/common';
 
           <div class="card-footer">
             <div class="status-indicator">
-              <span class="dot" [class.active]="b.status === 'published'"></span>
-              <span class="status-text">{{ b.status === 'published' ? 'Disponível' : 'Em revisão' }}</span>
+              <span class="dot" [class.active]="b.status === 'published'" [class.draft]="b.status === 'draft'"></span>
+              <span class="status-text">{{ b.status === 'published' ? 'Disponível' : 'Rascunho' }}</span>
             </div>
-            <button class="btn-read">Acessar conteúdo &rarr;</button>
+            <div class="actions" *ngIf="isAuthenticated">
+              <button class="btn-action edit" title="Editar" (click)="editBoletim(b.id, $event)">✏️</button>
+              <button class="btn-action delete" title="Excluir" (click)="deleteBoletim(b.id, $event)">🗑️</button>
+            </div>
+            <button class="btn-read" *ngIf="!isAuthenticated">Acessar conteúdo &rarr;</button>
           </div>
         </div>
+      </div>
 
-        <!-- Empty State -->
-        <div class="empty-state surface" *ngIf="boletins.length === 0">
-          <div class="empty-visual">
-            <div class="empty-icon">📂</div>
-            <div class="empty-ring"></div>
-          </div>
-          <h3>Arquivo em Construção</h3>
-          <p>Ainda não há boletins publicados. Novos conteúdos serão listados aqui em breve.</p>
+      <!-- Empty State -->
+      <div class="empty-state surface" *ngIf="!loading && !error && boletins.length === 0">
+        <div class="empty-visual">
+          <div class="empty-icon">📂</div>
+          <div class="empty-ring"></div>
         </div>
+        <h3>Arquivo em Construção</h3>
+        <p>Ainda não há boletins publicados. Novos conteúdos serão listados aqui em breve.</p>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-controls" *ngIf="totalPages > 1 && !loading && !error">
+        <button class="btn-page" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">Anterior</button>
+        <span class="page-info">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button class="btn-page" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">Próxima</button>
       </div>
     </div>
   `,
@@ -72,6 +93,14 @@ import { CommonModule } from '@angular/common';
     .list-header {
       margin-bottom: 5rem;
       text-align: left;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
 
     .list-title {
@@ -213,6 +242,11 @@ import { CommonModule } from '@angular/common';
       box-shadow: 0 0 8px var(--color-success);
     }
 
+    .dot.draft {
+      background: var(--color-warning);
+      box-shadow: 0 0 8px var(--color-warning);
+    }
+
     .status-text {
       font-size: 0.8rem;
       font-weight: 600;
@@ -234,6 +268,35 @@ import { CommonModule } from '@angular/common';
 
     .boletim-card:hover .btn-read {
       transform: translateX(5px);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      background: none;
+      border: 1px solid var(--color-border-light);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      color: var(--color-text-secondary);
+    }
+    .btn-action:hover {
+      background: var(--color-background-secondary);
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+    .btn-action.delete:hover {
+      background: rgba(var(--color-error-rgb), 0.1);
+      color: var(--color-error);
+      border-color: var(--color-error);
     }
 
     .empty-state {
@@ -262,6 +325,42 @@ import { CommonModule } from '@angular/common';
       animation: spin 20s linear infinite;
     }
 
+    .pagination-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 3rem;
+      margin-bottom: 5rem;
+    }
+
+    .btn-page {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius-md);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-page:hover:not(:disabled) {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    .btn-page:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .page-info {
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
     @media (max-width: 768px) {
       .boletins-grid {
         grid-template-columns: 1fr;
@@ -269,28 +368,59 @@ import { CommonModule } from '@angular/common';
       .boletim-card {
         padding: 2rem 1.5rem;
       }
+      .header-content {
+        flex-direction: column;
+      }
     }
   `]
 })
-export class BoletimListComponent implements OnInit {
+export class BoletimListComponent implements OnInit, OnDestroy {
   private readonly boletinsService = inject(BoletinsService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   boletins: Boletim[] = [];
   loading = false;
   error = '';
+  isAuthenticated = false;
+
+  currentPage = 1;
+  pageSize = 9;
+  totalPages = 1;
+
+  private authSub!: Subscription;
 
   ngOnInit(): void {
-    this.load();
+    this.authSub = this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+      this.load();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSub) {
+      this.authSub.unsubscribe();
+    }
   }
 
   load(): void {
     this.loading = true;
     this.error = '';
-    this.boletinsService.getAll().subscribe({
+
+    const obs$ = this.isAuthenticated
+      ? this.boletinsService.getAdminAll(this.currentPage, this.pageSize)
+      : this.boletinsService.getAll(this.currentPage, this.pageSize);
+
+    obs$.subscribe({
       next: (res) => {
         this.boletins = res.data;
+        if (res.pagination) {
+          this.totalPages = res.pagination.pages;
+        }
         this.loading = false;
+
+        // Scroll to top when loading new page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
       error: (err) => {
         this.error = 'Não foi possível estabelecer conexão com o servidor de boletins.';
@@ -299,7 +429,37 @@ export class BoletimListComponent implements OnInit {
     });
   }
 
+  changePage(newPage: number): void {
+    if (newPage >= 1 && newPage <= this.totalPages) {
+      this.currentPage = newPage;
+      this.load();
+    }
+  }
+
   openBoletim(id: number): void {
     this.router.navigate(['/boletins', id]);
+  }
+
+  createNew(): void {
+    this.router.navigate(['/boletins/admin/novo']);
+  }
+
+  editBoletim(id: number, event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/boletins/admin', id, 'editar']);
+  }
+
+  deleteBoletim(id: number, event: Event): void {
+    event.stopPropagation();
+    if (confirm('Tem certeza que deseja excluir este boletim? Esta ação não pode ser desfeita.')) {
+      this.boletinsService.delete(id).subscribe({
+        next: () => {
+          this.load();
+        },
+        error: () => {
+          alert('Erro ao excluir o boletim.');
+        }
+      });
+    }
   }
 }

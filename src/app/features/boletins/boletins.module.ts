@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { QuillModule } from 'ngx-quill';
 
 // Components
 import { BoletinsComponent } from './components/boletins/boletins.component';
@@ -71,7 +72,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     SharedModule,
     StoreModule.forFeature('boletins', boletinsReducer),
-    EffectsModule.forFeature([BoletinsEffects])
+    EffectsModule.forFeature([BoletinsEffects]),
+    QuillModule.forRoot()
   ],
   providers: [
     BoletinsService,

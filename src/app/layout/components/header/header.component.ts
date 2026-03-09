@@ -1,10 +1,14 @@
-import { Component, OnInit, HostListener, inject } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Component, OnInit, OnDestroy, HostListener, inject } from '@angular/core';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
+  standalone: false,
   template: `
     <header class="header" [ngClass]="headerClass" [class.scrolled]="isScrolled">
       <nav class="nav-container glass">
@@ -46,18 +50,29 @@ import { ThemeService } from '../../../core/services/theme.service';
           <button class="theme-toggle" (click)="toggleTheme()" aria-label="Alternar tema">
             <span class="theme-icon">{{ isDarkTheme ? '🔆' : '🌙' }}</span>
           </button>
-          <a routerLink="/boletins/login" class="btn btn-primary login-btn">
-             Acesso
-          </a>
+          
+          <ng-container *ngIf="!isAuthenticated; else userMenu">
+            <a routerLink="/boletins/login" class="btn btn-primary login-btn">
+               Acesso
+            </a>
+          </ng-container>
+          
+          <ng-template #userMenu>
+            <div class="user-chip" routerLink="/boletins">
+               <span class="user-avatar">👤</span>
+               <span class="user-name-abbr">{{ userFirstLetter }}</span>
+            </div>
+          </ng-template>
         </div>
       </nav>
     </header>
   `,
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly themeService = inject(ThemeService);
+  private readonly authService = inject(AuthService);
 
   currentRoute = '';
   isDarkTheme = false;
@@ -66,21 +81,41 @@ export class HeaderComponent implements OnInit {
   indicatorTransform = 'scaleX(0)';
   indicatorOpacity = '0';
 
+  isAuthenticated = false;
+  userFirstLetter = '';
+  private sub = new Subscription();
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
     this.isScrolled = window.scrollY > 20;
   }
 
   ngOnInit(): void {
-    this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.currentRoute = event.urlAfterRedirects;
-      });
+    this.sub.add(
+      this.router.events
+        .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => {
+          this.currentRoute = event.urlAfterRedirects;
+        })
+    );
 
-    this.themeService.currentTheme$.subscribe(theme => {
-      this.isDarkTheme = theme === 'dark';
-    });
+    this.sub.add(
+      this.themeService.currentTheme$.subscribe(theme => {
+        this.isDarkTheme = theme === 'dark';
+      })
+    );
+
+    this.sub.add(
+      this.authService.isAuthenticated$.subscribe(isAuth => {
+        this.isAuthenticated = isAuth;
+        const user = this.authService.currentUser;
+        this.userFirstLetter = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   isActive(route: string): boolean {

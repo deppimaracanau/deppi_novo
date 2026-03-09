@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -247,16 +247,25 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class BoletinsComponent implements OnInit {
+export class BoletinsComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   isAuthenticated = false;
   isAdmin = false;
+  private sub: any;
 
   ngOnInit(): void {
-    this.isAuthenticated = this.authService.isAuthenticated;
-    this.isAdmin = this.authService.hasRole('admin');
+    this.sub = this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+      this.isAdmin = this.authService.hasRole('admin');
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   logout(): void {

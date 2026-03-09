@@ -132,6 +132,40 @@
     font-size: 0.75rem;
 }
 
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(var(--color-primary-rgb), 0.1);
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+    border-radius: var(--border-radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.1);
+
+    &:hover {
+        background: rgba(var(--color-primary-rgb), 0.2);
+        transform: translateY(-2px);
+    }
+}
+
+.user-avatar {
+    font-size: 1rem;
+}
+
+.user-name-abbr {
+    width: 28px;
+    height: 28px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+}
+
 @media (max-width: 1024px) {
     .nav-menu {
         display: none;

@@ -26,9 +26,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                 if (error.status === 0) {
                     errorMessage = 'Sem conexão com o servidor. Verifique sua internet.';
                 } else if (error.status === 401) {
-                    // Token inválido/expirado — faz logout
-                    this.authService.logout('/boletins/login');
-                    errorMessage = 'Sessão expirada. Por favor, faça login novamente.';
+                    // Token inválido/expirado — faz logout (apenas se nao for endpoint de autenticacao como login)
+                    const isAuthEndpoint = request.url.includes('/auth/');
+                    if (!isAuthEndpoint) {
+                        this.authService.logout('/boletins/login');
+                    }
+                    errorMessage = 'Credenciais inválidas ou Sessão expirada.';
                 } else if (error.status === 403) {
                     errorMessage = 'Você não tem permissão para esta ação.';
                     this.router.navigate(['/home']);

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BoletinsService } from '../../services/boletins.service';
 import { Boletim } from '../../../../shared/models';
@@ -40,6 +40,8 @@ import { CommonModule } from '@angular/common';
           <h1 class="detail-title">{{ boletim.title }}</h1>
           <p class="detail-desc">{{ boletim.description }}</p>
           
+          <div class="detail-main-content ql-editor" *ngIf="boletim.content" [innerHTML]="boletim.content"></div>
+          
           <div class="header-actions">
             <a *ngIf="boletim.fileUrl" [href]="boletim.fileUrl" target="_blank" class="btn btn-primary">
                Baixar Edição Completa (PDF)
@@ -70,7 +72,23 @@ import { CommonModule } from '@angular/common';
             </div>
           </div>
         </section>
+
+        <footer class="detail-footer-actions">
+           <button (click)="goBack()" class="btn-back">
+            <span>&larr;</span> Voltar para a lista
+          </button>
+        </footer>
       </div>
+
+      <!-- Botão Flutuante para subir -->
+      <button 
+        class="float-btn glass" 
+        [class.visible]="showScrollBtn" 
+        (click)="scrollToTop()"
+        title="Voltar ao topo"
+      >
+        <span class="icon">↑</span>
+      </button>
     </div>
   `,
   styles: [`
@@ -78,10 +96,19 @@ import { CommonModule } from '@angular/common';
       max-width: 900px;
       margin: 0 auto;
       padding-bottom: 5rem;
+      position: relative;
     }
 
     .detail-nav {
       margin-bottom: 2rem;
+    }
+
+    .detail-footer-actions {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: center;
     }
 
     .btn-back {
@@ -154,8 +181,28 @@ import { CommonModule } from '@angular/common';
       display: flex;
       align-items: center;
       gap: 2rem;
-      padding-top: 2rem;
+      padding-top: 2.5rem;
+      margin-top: 2rem;
       border-top: 1px solid var(--color-border-light);
+    }
+
+    .detail-main-content {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--color-text);
+      /* Base resets if not importing full quill classes globally */
+    }
+    .detail-main-content img {
+      max-width: 100%;
+      border-radius: var(--border-radius-md);
+      margin: 1.5rem 0;
+    }
+    .detail-main-content iframe {
+      width: 100%;
+      min-height: 400px;
+      border-radius: var(--border-radius-md);
+      margin: 1.5rem 0;
     }
 
     .view-count {
@@ -238,6 +285,40 @@ import { CommonModule } from '@angular/common';
       color: var(--color-text-secondary);
     }
 
+    .float-btn {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-xl);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .float-btn.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .float-btn:hover {
+      background: var(--color-secondary);
+      transform: scale(1.1);
+    }
+
     @media (max-width: 768px) {
       .detail-header {
         padding: 2.5rem 1.5rem;
@@ -253,6 +334,10 @@ import { CommonModule } from '@angular/common';
         align-items: flex-start;
         gap: 1.5rem;
       }
+      .float-btn {
+        right: 20px;
+        bottom: 20px;
+      }
     }
   `]
 })
@@ -264,6 +349,12 @@ export class BoletimDetailComponent implements OnInit {
   boletim: Boletim | null = null;
   loading = false;
   error = '';
+  showScrollBtn = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.showScrollBtn = window.scrollY > 400;
+  }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -290,5 +381,12 @@ export class BoletimDetailComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/boletins']);
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 }
