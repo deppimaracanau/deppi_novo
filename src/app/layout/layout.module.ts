@@ -21,6 +21,6 @@ import { FooterComponent } from './components/footer/footer.component';
 })
 export class LayoutModule {
   constructor() {
-    console.log('🎨 LayoutModule loaded');
+    console.log('LayoutModule loaded');
   }
 }
