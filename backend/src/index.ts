@@ -65,6 +65,11 @@ class Application {
           connectSrc: ["'self'", ...config.cors.allowedOrigins, "https://sentry.io"],
         },
       },
+      hsts: config.nodeEnv === 'production' ? {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+      } : false
     }));
 
     // CORS
@@ -112,21 +117,17 @@ class Application {
     this.app.use('/api/contact', contactRoutes);
 
     // API status routes
-    this.app.get('/api', (req, res) => {
+    this.app.get('/api', (_req, res) => {
       res.json({
         status: 'UP',
-        message: 'DEPPI API Gateway',
-        version: '1.0.0',
-        docs: `http://localhost:${config.port}/api-docs`
+        message: 'DEPPI API Gateway'
       });
     });
 
     // Root endpoint
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (_req, res) => {
       res.json({
         message: 'DEPPI API - IFCE Campus Maracanaú',
-        version: '1.0.0',
-        environment: config.nodeEnv,
         timestamp: new Date().toISOString(),
       });
     });
