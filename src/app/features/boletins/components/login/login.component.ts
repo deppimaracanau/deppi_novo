@@ -77,10 +77,24 @@ import { CommonModule } from '@angular/common';
               <span *ngIf="!loading">Entrar no Sistema</span>
               <span *ngIf="loading" class="btn-spinner">Autenticando...</span>
             </button>
+
+            <div class="divider">
+              <span>OU</span>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-glass request-btn"
+              [disabled]="loading || requesting"
+              (click)="onRequestAccess()"
+            >
+              <span *ngIf="!requesting">Primeiro Acesso / Gerar Senha</span>
+              <span *ngIf="requesting">Processando...</span>
+            </button>
           </form>
 
           <div class="login-footer">
-            <p>Esqueceu sua senha? <a href="https://suap.ifce.edu.br" target="_blank" class="link">Recuperar via SUAP</a></p>
+            <p>Problemas com acesso? <a href="mailto:deppi.maracanau@ifce.edu.br" class="link">Suporte Técnico</a></p>
           </div>
         </div>
       </div>
@@ -218,13 +232,37 @@ import { CommonModule } from '@angular/common';
       75% { transform: translateX(5px); }
     }
 
-    .login-btn {
+    .login-btn, .request-btn {
       width: 100%;
       justify-content: center;
       padding: 1rem;
-      font-size: 1rem;
+      font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: .5em;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: .5em;
     }
 
     .login-footer {
@@ -272,6 +310,7 @@ export class LoginComponent {
   });
 
   loading = false;
+  requesting = false;
   loginError = '';
   showPassword = false;
 
@@ -292,6 +331,29 @@ export class LoginComponent {
       error: (err) => {
         this.loginError = err?.error?.message ?? 'Credenciais inválidas. Verifique sua matrícula e senha.';
         this.loading = false;
+      }
+    });
+  }
+
+  onRequestAccess(): void {
+    const registration = this.loginForm.get('registration')?.value;
+
+    if (!registration) {
+      this.loginError = 'Por favor, informe sua matrícula SIAPE primeiro.';
+      this.loginForm.get('registration')?.markAsTouched();
+      return;
+    }
+
+    this.requesting = true;
+    this.loginError = '';
+
+    this.authService.requestAccess(registration).subscribe({
+      next: () => {
+        this.requesting = false;
+      },
+      error: (err) => {
+        this.loginError = err?.error?.message || 'Erro ao processar solicitação.';
+        this.requesting = false;
       }
     });
   }

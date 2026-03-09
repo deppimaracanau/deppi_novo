@@ -2,7 +2,9 @@ import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import db from '../database/db';
+import { emailService } from '../services/email.service';
 
 const router = Router();
 
@@ -221,6 +223,74 @@ router.post('/logout', [
 ], async (req: Request, res: Response) => {
   // TODO: Se usar Redis ou Blacklist no banco, revogar o token aqui
   res.json({ message: 'Logout realizado com sucesso' });
+});
+
+/**
+ * @swagger
+ * /auth/request-access:
+ *   post:
+ *     summary: Request credentials for first access or lost password
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - registration
+ *             properties:
+ *               registration:
+ *                 type: string
+ *                 description: SIAPE registration number
+ *     responses:
+ *       200:
+ *         description: Success message
+ *       404:
+ *         description: SIAPE not found in allowed list
+ */
+router.post('/request-access', [
+  body('registration').isLength({ min: 1 }).withMessage('Matrícula SIAPE é obrigatória'),
+], async (req: Request, res: Response) => {
+  try {
+    const { registration } = req.body;
+
+    // 1. Procurar usuário pelo SIAPE
+    const user = await db('users').where({ registration }).first();
+
+    if (!user) {
+      return res.status(404).json({
+        error: 'Acesso negado',
+        message: 'Esta matrícula SIAPE não está autorizada a acessar o sistema.'
+      });
+    }
+
+    // 2. Gerar senha aleatória de 8 caracteres
+    const rawPassword = crypto.randomBytes(4).toString('hex'); // 8 caracteres hex
+    const hashedPassword = await bcrypt.hash(rawPassword, 12);
+
+    // 3. Atualizar no banco
+    await db('users')
+      .where({ id: user.id })
+      .update({
+        password_hash: hashedPassword,
+        updated_at: db.fn.now()
+      });
+
+    // 4. Enviar e-mail
+    await emailService.sendPasswordEmail(user.email, user.name, rawPassword);
+
+    res.json({
+      message: 'Uma nova senha de acesso foi gerada e enviada para o seu e-mail institucional.'
+    });
+
+  } catch (error) {
+    console.error('Request access error:', error);
+    res.status(500).json({
+      error: 'Erro no servidor',
+      message: 'Não foi possível processar sua solicitação de acesso no momento.'
+    });
+  }
 });
 
 export default router;

@@ -133,6 +133,21 @@ export class AuthService {
   }
 
   /**
+   * Solicita credenciais de acesso via SIAPE
+   */
+  requestAccess(registration: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/request-access`, { registration }).pipe(
+      tap(res => {
+        this.notificationService.showSuccess(res.message);
+        this.analyticsService.trackEvent('request_access', 'auth', 'request_access_success');
+      }),
+      catchError(error => {
+        return this.handleAuthError(error, 'Erro ao solicitar acesso');
+      })
+    );
+  }
+
+  /**
    * Solicita redefinição de senha
    */
   requestPasswordReset(email: string): Observable<void> {
