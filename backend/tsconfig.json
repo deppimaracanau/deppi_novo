@@ -12,14 +12,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "types": [
-      "node",
-      "jest"
+      "node"
     ]
   },
   "include": [

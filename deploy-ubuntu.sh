@@ -17,7 +17,7 @@ DB_USER="deppi"
 DB_PASS="deppi_prod_password_$(openssl rand -hex 4)" # Senha aleatória para o banco
 JWT_SECRET=$(openssl rand -hex 32)
 JWT_REFRESH_SECRET=$(openssl rand -hex 32)
-DOMAIN_NAME="seu-dominio.com.br" # Altere para o seu domínio real
+DOMAIN_NAME="deppi.maracanau.ifce.edu.br" # Altere para o seu domínio real
 PROJECT_ROOT=$(pwd)
 
 echo "🚀 Iniciando deploy do projeto DEPPI em ambiente Linux (Ubuntu)..."
@@ -80,16 +80,20 @@ cp .env backend/.env
 # 7. Instalar dependências e Build do Backend
 echo "🔨 Construindo o Backend..."
 cd backend
-npm install --omit=dev
-npm run build
+rm -rf node_modules package-lock.json # 1. Remove arquivos antigos para evitar cache quebrado
+npm install --include=dev             # 2. Instala dependências (incluindo as de dev)
+npm run build                         # 4. Faz o build
 npm run migrate
 npm run seed
+npm prune --omit=dev                  # 5. Remove dependências de dev para liberar espaço
 cd ..
 
 # 8. Instalar dependências e Build do Frontend
 echo "🔨 Construindo o Frontend (Angular)..."
+cd frontend             # Adicione isso se o Angular não estiver na raiz
 npm install
 npm run build:prod
+cd ..
 
 # 9. Configurar PM2 para rodar o Backend
 echo "🚀 Iniciando API Backend com PM2..."
@@ -109,7 +113,7 @@ server {
     server_name $DOMAIN_NAME;
 
     # Frontend (Angular SPA)
-    root $PROJECT_ROOT/dist/deppi/browser;
+    deppi $PROJECT_ROOT/dist/deppi/browser;
     index index.html;
 
     location / {
