@@ -90,11 +90,8 @@ cd ..
 
 # 8. Instalar dependências e Build do Frontend
 echo "🔨 Construindo o Frontend (Angular)..."
-cd frontend             # Adicione isso se o Angular não estiver na raiz
-npm install
+npm install --include=dev --legacy-peer-deps
 npm run build:prod
-cd ..
-
 # 9. Configurar PM2 para rodar o Backend
 echo "🚀 Iniciando API Backend com PM2..."
 cd backend
