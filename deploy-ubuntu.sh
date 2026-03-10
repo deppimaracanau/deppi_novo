@@ -80,7 +80,7 @@ cp .env backend/.env
 # 7. Instalar dependências e Build do Backend
 echo "🔨 Construindo o Backend..."
 cd backend
-rm -rf node_modules package-lock.json # 1. Remove arquivos antigos para evitar cache quebrado
+rm -rf node_modules package-lock.json dist # 1. Remove arquivos antigos para evitar cache quebrado
 npm install --include=dev             # 2. Instala dependências (incluindo as de dev)
 npm run build                         # 4. Faz o build
 npm run migrate
@@ -95,9 +95,9 @@ npm run build:prod
 # 9. Configurar PM2 para rodar o Backend
 echo "🚀 Iniciando API Backend com PM2..."
 cd backend
-pm2 delete deppi-api || true
-pm2 start dist/src/index.js --name deppi-api --env production
-pm2 save
+npx pm2 delete deppi-api || true
+npx pm2 start dist/src/index.js --name deppi-api --env production
+npx pm2 save
 cd ..
 
 # 10. Configurar Nginx
@@ -110,7 +110,7 @@ server {
     server_name $DOMAIN_NAME;
 
     # Frontend (Angular SPA)
-    deppi $PROJECT_ROOT/dist/deppi/browser;
+    root $PROJECT_ROOT/dist/deppi/browser;
     index index.html;
 
     location / {
