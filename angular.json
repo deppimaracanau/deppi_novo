@@ -124,7 +124,7 @@
           "options": {
             "cypressConfig": "cypress.config.js",
             "devServerTarget": "deppi:serve:development",
-            "watch": true
+            "watch": false
           },
           "configurations": {
             "production": {
@@ -145,17 +145,11 @@
     }
   },
   "cli": {
+    "analytics": false,
     "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
-    "analytics": "5aec7822-18b2-4118-aeba-6df16eb7e0bb"
-  },
-  "schematics": {
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
-    }
+      "@angular-eslint/schematics",
+      "@cypress/schematic",
+      "@schematics/angular"
+    ]
   }
 }
