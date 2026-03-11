@@ -153,7 +153,7 @@ class Application {
               description: 'Development server',
             },
             {
-              url: 'https://api.deppi.ifce.edu.br',
+              url: 'https://deppi.maracanau.ifce.edu.br/api',
               description: 'Production server',
             },
           ],
