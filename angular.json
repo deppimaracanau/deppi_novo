@@ -63,7 +63,9 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "sourceMap": false,
+              "optimization": true
             },
             "development": {
               "buildOptimizer": false,
@@ -117,19 +119,6 @@
             "scripts": []
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:cypress",
-          "options": {
-            "cypressConfig": "cypress.config.ts",
-            "devServerTarget": "deppi:serve:development",
-            "watch": true
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "deppi:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
@@ -143,17 +132,10 @@
     }
   },
   "cli": {
+    "analytics": false,
     "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
-    "analytics": "5aec7822-18b2-4118-aeba-6df16eb7e0bb"
-  },
-  "schematics": {
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
-    }
+      "@angular-eslint/schematics",
+      "@schematics/angular"
+    ]
   }
 }

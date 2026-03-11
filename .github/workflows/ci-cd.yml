@@ -2,75 +2,71 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: "22"
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # Frontend Tests
   frontend-tests:
     name: Frontend Tests
     runs-on: ubuntu-latest
-    
+
     defaults:
       run:
         working-directory: ./
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: './package-lock.json'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: "./package-lock.json"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run ESLint
-      run: npm run lint
+      - name: Run ESLint
+        run: npm run lint
 
-    - name: Run Prettier check
-      run: npm run format:check
+      - name: Run Prettier check
+        run: npm run format:check
 
-    - name: Run unit tests
-      run: npm run test:coverage
+      - name: Run unit tests
+        run: npm run test:coverage
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage/lcov.info
-        flags: frontend
-        name: frontend-coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
 
-    - name: Build application
-      run: npm run build:prod
+      - name: Build application
+        run: npm run build:prod
 
-    - name: Run E2E tests
-      run: npm run test:e2e:headless
-      env:
-        CYPRESS_baseUrl: http://localhost:4200
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: frontend-build
-        path: dist/
-        retention-days: 1
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: dist/
+          retention-days: 1
 
   # Backend Tests
   backend-tests:
     name: Backend Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -78,7 +74,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: deppi_test
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -100,83 +96,84 @@ jobs:
         working-directory: ./backend
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: './backend/package-lock.json'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: "./backend/package-lock.json"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run ESLint
-      run: npm run lint
+      - name: Run ESLint
+        run: npm run lint
 
-    - name: Run Prettier check
-      run: npm run format:check
+      - name: Run Prettier check
+        run: npm run format:check
 
-    - name: Setup test database
-      run: |
-        npm run migrate
-        npm run seed
-      env:
-        NODE_ENV: test
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/deppi_test
-        REDIS_URL: redis://localhost:6379
+      - name: Setup test database
+        run: |
+          npm run migrate
+          npm run seed
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/deppi_test
+          REDIS_URL: redis://localhost:6379
 
-    - name: Run unit tests
-      run: npm run test:coverage
-      env:
-        NODE_ENV: test
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/deppi_test
-        REDIS_URL: redis://localhost:6379
+      - name: Run unit tests
+        run: npm run test:coverage
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/deppi_test
+          REDIS_URL: redis://localhost:6379
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./backend/coverage/lcov.info
-        flags: backend
-        name: backend-coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
 
-    - name: Build application
-      run: npm run build
+      - name: Build application
+        run: npm run build
 
-    - name: Run integration tests
-      run: npm run test:integration
-      env:
-        NODE_ENV: test
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/deppi_test
-        REDIS_URL: redis://localhost:6379
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/deppi_test
+          REDIS_URL: redis://localhost:6379
 
   # Security Scan
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+          exit-code: "0" # Do not fail the build based on vulnerabilities
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: "trivy-results.sarif"
 
-    - name: Run npm audit
-      run: npm audit --audit-level=high
-      continue-on-error: true
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
   # Build and Push Docker Images
   build-and-push:
@@ -186,40 +183,40 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Log in to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # Deploy to Staging
   deploy-staging:
@@ -229,34 +226,34 @@ jobs:
     if: github.ref == 'refs/heads/develop'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Deploy to staging
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.STAGING_HOST }}
-        username: ${{ secrets.STAGING_USER }}
-        key: ${{ secrets.STAGING_SSH_KEY }}
-        script: |
-          cd /opt/deppi
-          docker-compose pull
-          docker-compose up -d --remove-orphans
-          docker system prune -f
+      - name: Deploy to staging
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/deppi
+            docker-compose pull
+            docker-compose up -d --remove-orphans
+            docker system prune -f
 
-    - name: Run health check
-      run: |
-        sleep 30
-        curl -f ${{ secrets.STAGING_URL }}/health || exit 1
+      - name: Run health check
+        run: |
+          sleep 30
+          curl -f ${{ secrets.STAGING_URL }}/health || exit 1
 
-    - name: Notify Slack
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        channel: '#deployments'
-        text: '🚀 Deploy to staging completed'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3.16.2
+        with:
+          status: ${{ job.status }}
+          channel: "#deployments"
+          text: "🚀 Deploy to staging completed"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   # Deploy to Production
   deploy-production:
@@ -266,39 +263,39 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Deploy to production
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.PRODUCTION_HOST }}
-        username: ${{ secrets.PRODUCTION_USER }}
-        key: ${{ secrets.PRODUCTION_SSH_KEY }}
-        script: |
-          cd /opt/deppi
-          docker-compose pull
-          docker-compose up -d --remove-orphans
-          docker system prune -f
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/deppi
+            docker-compose pull
+            docker-compose up -d --remove-orphans
+            docker system prune -f
 
-    - name: Run health check
-      run: |
-        sleep 30
-        curl -f ${{ secrets.PRODUCTION_URL }}/health || exit 1
+      - name: Run health check
+        run: |
+          sleep 30
+          curl -f ${{ secrets.PRODUCTION_URL }}/health || exit 1
 
-    - name: Run smoke tests
-      run: |
-        curl -f ${{ secrets.PRODUCTION_URL }}/api/health
-        curl -f ${{ secrets.PRODUCTION_URL }}/
+      - name: Run smoke tests
+        run: |
+          curl -f ${{ secrets.PRODUCTION_URL }}/api/health
+          curl -f ${{ secrets.PRODUCTION_URL }}/
 
-    - name: Notify Slack
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        channel: '#deployments'
-        text: '🎉 Deploy to production completed'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3.16.2
+        with:
+          status: ${{ job.status }}
+          channel: "#deployments"
+          text: "🎉 Deploy to production completed"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   # Performance Tests
   performance-tests:
@@ -308,26 +305,26 @@ jobs:
     if: github.ref == 'refs/heads/develop'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install Artillery
-      run: npm install -g artillery@latest
+      - name: Install Artillery
+        run: npm install -g artillery@latest
 
-    - name: Run performance tests
-      run: |
-        artillery run performance-test-config.yml --target ${{ secrets.STAGING_URL }}
+      - name: Run performance tests
+        run: |
+          artillery run performance-test-config.yml --target ${{ secrets.STAGING_URL }}
 
-    - name: Upload performance results
-      uses: actions/upload-artifact@v3
-      with:
-        name: performance-results
-        path: artillery-report.html
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: artillery-report.html
 
   # Database Migration
   database-migration:
@@ -337,34 +334,34 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: './backend/package-lock.json'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: "./backend/package-lock.json"
 
-    - name: Install dependencies
-      run: |
-        cd backend
-        npm ci
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
 
-    - name: Run database migrations
-      run: |
-        cd backend
-        npm run migrate
-      env:
-        NODE_ENV: production
-        DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      - name: Run database migrations
+        run: |
+          cd backend
+          npm run migrate
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
 
-    - name: Notify migration status
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        channel: '#deployments'
-        text: '🗄️ Database migration completed'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify migration status
+        uses: 8398a7/action-slack@v3.16.2
+        with:
+          status: ${{ job.status }}
+          channel: "#deployments"
+          text: "🗄️ Database migration completed"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

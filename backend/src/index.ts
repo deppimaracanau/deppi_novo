@@ -46,6 +46,12 @@ class Application {
   }
 
   private initializeMiddlewares(): void {
+    // Trust proxy FIRST so rate limiters work behind nginx/Cloudflare
+    this.app.set('trust proxy', 1);
+
+    // Remove X-Powered-By header
+    this.app.disable('x-powered-by');
+
     // Security
     this.app.use(helmet({
       contentSecurityPolicy: {
@@ -55,8 +61,15 @@ class Application {
           fontSrc: ["'self'", "https://fonts.gstatic.com"],
           imgSrc: ["'self'", "data:", "https:"],
           scriptSrc: ["'self'"],
+          frameSrc: ["'self'", "https://www.youtube.com", "https://player.vimeo.com"],
+          connectSrc: ["'self'", ...config.cors.allowedOrigins, "https://sentry.io"],
         },
       },
+      hsts: config.nodeEnv === 'production' ? {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+      } : false
     }));
 
     // CORS
@@ -70,9 +83,9 @@ class Application {
     // Compression
     this.app.use(compression());
 
-    // Body parsing
-    this.app.use(express.json({ limit: '10mb' }));
-    this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+    // Body parsing – keep limit small; upload routes use multipart not JSON
+    this.app.use(express.json({ limit: '2mb' }));
+    this.app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
     // Logging
     if (config.nodeEnv !== 'test') {
@@ -81,20 +94,15 @@ class Application {
       }));
     }
 
-    // Rate limiting
+    // Global rate limiting
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: config.nodeEnv === 'production' ? 100 : 1000, // Limit each IP
-      message: {
-        error: 'Too many requests from this IP, please try again later.',
-      },
+      max: config.nodeEnv === 'production' ? 200 : 2000,
+      message: { error: 'Too many requests from this IP, please try again later.' },
       standardHeaders: true,
       legacyHeaders: false,
     });
     this.app.use('/api/', limiter);
-
-    // Trust proxy for rate limiting behind reverse proxy
-    this.app.set('trust proxy', 1);
   }
 
   private initializeRoutes(): void {
@@ -109,21 +117,17 @@ class Application {
     this.app.use('/api/contact', contactRoutes);
 
     // API status routes
-    this.app.get('/api', (req, res) => {
+    this.app.get('/api', (_req, res) => {
       res.json({
         status: 'UP',
-        message: 'DEPPI API Gateway',
-        version: '1.0.0',
-        docs: `http://localhost:${config.port}/api-docs`
+        message: 'DEPPI API Gateway'
       });
     });
 
     // Root endpoint
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (_req, res) => {
       res.json({
         message: 'DEPPI API - IFCE Campus Maracanaú',
-        version: '1.0.0',
-        environment: config.nodeEnv,
         timestamp: new Date().toISOString(),
       });
     });

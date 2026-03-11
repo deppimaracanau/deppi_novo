@@ -12,17 +12,17 @@ import { LoadingComponent } from './components/loading/loading.component';
     CommonModule,
     RouterModule,
     NotificationComponent,
-    LoadingComponent
+    LoadingComponent,
   ],
   exports: [
     CommonModule,
     RouterModule,
     NotificationComponent,
-    LoadingComponent
-  ]
+    LoadingComponent,
+  ],
 })
 export class SharedModule {
   constructor() {
-    console.log('🔗 SharedModule loaded');
+    console.log('SharedModule loaded');
   }
 }

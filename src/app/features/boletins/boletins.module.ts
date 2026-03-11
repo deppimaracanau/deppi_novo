@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { QuillModule } from 'ngx-quill';
 
 // Components
 import { BoletinsComponent } from './components/boletins/boletins.component';
@@ -33,28 +34,28 @@ const routes: Routes = [
       {
         path: '',
         component: BoletimListComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'login',
-        component: LoginComponent
+        component: LoginComponent,
       },
       {
         path: ':id',
-        component: BoletimDetailComponent
+        component: BoletimDetailComponent,
       },
       {
         path: 'admin/novo',
         component: BoletimFormComponent,
-        canActivate: [BoletinsGuard]
+        canActivate: [BoletinsGuard],
       },
       {
         path: 'admin/:id/editar',
         component: BoletimFormComponent,
-        canActivate: [BoletinsGuard]
-      }
-    ]
-  }
+        canActivate: [BoletinsGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({
@@ -63,7 +64,7 @@ const routes: Routes = [
     BoletimListComponent,
     BoletimDetailComponent,
     LoginComponent,
-    BoletimFormComponent
+    BoletimFormComponent,
   ],
   imports: [
     CommonModule,
@@ -71,11 +72,9 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     SharedModule,
     StoreModule.forFeature('boletins', boletinsReducer),
-    EffectsModule.forFeature([BoletinsEffects])
+    EffectsModule.forFeature([BoletinsEffects]),
+    QuillModule.forRoot(),
   ],
-  providers: [
-    BoletinsService,
-    BoletinsGuard
-  ]
+  providers: [BoletinsService, BoletinsGuard],
 })
-export class BoletinsModule { }
+export class BoletinsModule {}

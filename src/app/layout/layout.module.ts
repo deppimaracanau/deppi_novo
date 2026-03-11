@@ -6,21 +6,12 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
-  declarations: [
-    HeaderComponent,
-    FooterComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule
-  ],
-  exports: [
-    HeaderComponent,
-    FooterComponent
-  ]
+  declarations: [HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterModule],
+  exports: [HeaderComponent, FooterComponent],
 })
 export class LayoutModule {
   constructor() {
-    console.log('🎨 LayoutModule loaded');
+    console.log('LayoutModule loaded');
   }
 }
