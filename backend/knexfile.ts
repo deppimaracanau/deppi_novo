@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
 import * as dotenv from 'dotenv';
+import { parse } from 'pg-connection-string';
 
 // Carrega variáveis de ambiente antes de tudo
 dotenv.config();
@@ -53,17 +54,22 @@ const knexConfig: { [key: string]: Knex.Config } = {
 
   production: {
     client: 'postgresql',
-    connection: process.env.DATABASE_URL ? {
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    } : {
-      host: config.database.host,
-      port: config.database.port,
-      database: config.database.name,
-      user: config.database.user,
-      password: config.database.password,
-      ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
-    },
+    connection: process.env.DATABASE_URL
+      ? {
+        ...parse(process.env.DATABASE_URL),
+        database: parse(process.env.DATABASE_URL).database as string | undefined,
+        port: parseInt(parse(process.env.DATABASE_URL).port || '5432', 10),
+        host: parse(process.env.DATABASE_URL).host as string,
+        ssl: { rejectUnauthorized: false },
+      }
+      : {
+        host: config.database.host,
+        port: config.database.port,
+        database: config.database.name,
+        user: config.database.user,
+        password: config.database.password,
+        ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
+      },
     pool: {
       min: 2,
       max: 20,
