@@ -53,13 +53,13 @@ const knexConfig: { [key: string]: Knex.Config } = {
 
   production: {
     client: 'postgresql',
-    connection: {
+    connection: process.env.DATABASE_URL || {
       host: config.database.host,
       port: config.database.port,
       database: config.database.name,
       user: config.database.user,
       password: config.database.password,
-      ssl: config.database.ssl,
+      ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
     },
     pool: {
       min: 2,
