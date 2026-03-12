@@ -96,6 +96,7 @@ jobs:
     env:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: deppi_test
+      JWT_SECRET: "test-secret-for-ci-cd-pipeline-validation"
 
     steps:
       - name: Checkout code
@@ -361,6 +362,7 @@ jobs:
         env:
           NODE_ENV: production
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+          JWT_SECRET: "dummy-secret-for-migration-only"
 
       - name: Notify migration status
         uses: 8398a7/action-slack@v3.16.2
