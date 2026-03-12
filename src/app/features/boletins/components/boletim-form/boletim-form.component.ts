@@ -6,6 +6,13 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { PartialObserver } from 'rxjs';
 import { Boletim } from '../../../../shared/models';
 
+import * as QuillNamespace from 'quill';
+const Quill: any = QuillNamespace;
+// @ts-ignore
+import ImageResize from 'quill-image-resize';
+
+Quill.register('modules/imageResize', ImageResize);
+
 @Component({
   selector: 'app-boletim-form',
   standalone: false,
@@ -452,6 +459,7 @@ export class BoletimFormComponent implements OnInit {
   actionType: 'draft' | 'published' = 'published';
 
   quillModules = {
+    imageResize: {},
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
       ['blockquote', 'code-block'],

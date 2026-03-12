@@ -205,6 +205,9 @@ import { CommonModule } from '@angular/common';
         margin-bottom: 1.5rem;
         color: var(--color-text);
         line-height: 1.1;
+        word-break: normal;
+        overflow-wrap: normal;
+        text-wrap: pretty;
       }
 
       .detail-desc {
@@ -212,6 +215,7 @@ import { CommonModule } from '@angular/common';
         line-height: 1.7;
         color: var(--color-text-secondary);
         margin-bottom: 3rem;
+        word-break: normal;
       }
 
       .header-actions {
@@ -261,8 +265,9 @@ import { CommonModule } from '@angular/common';
         font-size: 1.15rem;
         line-height: 1.8;
         color: var(--color-text);
-        overflow-wrap: break-word;
-        word-wrap: break-word;
+        word-break: normal;
+        overflow-wrap: anywhere;
+        white-space: normal;
       }
       .detail-main-content img {
         max-width: 100%;

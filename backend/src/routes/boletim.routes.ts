@@ -174,7 +174,7 @@ router.get(
         status: boletim.status,
         isFeatured: boletim.is_featured,
         viewCount: (boletim.view_count || 0) + 1,
-        authorName: boletim.authorName || 'Equipe DEPPI',
+        authorName: 'Equipe DEPPI',
         news: news.map((n) => ({
           id: n.id,
           title: n.title,
