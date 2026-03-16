@@ -87,6 +87,15 @@ import { CommonModule } from '@angular/common';
             <span>Boletins</span>
           </a>
           <a
+            routerLink="/pit-rit"
+            class="nav-link"
+            [class.active]="isActive('/pit-rit')"
+            (mouseenter)="setHoverPos($event)"
+            (mouseleave)="clearHoverPos()"
+          >
+            <span>PIT/RIT</span>
+          </a>
+          <a
             routerLink="/contact"
             class="nav-link"
             [class.active]="isActive('/contact')"

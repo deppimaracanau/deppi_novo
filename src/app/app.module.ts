@@ -160,6 +160,13 @@ import { AuthGuard } from './core/guards/auth.guard';
             ),
         },
         {
+          path: 'pit-rit',
+          loadChildren: () =>
+            import('./features/pit-rit/pit-rit.module').then(
+              (m) => m.PitRitModule
+            ),
+        },
+        {
           path: '**',
           redirectTo: 'home',
         },

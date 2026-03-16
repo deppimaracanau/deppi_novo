@@ -127,6 +127,7 @@ import { Component } from '@angular/core';
             <h4 class="column-title">Recursos</h4>
             <ul class="link-list">
               <li><a routerLink="/post-graduation">Pós-Graduação</a></li>
+              <li><a routerLink="/pit-rit">PIT/RIT</a></li>
               <li><a routerLink="/boletins">Boletins Informativos</a></li>
               <li><a routerLink="/contact">Fale Conosco</a></li>
               <li>

@@ -34,6 +34,7 @@
     "innovation": "Inovação",
     "postGraduation": "Pós-Graduação",
     "boletins": "Boletins",
+    "pitRit": "PIT/RIT",
     "contact": "Contato"
   },
   "home": {
@@ -74,6 +75,28 @@
     "title": "Inovação",
     "subtitle": "Transformando Ideias",
     "description": "A inovação é o motor que impulsiona o desenvolvimento de novas soluções tecnológicas e processos criativos, preparando nossos alunos e servidores para os desafios do mercado atual."
+  },
+  "pitRit": {
+    "title": "PIT / RIT",
+    "subtitle": "Planejamento e Relatório",
+    "description": "O PIT (Plano Individual de Trabalho) e o RIT (Relatório Individual de Trabalho) são instrumentos fundamentais para o planejamento e acompanhamento das atividades docentes no IFCE.",
+    "pit": {
+      "title": "PIT",
+      "subtitle": "Plano Individual de Trabalho",
+      "description": "O PIT deve ser preenchido no início de cada semestre letivo, detalhando as atividades de ensino, pesquisa, extensão e gestão que o docente pretende realizar.",
+      "highlight": "É através do PIT que o docente organiza sua carga horária e define suas metas para o semestre."
+    },
+    "rit": {
+      "title": "RIT",
+      "subtitle": "Relatório Individual de Trabalho",
+      "description": "O RIT é o documento de prestação de contas das atividades realizadas ao final do semestre, devendo ser condizente com o planejado no PIT.",
+      "highlight": "O RIT é essencial para a progressão funcional e avaliação do desempenho docente."
+    },
+    "access": {
+      "title": "Como preencher?",
+      "description": "Ambos os documentos devem ser preenchidos e submetidos através do SUAP (Sistema Unificado de Administração Pública).",
+      "button": "Acessar SUAP"
+    }
   },
   "postGraduation": {
     "title": "Pós-Graduação",
