@@ -1,0 +1,76 @@
+/* ########## Formatação do Relatório PIT ########## */
+h3{
+	text-align: center;
+}
+
+h5 {
+	text-align: right;
+}
+
+.opcoes {
+	font-weight: 100px;
+}
+
+.quant {
+	text-align: center;
+	width: 50px;
+	font-weight: 700;
+}
+
+.opcoes, .quant, .celulaQuadro {
+	border: 1px solid black;
+}
+
+.opcoes, .totalCSS {
+	width: 700px;
+	text-align: left;
+}
+
+fieldset{
+	color: black;
+	font-family: Helvetica;
+	padding: 15px;
+}
+
+.celula1 {
+	width: 20px;
+	text-align: left;
+}
+
+.celula2 {
+	width: 250px;
+	text-align: left;
+	font-weight: 100px;
+}
+
+.descricao {
+	font-weight: 100px;
+	text-align: justify;
+}
+
+.caixaRelatorio {
+	border: 1px solid #585858;
+	margin: 10px auto;
+	width: 750px;
+	height: 300px;
+	text-align: justify;
+}
+
+.caixa1 {
+	border: 1px solid black;
+	width: 750px;
+	height: 150px;
+}
+
+.caixa2 {
+	border: 1px solid black;
+	margin: 0px 2px 0px 2px;
+	width: 192px;
+	float: left;
+	height: 150px;
+}
+
+.celulaQuadro {
+	width: 120px;
+	font-weight: 100;
+}

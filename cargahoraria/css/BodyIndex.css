@@ -1,0 +1,46 @@
+body {
+	background: url('../imagens/backgroundIndex.png') fixed center no-repeat;
+	/*background-position: 0% 30%;*/
+}
+
+@media screen and (max-width: 400px) {
+    body {
+    	background-size: 370%;
+    }
+}
+
+@media screen and (min-width: 400px) {
+    body {
+    	background-size: 370%;
+    }
+}
+
+@media screen and (min-width: 500px) {
+    body {
+    	background-size: 250%;
+    }
+}
+
+@media screen and (min-width: 750px) {
+    body {
+    	background-size: 200%;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    body {
+    	background-size: 200%;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    body {
+    	background-size: 150%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    body {
+    	background-size: 100%;
+    }
+}
