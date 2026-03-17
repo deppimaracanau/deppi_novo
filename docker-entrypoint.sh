@@ -23,9 +23,12 @@ echo "Starting Backend API..."
 npm run start &
 BACKEND_PID=$!
 
-# Start NGINX
+# Ensure temporary directories for NGINX exist
+mkdir -p /tmp/nginx_client_body /tmp/nginx_proxy /tmp/nginx_fastcgi /tmp/nginx_uwsgi /tmp/nginx_scgi
+
+# Start NGINX with explicit error log to stdout/stderr and no daemon
 echo "Starting NGINX..."
-nginx -g 'daemon off;' &
+nginx -e /dev/stderr -g 'daemon off;' &
 NGINX_PID=$!
 
 # Wait for both processes
