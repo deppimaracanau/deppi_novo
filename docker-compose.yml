@@ -15,8 +15,14 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://deppi:${DB_PASSWORD}@postgres:5432/deppi
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=deppi
+      - DB_USER=deppi
+      - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
       - SENTRY_DSN=${SENTRY_DSN}
       - GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID}
     depends_on:
