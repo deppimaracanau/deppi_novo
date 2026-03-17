@@ -11,7 +11,7 @@ services:
     container_name: deppi-app
     restart: unless-stopped
     ports:
-      - "4000:8080"
+      - "3000:8080"
     environment:
       - NODE_ENV=production
       - CORS_ORIGIN=https://deppi.maracanau.ifce.edu.br,http://localhost:4200
@@ -35,7 +35,7 @@ services:
     networks:
       - deppi-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
