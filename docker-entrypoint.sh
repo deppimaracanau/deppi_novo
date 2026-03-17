@@ -28,7 +28,7 @@ mkdir -p /tmp/nginx_client_body /tmp/nginx_proxy /tmp/nginx_fastcgi /tmp/nginx_u
 
 # Start NGINX with explicit error log to stdout/stderr and no daemon
 echo "Starting NGINX..."
-nginx -e /dev/stderr -g 'daemon off;' &
+nginx -e /dev/stderr -g 'daemon off; pid /tmp/nginx.pid;' &
 NGINX_PID=$!
 
 # Wait for both processes

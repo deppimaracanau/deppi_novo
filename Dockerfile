@@ -53,14 +53,12 @@ COPY --from=deps --chown=nextjs:nodejs /app/package.json ./
 COPY --from=builder --chown=nextjs:nodejs /app/.env.example /app/.env
 COPY --from=builder --chown=nextjs:nodejs /app/nginx.conf /etc/nginx/nginx.conf
 
-# Install nginx and netcat (for health check/waiting)
-RUN apk add --no-cache nginx netcat-openbsd
+# Install nginx, netcat and curl (for health check/waiting)
+RUN apk add --no-cache nginx netcat-openbsd curl
 
-# Create nginx directories
-RUN mkdir -p /var/cache/nginx /var/log/nginx /var/run
-
-# Set correct permissions
-RUN chown -R nextjs:nodejs /var/cache/nginx /var/log/nginx /var/run
+# Create nginx directories (Alpine /var/run is a symlink to /run)
+RUN mkdir -p /var/cache/nginx /var/log/nginx /run
+RUN chown -R nextjs:nodejs /var/cache/nginx /var/log/nginx /run
 
 # Copy and set permissions on entrypoint BEFORE switching to non-root user
 COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh /usr/local/bin/
