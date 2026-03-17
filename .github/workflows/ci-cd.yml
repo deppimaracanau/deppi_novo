@@ -119,6 +119,9 @@ jobs:
       - name: Run Prettier check
         run: npm run format:check
 
+      - name: Build application
+        run: npm run build
+
       - name: Setup test database
         run: |
           npm run migrate
@@ -141,9 +144,6 @@ jobs:
           files: ./backend/coverage/lcov.info
           flags: backend
           name: backend-coverage
-
-      - name: Build application
-        run: npm run build
 
       - name: Run integration tests
         run: npm run test:integration
