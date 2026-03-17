@@ -3,6 +3,7 @@ version: "3.8"
 services:
   # Frontend + Backend (Node.js)
   app:
+    image: ghcr.io/deppimaracanau/deppi_novo:main
     build:
       context: .
       dockerfile: Dockerfile
@@ -95,7 +96,9 @@ services:
       - "9090:9090"
     volumes:
       - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
       - "--web.console.libraries=/etc/prometheus/console_libraries"
       - "--web.console.templates=/etc/prometheus/consoles"
@@ -167,9 +170,9 @@ services:
       - deppi-network
     command: >
       sh -c "
-        chmod +x /backup.sh &&
+        # Run it with sh since it's mounted as RO
         while true; do
-          /backup.sh
+          sh /backup.sh
           sleep 86400
         done
       "

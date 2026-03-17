@@ -1,6 +1,19 @@
 #!/bin/sh
 set -e
 
+# Extrair host e porta da DATABASE_URL se possível
+# postgresql://user:password@host:port/dbname
+DB_HOST=$(echo $DATABASE_URL | sed -e 's|.*@||' -e 's|:.*||' -e 's|/.*||')
+DB_PORT=$(echo $DATABASE_URL | sed -e 's|.*:||' -e 's|/.*||')
+[ -z "$DB_PORT" ] && DB_PORT=5432
+
+echo "Waiting for PostgreSQL at $DB_HOST:$DB_PORT..."
+until nc -z "$DB_HOST" "$DB_PORT"; do
+  echo "Database is unavailable - sleeping..."
+  sleep 2
+done
+echo "PostgreSQL is up!"
+
 # Run migrations and start backend
 echo "Running Database Migrations..."
 cd /app/backend

@@ -15,10 +15,10 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
     "format:check": "prettier --check src/**/*.ts",
-    "migrate": "knex migrate:latest",
-    "migrate:rollback": "knex migrate:rollback",
-    "seed": "knex seed:run",
-    "db:reset": "knex migrate:rollback --all && knex migrate:latest && knex seed:run"
+    "migrate": "knex migrate:latest --knexfile dist/knexfile.js",
+    "migrate:rollback": "knex migrate:rollback --knexfile dist/knexfile.js",
+    "seed": "knex seed:run --knexfile dist/knexfile.js",
+    "db:reset": "npm run migrate:rollback -- --all && npm run migrate && npm run seed"
   },
   "dependencies": {
     "@sentry/node": "^7.80.0",

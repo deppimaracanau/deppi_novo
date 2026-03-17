@@ -271,6 +271,7 @@ jobs:
       - name: Deploy to production (Local Runner)
         run: |
           cd /home/deppi/deppi_novo
+          git pull upstream main || git pull origin main
           docker compose pull
           docker compose up -d --remove-orphans
           docker system prune -f
