@@ -53,8 +53,8 @@ COPY --from=deps --chown=nextjs:nodejs /app/package.json ./
 COPY --from=builder --chown=nextjs:nodejs /app/.env.example /app/.env
 COPY --from=builder --chown=nextjs:nodejs /app/nginx.conf /etc/nginx/nginx.conf
 
-# Install nginx for serving frontend
-RUN apk add --no-cache nginx
+# Install nginx and netcat (for health check/waiting)
+RUN apk add --no-cache nginx netcat-openbsd
 
 # Create nginx directories
 RUN mkdir -p /var/cache/nginx /var/log/nginx /var/run

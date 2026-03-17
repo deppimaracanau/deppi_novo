@@ -268,6 +268,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Docker Compose (Self-hosted)
+        run: |
+          if ! docker compose version > /dev/null 2>&1; then
+            echo "Docker Compose not found. Installing plugin..."
+            mkdir -p ~/.docker/cli-plugins/
+            curl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+            chmod +x ~/.docker/cli-plugins/docker-compose
+          fi
+          docker compose version
+
       - name: Deploy to production (Local Runner)
         run: |
           cd /home/deppi/deppi_novo
