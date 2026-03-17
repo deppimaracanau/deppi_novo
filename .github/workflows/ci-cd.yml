@@ -281,9 +281,11 @@ jobs:
       - name: Deploy to production (Local Runner)
         run: |
           cd /home/deppi/deppi_novo
+          # Clean up any ghost submodules or local git mess
+          find . -name ".git" -not -path "./.git" -exec rm -rf {} +
           git pull upstream main || git pull origin main
           docker compose pull
-          docker compose up -d --remove-orphans
+          docker compose up -d --force-recreate --remove-orphans
           docker system prune -f
 
       - name: Run health check
