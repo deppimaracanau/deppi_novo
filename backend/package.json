@@ -15,9 +15,9 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
     "format:check": "prettier --check src/**/*.ts",
-    "migrate": "knex migrate:latest --knexfile dist/knexfile.js --env production",
-    "migrate:rollback": "knex migrate:rollback --knexfile dist/knexfile.js --env production",
-    "seed": "knex seed:run --knexfile dist/knexfile.js --env production",
+    "migrate": "knex migrate:latest --knexfile dist/knexfile.js",
+    "migrate:rollback": "knex migrate:rollback --knexfile dist/knexfile.js",
+    "seed": "knex seed:run --knexfile dist/knexfile.js",
     "db:reset": "npm run migrate:rollback -- --all && npm run migrate && npm run seed"
   },
   "dependencies": {

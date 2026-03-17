@@ -60,7 +60,7 @@ const knexConfig: { [key: string]: Knex.Config } = {
         database: parse(process.env.DATABASE_URL).database as string | undefined,
         port: parseInt(parse(process.env.DATABASE_URL).port || '5432', 10),
         host: parse(process.env.DATABASE_URL).host as string,
-        ssl: { rejectUnauthorized: false },
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
       }
       : {
         host: config.database.host,
