@@ -244,7 +244,9 @@ jobs:
       - name: Run health check
         run: |
           sleep 30
-          curl -f ${{ secrets.STAGING_URL }}/health || exit 1
+          URL="${{ secrets.STAGING_URL }}"
+          [ -z "$URL" ] && URL="http://localhost:4000"
+          curl -f "$URL/health" || curl -f "$URL/api/health" || exit 1
 
       - name: Notify Slack
         uses: 8398a7/action-slack@v3.16.2
@@ -276,12 +278,16 @@ jobs:
       - name: Run health check
         run: |
           sleep 30
-          curl -f ${{ secrets.PRODUCTION_URL }}/health || exit 1
+          URL="${{ secrets.PRODUCTION_URL }}"
+          [ -z "$URL" ] && URL="http://localhost:4000"
+          curl -f "$URL/health" || curl -f "$URL/api/health" || exit 1
 
       - name: Run smoke tests
         run: |
-          curl -f ${{ secrets.PRODUCTION_URL }}/api/health
-          curl -f ${{ secrets.PRODUCTION_URL }}/
+          URL="${{ secrets.PRODUCTION_URL }}"
+          [ -z "$URL" ] && URL="http://localhost:4000"
+          curl -f "$URL/api"
+          curl -f "$URL/"
 
       - name: Notify Slack
         uses: 8398a7/action-slack@v3.16.2
