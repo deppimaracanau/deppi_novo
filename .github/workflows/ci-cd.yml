@@ -280,20 +280,40 @@ jobs:
 
       - name: Deploy to production (Local Runner)
         run: |
+          # Add local plugins to PATH
+          export PATH=$PATH:$HOME/.docker/cli-plugins
+
           cd /home/deppi/deppi_novo
           # Clean up any ghost submodules or local git mess
           find . -name ".git" -not -path "./.git" -exec rm -rf {} +
           git pull upstream main || git pull origin main
           docker compose pull
           docker compose up -d --force-recreate --remove-orphans
-          docker system prune -f
+
+          echo "Checking container status..."
+          docker compose ps
 
       - name: Run health check
         run: |
-          sleep 30
+          export PATH=$PATH:$HOME/.docker/cli-plugins
           URL="${{ secrets.PRODUCTION_URL }}"
           [ -z "$URL" ] && URL="http://localhost:4000"
-          curl -f "$URL/health" || curl -f "$URL/api/health" || exit 1
+          echo "Testing health at: $URL"
+
+          # Try for up to 60 seconds (12 attempts of 5s)
+          for i in {1..12}; do
+            if curl -sf "$URL/health" || curl -sf "$URL/api/health"; then
+              echo "✅ Service is healthy!"
+              exit 0
+            fi
+            echo "Waiting for service... ($i/12)"
+            sleep 5
+          done
+
+          echo "❌ Health check failed after 60s"
+          cd /home/deppi/deppi_novo
+          docker compose logs --tail=50
+          exit 1
 
       - name: Run smoke tests
         run: |

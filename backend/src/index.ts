@@ -189,8 +189,9 @@ class Application {
   }
 
   public listen(): void {
-    this.app.listen(config.port, () => {
-      logger.info(`🚀 Server running on port ${config.port} in ${config.nodeEnv} mode`);
+    const host = '0.0.0.0';
+    this.app.listen(config.port, host, () => {
+      logger.info(`🚀 Server running at http://${host}:${config.port} in ${config.nodeEnv} mode`);
 
       if (config.nodeEnv !== 'production') {
         logger.info(`📚 Swagger docs available at http://localhost:${config.port}/api-docs`);
