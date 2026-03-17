@@ -70,7 +70,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 USER nextjs
 
 # Expose ports
-EXPOSE 80 3000
+EXPOSE 8080 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
