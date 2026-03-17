@@ -276,21 +276,18 @@ jobs:
             curl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
             chmod +x ~/.docker/cli-plugins/docker-compose
           fi
-          docker compose version
-
-      - name: Deploy to production (Local Runner)
-        run: |
-          # Add local plugins to PATH
           export PATH=$PATH:$HOME/.docker/cli-plugins
 
           cd /home/deppi/deppi_novo
           # Clean up any ghost submodules or local git mess
           find . -name ".git" -not -path "./.git" -exec rm -rf {} +
           git pull upstream main || git pull origin main
-          docker compose pull
-          docker compose up -d --force-recreate --remove-orphans
 
-          echo "Checking container status..."
+          # Force pull and recreate
+          docker compose pull app
+          docker compose up -d --force-recreate --remove-orphans app
+
+          echo "Container Status:"
           docker compose ps
 
       - name: Run health check
@@ -312,7 +309,10 @@ jobs:
 
           echo "❌ Health check failed after 60s"
           cd /home/deppi/deppi_novo
-          docker compose logs --tail=50
+          echo "--- APP LOGS ---"
+          docker compose logs app --tail=100
+          echo "--- ALL LOGS ---"
+          docker compose logs --tail=20
           exit 1
 
       - name: Run smoke tests
