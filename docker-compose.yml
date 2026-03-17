@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # Frontend + Backend (Node.js)
   app:
-    image: ghcr.io/deppimaracanau/deppi_novo:latest
+    image: ghcr.io/deppimaracanau/deppi_novo:main
     build:
       context: .
       dockerfile: Dockerfile
