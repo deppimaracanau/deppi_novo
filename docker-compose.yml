@@ -26,6 +26,12 @@ services:
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
       - SENTRY_DSN=${SENTRY_DSN}
       - GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - EMAIL_FROM_NAME=${EMAIL_FROM_NAME}
     depends_on:
       - postgres
       - redis
