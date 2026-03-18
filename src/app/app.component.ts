@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { ThemeService } from './core/services/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -47,8 +48,13 @@ export class AppComponent implements OnInit {
 
   constructor(
     private store: Store,
-    private themeService: ThemeService
-  ) {}
+    private themeService: ThemeService,
+    private translate: TranslateService
+  ) {
+    // Inicializar idioma padrão
+    this.translate.setDefaultLang('pt-br');
+    this.translate.use('pt-br');
+  }
 
   ngOnInit(): void {
     // Inicializar tema do sistema
