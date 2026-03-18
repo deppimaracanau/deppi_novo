@@ -288,8 +288,11 @@ export class PitRitComponent {
   scrollToForm() {
     setTimeout(() => {
       const el = document.getElementById('pit-rit-form-section');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 50);
   }
 }
 

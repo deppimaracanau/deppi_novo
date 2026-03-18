@@ -90,13 +90,26 @@ cd ..
 
 # 8. Instalar dependências e Build do Frontend
 echo "🔨 Construindo o Frontend (Angular)..."
-npm install --include=dev --legacy-peer-deps
-npm run build:prod
+# 1. Remova a pasta dist antiga para não ter lixo
+rm -rf $PROJECT_ROOT/dist/
+# 2. Instale as dependências garantindo compatibilidade (importante o legacy-peer-deps)
+npm install --legacy-peer-deps
+# 3. Rode o build passando o parâmetro de produção e forçando o service worker
+npx ng build --configuration production --service-worker=true
 # 9. Configurar PM2 para rodar o Backend
 echo "🚀 Iniciando API Backend com PM2..."
 cd backend
 npx pm2 delete deppi-api || true
-npx pm2 start dist/src/index.js --name deppi-api --env production
+if [ -f "dist/src/index.js" ]; then
+    # Exemplo se for dist/src/index.js
+    npx pm2 start dist/src/index.js --name deppi-api --env production
+elif [ -f "dist/index.js" ]; then
+    # Exemplo se for dist/index.js
+    npx pm2 start dist/index.js --name deppi-api --env production
+else
+    echo "❌ Arquivo index.js não encontrado no build do backend."
+    exit 1
+fi
 npx pm2 save
 cd ..
 

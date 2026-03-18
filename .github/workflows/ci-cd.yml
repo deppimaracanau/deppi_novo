@@ -52,7 +52,13 @@ jobs:
           name: frontend-coverage
 
       - name: Build application
-        run: npm run build:prod
+        run: |
+          # 1. Remova a pasta dist antiga para não ter lixo
+          rm -rf dist/
+          # 2. Instale as dependências garantindo compatibilidade (importante o legacy-peer-deps)
+          npm install --legacy-peer-deps
+          # 3. Rode o build passando o parâmetro de produção e forçando o service worker
+          npx ng build --configuration production --service-worker=true
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

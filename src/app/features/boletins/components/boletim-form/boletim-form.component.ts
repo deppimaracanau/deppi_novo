@@ -6,12 +6,9 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { PartialObserver } from 'rxjs';
 import { Boletim } from '../../../../shared/models';
 
-import * as QuillNamespace from 'quill';
-const Quill: any = QuillNamespace;
+import Quill from 'quill';
 // @ts-ignore
 import ImageResize from 'quill-image-resize';
-
-Quill.register('modules/imageResize', ImageResize);
 
 @Component({
   selector: 'app-boletim-form',
@@ -457,6 +454,15 @@ export class BoletimFormComponent implements OnInit {
   loadingInit = false;
   loading = false;
   actionType: 'draft' | 'published' = 'published';
+
+  constructor() {
+    const quillContext: any = Quill;
+    if (typeof quillContext.register === 'function') {
+      quillContext.register('modules/imageResize', ImageResize);
+    } else if (quillContext.default && typeof quillContext.default.register === 'function') {
+      quillContext.default.register('modules/imageResize', ImageResize);
+    }
+  }
 
   quillModules = {
     imageResize: {},

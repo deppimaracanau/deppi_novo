@@ -23,7 +23,12 @@ COPY . .
 RUN npm ci --ignore-scripts
 
 # Build Angular application
-RUN npm run build:prod
+# 1. Remova a pasta dist antiga para não ter lixo
+RUN rm -rf dist/
+# 2. Instale as dependências garantindo compatibilidade (importante o legacy-peer-deps)
+RUN npm install --legacy-peer-deps
+# 3. Rode o build passando o parâmetro de produção e forçando o service worker
+RUN npx ng build --configuration production --service-worker=true
 
 # Build backend
 WORKDIR /app/backend
