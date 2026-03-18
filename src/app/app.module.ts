@@ -33,7 +33,6 @@ import { InnovationModule } from './features/innovation/innovation.module';
 import { PostGraduationModule } from './features/post-graduation/post-graduation.module';
 import { BoletinsModule } from './features/boletins/boletins.module';
 import { ContactModule } from './features/contact/contact.module';
-import { PitRitModule } from './features/pit-rit/pit-rit.module';
 
 // Root Component
 import { AppComponent } from './app.component';
@@ -99,10 +98,6 @@ import { AuthGuard } from './core/guards/auth.guard';
     LayoutModule,
 
     // Feature Modules (lazy loaded)
-    BoletinsModule,
-    ContactModule,
-    PitRitModule,
-
     RouterModule.forRoot(
       [
         {
