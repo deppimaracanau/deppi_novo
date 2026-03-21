@@ -214,7 +214,6 @@ import { AuthGuard } from './core/guards/auth.guard';
     },
     provideNgxMask(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
-
   ],
   bootstrap: [AppComponent],
 })

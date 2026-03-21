@@ -459,7 +459,10 @@ export class BoletimFormComponent implements OnInit {
     const quillContext: any = Quill;
     if (typeof quillContext.register === 'function') {
       quillContext.register('modules/imageResize', ImageResize);
-    } else if (quillContext.default && typeof quillContext.default.register === 'function') {
+    } else if (
+      quillContext.default &&
+      typeof quillContext.default.register === 'function'
+    ) {
       quillContext.default.register('modules/imageResize', ImageResize);
     }
   }
