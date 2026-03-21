@@ -244,6 +244,8 @@ jobs:
         run: |
           cd /home/deppi/deppi_novo
           docker compose pull
+          # Para e remove os containers antigos para liberar as portas
+          docker compose down || true
           docker compose up -d --remove-orphans
           docker system prune -f
 
@@ -282,6 +284,9 @@ jobs:
 
           # Force pull and recreate
           docker compose pull app
+          # Para e remove o container antigo para liberar a porta 3000/4000
+          docker compose stop app || true
+          docker compose rm -f app || true
           docker compose up -d --force-recreate --remove-orphans app
 
           echo "Container Status:"
