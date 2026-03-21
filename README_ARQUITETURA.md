@@ -248,6 +248,19 @@ await window.i18n.setLanguage('en');
 
 - Node.js 16+
 - NPM ou Yarn
+
+## 🚀 Evolução e Próximos Passos
+
+A arquitetura foi projetada para evoluir. Atualmente, o projeto já conta com funcionalidades que antes eram apenas planos para o futuro:
+
+-   **Integração com API Real**: O sistema de autenticação e a busca de boletins já não dependem de dados estáticos. Ambos estão integrados a uma API real, tornando a aplicação dinâmica e pronta para produção.
+-   **Gerenciamento de Conteúdo**: Já existe um editor de texto integrado que permite a criação e edição dos boletins diretamente na plataforma.
+
+Funcionalidades planejadas para o futuro incluem:
+
+-   **Upload de Arquivos**: Implementar a funcionalidade de upload de arquivos para anexar documentos aos boletins.
+-   **Progressive Web App (PWA)**: Transformar o portal em um PWA para permitir funcionalidades offline e notificações.
+-   **Métricas de Uso**: Coletar dados de analytics para entender como os usuários interagem com a plataforma.
 - Servidor web (Apache/Nginx)
 
 ### Setup Local
