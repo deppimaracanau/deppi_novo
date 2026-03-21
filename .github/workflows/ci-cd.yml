@@ -243,10 +243,12 @@ jobs:
       - name: Deploy to staging (Local Runner)
         run: |
           cd /home/deppi/deppi_novo
+          echo "Forcefully freeing ports 3000 and 4000..."
+          sudo fuser -k 3000/tcp || true
+          sudo fuser -k 4000/tcp || true
+          sleep 2 # Give a moment for the port to be released
           docker compose pull
-          # Para e remove os containers antigos para liberar as portas
-          docker compose down || true
-          docker compose up -d --remove-orphans
+          docker compose up -d --force-recreate --remove-orphans
           docker system prune -f
 
       - name: Run health check
@@ -282,11 +284,13 @@ jobs:
           find . -name ".git" -not -path "./.git" -exec rm -rf {} +
           git pull upstream main || git pull origin main
 
+          echo "Forcefully freeing ports 3000 and 4000..."
+          sudo fuser -k 3000/tcp || true
+          sudo fuser -k 4000/tcp || true
+          sleep 2 # Give a moment for the port to be released
+
           # Force pull and recreate
           docker compose pull app
-          # Para e remove o container antigo para liberar a porta 3000/4000
-          docker compose stop app || true
-          docker compose rm -f app || true
           docker compose up -d --force-recreate --remove-orphans app
 
           echo "Container Status:"
