@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
@@ -44,7 +43,6 @@ import { RitFormComponent } from './components/rit-form.component';
         </div>
       </section>
 
-      <!-- SEÇÃO DE FORMULÁRIO DINÂMICO -->
       <section id="pit-rit-form-section" class="form-section-wrapper">
         <div class="container-narrow">
           <ng-container [ngSwitch]="activeTab">
@@ -305,8 +303,12 @@ const routes: Routes = [{ path: '', component: PitRitComponent }];
     RouterModule.forChild(routes),
     SharedModule,
     TranslateModule,
+    FormsModule,
     PitFormComponent,
     RitFormComponent,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
+  providers: [provideNgxMask()],
 })
 export class PitRitModule {}
