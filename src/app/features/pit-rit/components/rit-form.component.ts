@@ -22,6 +22,43 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="rit-form-container glass-card animate-fade-in">
+      <div class="form-section">
+        <div class="alert-info">
+          <h4 style="margin-bottom: 8px; color: #0066b3;">
+            Orientações para preenchimento do RIT
+          </h4>
+          <ol
+            style="margin-left: 20px; font-size: 0.9rem; line-height: 1.5; color: #444;"
+          >
+            <li>
+              A carga horária (C.H.) deve ser contabilizada em horas de 60
+              minutos.
+            </li>
+            <li>
+              A C.H deve constar o subtotal de horas obtidas para cada atividade
+              registrada de acordo com o obtido na Tabela de Carga Horária
+              docente.
+            </li>
+            <li>
+              Com exceção da carga horária de ensino dedicada a aulas (que serão
+              acompanhadas através do sistema Acadêmico).
+            </li>
+            <li>
+              O RIT deve ser entregue às Direções ou Departamentos de Ensino em
+              até 30 (trinta) dias após o final do semestre letivo anterior.
+            </li>
+            <li>
+              No caso de não apresentação do RIT no prazo, subentende-se que o
+              docente realizou exclusivamente atividades de ensino no IFCE.
+            </li>
+            <li>
+              O RIT deve ser preenchido respeitando os critérios estabelecidos
+              na Resolução de Carga Horária Docente do IFCE.
+            </li>
+          </ol>
+        </div>
+      </div>
+
       <header class="form-header">
         <h2 class="section-title">Formulário RIT</h2>
         <p class="section-desc">
@@ -97,6 +134,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
               >
                 <option value="40h D.E.">40h D.E.</option>
                 <option value="40h">40h</option>
+                <option value="30h">30h</option>
                 <option value="20h">20h</option>
               </select>
             </div>
@@ -292,6 +330,13 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         margin: 2rem auto;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+      .alert-info {
+        background: #e3f2fd;
+        padding: 1.5rem;
+        border-left: 4px solid #1565c0;
+        border-radius: 8px;
+        margin-bottom: 2rem;
       }
       .form-header {
         margin-bottom: 2.5rem;

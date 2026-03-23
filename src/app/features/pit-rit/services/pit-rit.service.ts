@@ -357,11 +357,17 @@ export class PitRitService {
     Object.keys(multipliers).forEach((qKey) => {
       const category = this.findCategory(qKey);
       const subCategory = this.findSubCategory(qKey);
-      if (category && subCategory) {
+      if (category === 'ensino' && subCategory) {
         (data.atividades as any)[category][subCategory][
           qKey.replace('q', 't')
         ] =
           (data.atividades as any)[category][subCategory][qKey] *
+          multipliers[qKey];
+      } else if (category && category !== 'ensino') {
+        (data.atividades as any)[category][
+          qKey.replace('q', 't')
+        ] =
+          (data.atividades as any)[category][qKey] *
           multipliers[qKey];
       }
     });
@@ -397,7 +403,10 @@ export class PitRitService {
       }
     };
     sumAllT(data.atividades);
-    data.total = Math.min(total, 40);
+    data.total = Math.min(
+      total,
+      regime === '20h' ? 20 : regime === '30h' ? 30 : 40
+    );
 
     this.pitData$.next({ ...data });
   }
