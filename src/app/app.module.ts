@@ -35,8 +35,6 @@ import { SharedModule } from './shared/shared.module';
 // Layout Module
 import { LayoutModule } from './layout/layout.module';
 
-
-
 // Root Component
 import { AppComponent } from './app.component';
 

@@ -457,17 +457,19 @@ export class BoletimFormComponent implements OnInit {
     if (typeof window !== 'undefined') {
       const q: any = Quill;
       (window as any).Quill = q.default || q;
-      
+
       // @ts-ignore
-      import('quill-image-resize').then((module) => {
-        const ImageResize = module.default || module;
-        const ql = (window as any).Quill;
-        if (ql && typeof ql.register === 'function') {
-          ql.register('modules/imageResize', ImageResize);
-        }
-      }).catch(e => {
-        console.warn('Could not load or register quill-image-resize:', e);
-      });
+      import('quill-image-resize')
+        .then((module) => {
+          const ImageResize = module.default || module;
+          const ql = (window as any).Quill;
+          if (ql && typeof ql.register === 'function') {
+            ql.register('modules/imageResize', ImageResize);
+          }
+        })
+        .catch((e) => {
+          console.warn('Could not load or register quill-image-resize:', e);
+        });
     }
   }
 
