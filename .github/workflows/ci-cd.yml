@@ -259,10 +259,19 @@ jobs:
 
       - name: Run health check
         run: |
-          sleep 30
           URL="${{ secrets.STAGING_URL }}"
           [ -z "$URL" ] && URL="http://localhost:4000"
-          curl -f "$URL/health" || curl -f "$URL/api/health" || exit 1
+          echo "Testing health at: $URL"
+          for i in {1..24}; do
+            if curl -sf "$URL/health" || curl -sf "$URL/api/health"; then
+              echo "✅ Service is healthy!"
+              exit 0
+            fi
+            echo "Waiting for service... ($i/24)"
+            sleep 5
+          done
+          echo "❌ Health check failed after 120s"
+          exit 1
 
   # Deploy to Production
   deploy-production:
@@ -309,17 +318,17 @@ jobs:
           [ -z "$URL" ] && URL="http://localhost:4000"
           echo "Testing health at: $URL"
 
-          # Try for up to 60 seconds (12 attempts of 5s)
-          for i in {1..12}; do
+          # Try for up to 120 seconds (24 attempts of 5s)
+          for i in {1..24}; do
             if curl -sf "$URL/health" || curl -sf "$URL/api/health"; then
               echo "✅ Service is healthy!"
               exit 0
             fi
-            echo "Waiting for service... ($i/12)"
+            echo "Waiting for service... ($i/24)"
             sleep 5
           done
 
-          echo "❌ Health check failed after 60s"
+          echo "❌ Health check failed after 120s"
           cd /home/deppi/deppi_novo
           echo "--- APP LOGS ---"
           docker compose logs app --tail=100
