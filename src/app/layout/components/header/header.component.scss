@@ -82,6 +82,9 @@
   font-size: var(--font-size-sm);
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-link:hover {
