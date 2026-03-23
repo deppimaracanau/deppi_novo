@@ -264,6 +264,28 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   `,
   styles: [
     `
+      :host {
+        --slot-bg-Aula: #e8f5e9;
+        --slot-color-Aula: #2e7d32;
+        --slot-bg-Planejamento: #fff3e0;
+        --slot-color-Planejamento: #e65100;
+        --slot-bg-Atendimento: #e3f2fd;
+        --slot-color-Atendimento: #1565c0;
+        --slot-bg-Apoio: #f3e5f5;
+        --slot-color-Apoio: #6a1b9a;
+        --slot-bg-Orientação: #fce4ec;
+        --slot-color-Orientação: #ad1457;
+        --slot-bg-Extracurricular: #eceff1;
+        --slot-color-Extracurricular: #37474f;
+        --slot-bg-Pesquisa: #e0f2f1;
+        --slot-color-Pesquisa: #00695c;
+        --slot-bg-Extensão: #fbe9e7;
+        --slot-color-Extensão: #d84315;
+        --slot-bg-Gestão: #e8eaf6;
+        --slot-color-Gestão: #283593;
+        --slot-bg-Comissões: #fff8e1;
+        --slot-color-Comissões: #ff8f00;
+      }
       .rit-form-container {
         padding: 2.5rem;
         max-width: 1000px;
@@ -376,6 +398,67 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.4rem;
         font-size: 0.8rem;
         height: 36px;
+        transition: background-color 0.3s;
+      }
+      .slot-select[data-activity='Aula'] {
+        background-color: var(--slot-bg-Aula);
+        color: var(--slot-color-Aula);
+        border-color: var(--slot-color-Aula);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Planejamento'] {
+        background-color: var(--slot-bg-Planejamento);
+        color: var(--slot-color-Planejamento);
+        border-color: var(--slot-color-Planejamento);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Atendimento'] {
+        background-color: var(--slot-bg-Atendimento);
+        color: var(--slot-color-Atendimento);
+        border-color: var(--slot-color-Atendimento);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Apoio'] {
+        background-color: var(--slot-bg-Apoio);
+        color: var(--slot-color-Apoio);
+        border-color: var(--slot-color-Apoio);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Orientação'] {
+        background-color: var(--slot-bg-Orientação);
+        color: var(--slot-color-Orientação);
+        border-color: var(--slot-color-Orientação);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Extracurricular'] {
+        background-color: var(--slot-bg-Extracurricular);
+        color: var(--slot-color-Extracurricular);
+        border-color: var(--slot-color-Extracurricular);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Pesquisa'] {
+        background-color: var(--slot-bg-Pesquisa);
+        color: var(--slot-color-Pesquisa);
+        border-color: var(--slot-color-Pesquisa);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Extensão'] {
+        background-color: var(--slot-bg-Extensão);
+        color: var(--slot-color-Extensão);
+        border-color: var(--slot-color-Extensão);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Gestão'] {
+        background-color: var(--slot-bg-Gestão);
+        color: var(--slot-color-Gestão);
+        border-color: var(--slot-color-Gestão);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Comissões'] {
+        background-color: var(--slot-bg-Comissões);
+        color: var(--slot-color-Comissões);
+        border-color: var(--slot-color-Comissões);
+        font-weight: 600;
       }
 
       .form-group.has-error .form-input {

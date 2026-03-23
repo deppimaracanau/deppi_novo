@@ -209,6 +209,128 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
           </div>
         </div>
 
+        <!-- ATIVIDADES COMPLEMENTARES (Resumo) -->
+        <div class="form-section">
+          <h3 class="subsection-title">Pesquisa e Extensão (Carga em Horas)</h3>
+          <div class="grid-form">
+            <div class="form-group">
+              <label>Coordenação Projetos (Pesquisa)</label>
+              <input
+                type="number"
+                [(ngModel)]="data.atividades.pesquisa.q14"
+                name="q14"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Orientação Mestrado/Doutorado</label>
+              <input
+                type="number"
+                [(ngModel)]="data.atividades.pesquisa.q17"
+                name="q17"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Artigos/Produção Intelectual</label>
+              <input
+                type="number"
+                [(ngModel)]="data.atividades.pesquisa.q18"
+                name="q18"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Projetos de Extensão</label>
+              <input
+                type="number"
+                [(ngModel)]="data.atividades.extensao.q21"
+                name="q21"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Produção Técnica/Cultural</label>
+              <input
+                type="number"
+                [(ngModel)]="data.atividades.extensao.q23"
+                name="q23"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Atividades de Gestão</label>
+              <input
+                type="number"
+                [(ngModel)]="data.atividades.gestao.q30"
+                name="q30"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- QUADRO DE HORÁRIOS -->
+        <div class="form-section">
+          <h3 class="subsection-title">
+            Distribuição de Carga Horária (Semestre Atual)
+          </h3>
+          <div class="table-responsive">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Segunda</th>
+                  <th>Terça</th>
+                  <th>Quarta</th>
+                  <th>Quinta</th>
+                  <th>Sexta</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let period of periods; let pid = index">
+                  <tr *ngFor="let slot of slots; let sid = index">
+                    <td
+                      *ngIf="sid === 0"
+                      [attr.rowspan]="slots.length"
+                      class="period-cell"
+                    >
+                      {{ period }}
+                    </td>
+                    <td *ngFor="let day of days; let did = index">
+                      <select
+                        [(ngModel)]="
+                          data.horarios[pid * slots.length + sid][did]
+                        "
+                        [name]="'h' + pid + sid + did"
+                        (change)="update()"
+                        class="slot-select"
+                        [attr.data-activity]="
+                          data.horarios[pid * slots.length + sid][did]
+                        "
+                      >
+                        <option value="">--</option>
+                        <option
+                          *ngFor="let opt of activityOptions"
+                          [value]="opt"
+                        >
+                          {{ opt }}
+                        </option>
+                      </select>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="form-actions">
           <button type="button" class="btn-secondary" (click)="reset()">
             Limpar
@@ -222,6 +344,28 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   `,
   styles: [
     `
+      :host {
+        --slot-bg-Aula: #e8f5e9;
+        --slot-color-Aula: #2e7d32;
+        --slot-bg-Planejamento: #fff3e0;
+        --slot-color-Planejamento: #e65100;
+        --slot-bg-Atendimento: #e3f2fd;
+        --slot-color-Atendimento: #1565c0;
+        --slot-bg-Apoio: #f3e5f5;
+        --slot-color-Apoio: #6a1b9a;
+        --slot-bg-Orientação: #fce4ec;
+        --slot-color-Orientação: #ad1457;
+        --slot-bg-Extracurricular: #eceff1;
+        --slot-color-Extracurricular: #37474f;
+        --slot-bg-Pesquisa: #e0f2f1;
+        --slot-color-Pesquisa: #00695c;
+        --slot-bg-Extensão: #fbe9e7;
+        --slot-color-Extensão: #d84315;
+        --slot-bg-Gestão: #e8eaf6;
+        --slot-color-Gestão: #283593;
+        --slot-bg-Comissões: #fff8e1;
+        --slot-color-Comissões: #ff8f00;
+      }
       .pit-form-container {
         padding: 2.5rem;
         max-width: 900px;
@@ -305,6 +449,96 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         border-bottom: 1px solid #eee;
         font-size: 0.95rem;
       }
+      .schedule-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 4px;
+      }
+      .schedule-table th {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        color: #666;
+        font-weight: 600;
+      }
+      .period-cell {
+        background: #f8f9fa;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-align: center;
+        color: #0066b3;
+        text-transform: uppercase;
+        border-radius: 4px;
+      }
+      .slot-select {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+        height: 36px;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .slot-select[data-activity='Aula'] {
+        background-color: var(--slot-bg-Aula);
+        color: var(--slot-color-Aula);
+        border-color: var(--slot-color-Aula);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Planejamento'] {
+        background-color: var(--slot-bg-Planejamento);
+        color: var(--slot-color-Planejamento);
+        border-color: var(--slot-color-Planejamento);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Atendimento'] {
+        background-color: var(--slot-bg-Atendimento);
+        color: var(--slot-color-Atendimento);
+        border-color: var(--slot-color-Atendimento);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Apoio'] {
+        background-color: var(--slot-bg-Apoio);
+        color: var(--slot-color-Apoio);
+        border-color: var(--slot-color-Apoio);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Orientação'] {
+        background-color: var(--slot-bg-Orientação);
+        color: var(--slot-color-Orientação);
+        border-color: var(--slot-color-Orientação);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Extracurricular'] {
+        background-color: var(--slot-bg-Extracurricular);
+        color: var(--slot-color-Extracurricular);
+        border-color: var(--slot-color-Extracurricular);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Pesquisa'] {
+        background-color: var(--slot-bg-Pesquisa);
+        color: var(--slot-color-Pesquisa);
+        border-color: var(--slot-color-Pesquisa);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Extensão'] {
+        background-color: var(--slot-bg-Extensão);
+        color: var(--slot-color-Extensão);
+        border-color: var(--slot-color-Extensão);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Gestão'] {
+        background-color: var(--slot-bg-Gestão);
+        color: var(--slot-color-Gestão);
+        border-color: var(--slot-color-Gestão);
+        font-weight: 600;
+      }
+      .slot-select[data-activity='Comissões'] {
+        background-color: var(--slot-bg-Comissões);
+        color: var(--slot-color-Comissões);
+        border-color: var(--slot-color-Comissões);
+        font-weight: 600;
+      }
+
       .calculated-row {
         background: rgba(0, 102, 179, 0.02);
       }
@@ -373,6 +607,21 @@ export class PitFormComponent {
   private notificationService = inject(NotificationService);
 
   data: any = {};
+  readonly periods = ['Manhã', 'Tarde', 'Noite'];
+  readonly slots = ['A', 'B', 'C', 'D'];
+  readonly days = [0, 1, 2, 3, 4];
+  readonly activityOptions = [
+    'Aula',
+    'Planejamento',
+    'Atendimento',
+    'Apoio',
+    'Orientação',
+    'Extracurricular',
+    'Pesquisa',
+    'Extensão',
+    'Gestão',
+    'Comissões',
+  ];
 
   constructor() {
     this.pitRitService.currentPitData$.subscribe((d) => {

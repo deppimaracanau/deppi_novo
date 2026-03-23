@@ -191,8 +191,36 @@ export class PdfGeneratorService {
       },
     });
 
+    // Schedule Grid for PIT
+    if (currentY > 180) {
+      doc.addPage();
+      currentY = 20;
+    }
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('DISTRIBUIÇÃO DE CARGA HORÁRIA', 15, currentY);
+
+    const scheduleBodyPit = data.horarios.map((row, i) => {
+      const periodLabel = i < 4 ? 'Manhã' : i < 8 ? 'Tarde' : 'Noite';
+      const slotLabel = String.fromCharCode(65 + (i % 4));
+      return [`${periodLabel} ${slotLabel}`, ...row];
+    });
+
+    autoTable(doc, {
+      startY: currentY + 5,
+      head: [['Horário', 'SEG', 'TER', 'QUA', 'QUI', 'SEX']],
+      body: scheduleBodyPit,
+      theme: 'grid',
+      styles: { fontSize: 7, halign: 'center' },
+      columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
+    });
+
     // Signatures
     currentY = (doc as any).lastAutoTable.finalY + 30;
+    if (currentY > 270) {
+      doc.addPage();
+      currentY = 40;
+    }
     doc.setFontSize(9);
     doc.text('_________________________________', 30, currentY);
     doc.text('Professor(a)', 45, currentY + 5);
