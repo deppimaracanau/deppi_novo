@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 
 import { PitFormComponent } from './components/pit-form.component';
 import { RitFormComponent } from './components/rit-form.component';
@@ -309,6 +309,6 @@ const routes: Routes = [{ path: '', component: PitRitComponent }];
     NgxMaskDirective,
     NgxMaskPipe,
   ],
-  providers: [provideNgxMask()],
+  providers: [],
 })
 export class PitRitModule {}

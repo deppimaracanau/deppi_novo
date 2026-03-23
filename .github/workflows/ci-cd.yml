@@ -38,6 +38,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Apply Prettier formatting
+        run: npm run format
+
       - name: Run Prettier check
         run: npm run format:check
 
@@ -121,6 +124,9 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Apply Prettier formatting
+        run: npm run format
 
       - name: Run Prettier check
         run: npm run format:check

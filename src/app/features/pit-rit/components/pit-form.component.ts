@@ -6,7 +6,7 @@ import { PitRitService } from '../services/pit-rit.service';
 import { PdfGeneratorService } from '../services/pdf-generator.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { NotificationService } from '../../../core/services/notification.service';
-import { NgxMaskDirective } from 'ngx-mask';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-pit-form',
@@ -18,6 +18,7 @@ import { NgxMaskDirective } from 'ngx-mask';
     TranslateModule,
     NgxMaskDirective,
   ],
+  providers: [provideNgxMask()],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="pit-form-container glass-card animate-fade-in">

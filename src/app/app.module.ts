@@ -35,15 +35,6 @@ import { SharedModule } from './shared/shared.module';
 // Layout Module
 import { LayoutModule } from './layout/layout.module';
 
-// Feature Modules
-import { HomeModule } from './features/home/home.module';
-import { ResearchModule } from './features/research/research.module';
-import { ExtensionModule } from './features/extension/extension.module';
-import { InnovationModule } from './features/innovation/innovation.module';
-import { PostGraduationModule } from './features/post-graduation/post-graduation.module';
-import { BoletinsModule } from './features/boletins/boletins.module';
-import { ContactModule } from './features/contact/contact.module';
-
 // Root Component
 import { AppComponent } from './app.component';
 
