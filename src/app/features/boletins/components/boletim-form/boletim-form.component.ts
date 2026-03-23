@@ -7,8 +7,6 @@ import { PartialObserver } from 'rxjs';
 import { Boletim } from '../../../../shared/models';
 
 import Quill from 'quill';
-// @ts-ignore
-import ImageResize from 'quill-image-resize';
 
 @Component({
   selector: 'app-boletim-form',
@@ -456,14 +454,20 @@ export class BoletimFormComponent implements OnInit {
   actionType: 'draft' | 'published' = 'published';
 
   constructor() {
-    const quillContext: any = Quill;
-    if (typeof quillContext.register === 'function') {
-      quillContext.register('modules/imageResize', ImageResize);
-    } else if (
-      quillContext.default &&
-      typeof quillContext.default.register === 'function'
-    ) {
-      quillContext.default.register('modules/imageResize', ImageResize);
+    if (typeof window !== 'undefined') {
+      const q: any = Quill;
+      (window as any).Quill = q.default || q;
+      
+      // @ts-ignore
+      import('quill-image-resize').then((module) => {
+        const ImageResize = module.default || module;
+        const ql = (window as any).Quill;
+        if (ql && typeof ql.register === 'function') {
+          ql.register('modules/imageResize', ImageResize);
+        }
+      }).catch(e => {
+        console.warn('Could not load or register quill-image-resize:', e);
+      });
     }
   }
 
