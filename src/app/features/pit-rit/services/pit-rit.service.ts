@@ -115,6 +115,7 @@ export interface PitData {
     };
   };
   total: number;
+  horarios: string[][];
 }
 
 export interface RitData {
@@ -259,6 +260,9 @@ export class PitRitService {
         },
       },
       total: 0,
+      horarios: Array(12)
+        .fill(0)
+        .map(() => Array(5).fill('')),
     } as any;
   }
 
