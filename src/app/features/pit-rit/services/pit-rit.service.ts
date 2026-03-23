@@ -364,11 +364,8 @@ export class PitRitService {
           (data.atividades as any)[category][subCategory][qKey] *
           multipliers[qKey];
       } else if (category && category !== 'ensino') {
-        (data.atividades as any)[category][
-          qKey.replace('q', 't')
-        ] =
-          (data.atividades as any)[category][qKey] *
-          multipliers[qKey];
+        (data.atividades as any)[category][qKey.replace('q', 't')] =
+          (data.atividades as any)[category][qKey] * multipliers[qKey];
       }
     });
 

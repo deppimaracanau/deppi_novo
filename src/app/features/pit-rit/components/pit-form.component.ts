@@ -326,23 +326,21 @@ export interface PitTableRow {
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
       }
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
       .form-group label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #444;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a1a1a !important;
+        margin-bottom: 0.5rem;
+        display: block;
       }
       .form-input,
       .form-select {
         padding: 0.75rem 1rem;
-        border: 1px solid #ddd;
+        border: 2px solid #ccc;
         border-radius: 8px;
         font-size: 0.95rem;
         background: white;
+        color: #1a1a1a;
       }
 
       .spreadsheet-table {

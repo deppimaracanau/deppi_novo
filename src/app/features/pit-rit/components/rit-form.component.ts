@@ -385,13 +385,14 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       }
       .report-item label {
         display: block;
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-        color: #333;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #1a1a1a !important;
+        font-size: 1rem;
       }
       .field-help {
-        font-size: 0.8rem;
-        color: #888;
+        font-size: 0.85rem;
+        color: #555;
         margin-bottom: 0.75rem;
       }
 
@@ -411,12 +412,28 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         resize: vertical;
         min-height: 100px;
       }
-      .form-input:focus,
-      .form-select:focus,
-      .form-textarea:focus {
-        border-color: #0066b3;
-        box-shadow: 0 0 0 3px rgba(0, 102, 179, 0.1);
-        outline: none;
+      .form-group label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a1a1a !important;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+      .form-input,
+      .form-select,
+      .form-textarea,
+      .slot-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background: white;
+        color: #1a1a1a;
+      }
+      .form-input::placeholder {
+        color: #777;
       }
 
       .schedule-table {
