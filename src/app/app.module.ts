@@ -15,6 +15,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { QuillModule } from 'ngx-quill';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 
@@ -89,6 +90,9 @@ import { AuthGuard } from './core/guards/auth.guard';
       },
       defaultLanguage: 'pt-br',
     }),
+
+    // Global Rich Text Editor Config
+    QuillModule.forRoot(),
 
     // Service Worker
     ServiceWorkerModule.register('ngsw-worker.js', {

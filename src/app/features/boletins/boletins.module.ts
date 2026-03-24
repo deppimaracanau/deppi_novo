@@ -73,7 +73,7 @@ const routes: Routes = [
     SharedModule,
     StoreModule.forFeature('boletins', boletinsReducer),
     EffectsModule.forFeature([BoletinsEffects]),
-    QuillModule.forRoot(),
+    QuillModule,
   ],
   providers: [BoletinsService, BoletinsGuard],
 })
