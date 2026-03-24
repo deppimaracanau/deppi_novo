@@ -456,15 +456,15 @@ export class BoletimFormComponent implements OnInit {
   constructor() {
     if (typeof window !== 'undefined') {
       const q: any = Quill;
-      (window as any).Quill = q.default || q;
+      const actualQuill = q.default || q;
+      (window as any).Quill = actualQuill;
 
       // @ts-ignore
       import('quill-image-resize')
         .then((module) => {
           const ImageResize = module.default || module;
-          const ql = (window as any).Quill;
-          if (ql && typeof ql.register === 'function') {
-            ql.register('modules/imageResize', ImageResize);
+          if (actualQuill && typeof actualQuill.register === 'function') {
+            actualQuill.register('modules/imageResize', ImageResize);
           }
         })
         .catch((e) => {
