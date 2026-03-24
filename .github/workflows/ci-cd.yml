@@ -246,33 +246,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to staging (Local Runner)
-        run: |
-          cd /home/deppi/deppi_novo
-          echo "Forcefully freeing ports 3000 and 4000..."
-          sudo fuser -k 3000/tcp || true
-          sudo fuser -k 4000/tcp || true
-          sleep 2 # Give a moment for the port to be released
-          docker compose pull
-          docker compose up -d --force-recreate --remove-orphans
-          docker system prune -f
-
-      - name: Run health check
-        run: |
-          URL="${{ secrets.STAGING_URL }}"
-          [ -z "$URL" ] && URL="http://localhost:4000"
-          echo "Testing health at: $URL"
-          for i in {1..24}; do
-            if curl -sf "$URL/health" || curl -sf "$URL/api/health"; then
-              echo "✅ Service is healthy!"
-              exit 0
-            fi
-            echo "Waiting for service... ($i/24)"
-            sleep 5
-          done
-          echo "❌ Health check failed after 120s"
-          exit 1
-
       - name: Create .env file
         run: |
           # Banco de Dados
@@ -315,6 +288,33 @@ jobs:
           # Monitoramento
           echo "GRAFANA_PASSWORD=${{ secrets.GRAFANA_PASSWORD }}" >> .env
           echo "PROMETHEUS_PASSWORD=${{ secrets.PROMETHEUS_PASSWORD }}" >> .env
+
+      - name: Deploy to staging (Local Runner)
+        run: |
+          cd /home/deppi/deppi_novo
+          echo "Forcefully freeing ports 3000 and 4000..."
+          sudo fuser -k 3000/tcp || true
+          sudo fuser -k 4000/tcp || true
+          sleep 2 # Give a moment for the port to be released
+          docker compose pull
+          docker compose up -d --force-recreate --remove-orphans
+          docker system prune -f
+
+      - name: Run health check
+        run: |
+          URL="${{ secrets.STAGING_URL }}"
+          [ -z "$URL" ] && URL="http://localhost:4000"
+          echo "Testing health at: $URL"
+          for i in {1..24}; do
+            if curl -sf "$URL/health" || curl -sf "$URL/api/health"; then
+              echo "✅ Service is healthy!"
+              exit 0
+            fi
+            echo "Waiting for service... ($i/24)"
+            sleep 5
+          done
+          echo "❌ Health check failed after 120s"
+          exit 1
 
   # Deploy to Production
   deploy-production:
