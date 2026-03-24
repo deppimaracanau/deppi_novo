@@ -142,36 +142,6 @@ services:
     networks:
       - deppi-network
 
-  # Log Aggregation - Elasticsearch
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: deppi-elasticsearch
-    restart: unless-stopped
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - deppi-network
-
-  # Log Aggregation - Kibana
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.0
-    container_name: deppi-kibana
-    restart: unless-stopped
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - deppi-network
-
   # Backup Service
   backup:
     image: postgres:15-alpine
