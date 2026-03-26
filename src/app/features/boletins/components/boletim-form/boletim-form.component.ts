@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BoletinsService } from '../../services/boletins.service';
+import { UploadService, Attachment } from '../../../../core/services/upload.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PartialObserver } from 'rxjs';
 import { Boletim } from '../../../../shared/models';
@@ -131,6 +132,58 @@ import Quill from 'quill';
               <span class="checkmark"></span>
               Destacar este boletim na listagem principal
             </label>
+          </div>
+
+          <!-- Seção de Anexos -->
+          <div class="form-group attachments-section" *ngIf="boletimId">
+            <div class="divider"></div>
+            <label>Arquivos Anexos (PDF, DOCX, Vídeos)</label>
+            <p class="help-text">
+              Arquivos de apoio que estarão disponíveis para download pelos usuários.
+            </p>
+
+            <div class="attachments-list" *ngIf="attachments.length > 0">
+              <div class="attachment-item surface-secondary" *ngFor="let file of attachments">
+                <div class="file-info">
+                  <span class="file-icon">{{ getFileIcon(file.mimeType) }}</span>
+                  <div class="file-details">
+                    <span class="file-name">{{ file.originalName || file.filename }}</span>
+                    <span class="file-meta">{{ (file.size / 1024).toFixed(1) }} KB • {{ file.mimeType }}</span>
+                  </div>
+                </div>
+                <div class="file-actions">
+                  <a [href]="file.url" target="_blank" class="btn-icon" title="Ver Arquivo">
+                    👁️
+                  </a>
+                  <button type="button" class="btn-icon delete" (click)="removeAttachment(file.id)" title="Remover">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="no-attachments" *ngIf="attachments.length === 0">
+              Nenhum anexo enviado para este boletim.
+            </div>
+
+            <div class="upload-controls">
+              <input 
+                #fileInput 
+                type="file" 
+                (change)="onFileSelected($event)" 
+                style="display: none" 
+                multiple
+              />
+              <button 
+                type="button" 
+                class="btn btn-glass add-attachment" 
+                (click)="fileInput.click()"
+                [disabled]="uploading"
+              >
+                <span class="icon">{{ uploading ? '⏳' : '📎' }}</span>
+                {{ uploading ? 'Enviando...' : 'Adicionar Anexo' }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -436,12 +489,123 @@ import Quill from 'quill';
           justify-content: center;
         }
       }
+
+      .divider {
+        height: 1px;
+        background: var(--color-border-light);
+        margin: 3rem 0;
+      }
+
+      .attachments-section {
+        margin-top: 1rem;
+      }
+
+      .attachments-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+      }
+
+      .attachment-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-md);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition-fast);
+        background: var(--color-surface-secondary);
+      }
+
+      .attachment-item:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+      }
+
+      .file-icon {
+        font-size: 1.8rem;
+      }
+
+      .file-details {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .file-name {
+        font-weight: 600;
+        color: var(--color-text);
+        font-size: 0.95rem;
+      }
+
+      .file-meta {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+      }
+
+      .file-actions {
+        display: flex;
+        gap: 0.8rem;
+      }
+
+      .btn-icon {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: var(--border-radius-sm);
+        transition: background var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: var(--color-text);
+      }
+
+      .btn-icon:hover {
+        background: rgba(var(--color-primary-rgb), 0.1);
+      }
+
+      .btn-icon.delete:hover {
+        background: rgba(var(--color-error-rgb), 0.1);
+        color: var(--color-error);
+      }
+
+      .no-attachments {
+        background: rgba(var(--color-text-rgb), 0.03);
+        padding: 2rem;
+        border-radius: var(--border-radius-md);
+        text-align: center;
+        color: var(--color-text-muted);
+        font-style: italic;
+        margin-bottom: 1.5rem;
+        border: 2px dashed var(--color-border);
+      }
+
+      .upload-controls {
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      .add-attachment {
+        font-size: 0.9rem;
+      }
     `,
   ],
 })
 export class BoletimFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly boletinsService = inject(BoletinsService);
+  private readonly uploadService = inject(UploadService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly notificationService = inject(NotificationService);
@@ -451,7 +615,9 @@ export class BoletimFormComponent implements OnInit {
   boletimId: number | null = null;
   loadingInit = false;
   loading = false;
+  uploading = false;
   actionType: 'draft' | 'published' = 'published';
+  attachments: Attachment[] = [];
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -507,6 +673,7 @@ export class BoletimFormComponent implements OnInit {
         this.isEditMode = true;
         this.boletimId = +idParam;
         this.loadBoletim(this.boletimId);
+        this.loadAttachments(this.boletimId);
       }
     });
   }
@@ -598,5 +765,57 @@ export class BoletimFormComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/boletins']);
+  }
+
+  loadAttachments(id: number): void {
+    this.uploadService.getAttachments(id).subscribe({
+      next: (files) => (this.attachments = files),
+      error: () => console.error('Erro ao carregar anexos'),
+    });
+  }
+
+  onFileSelected(event: any): void {
+    const files: FileList = event.target.files;
+    if (files.length === 0 || !this.boletimId) return;
+
+    this.uploading = true;
+    const filesArray = Array.from(files);
+
+    this.uploadService.uploadMultiple(filesArray, this.boletimId).subscribe({
+      next: (response) => {
+        this.uploading = false;
+        this.notificationService.showSuccess(
+          `${response.count} arquivo(s) enviado(s) com sucesso.`
+        );
+        this.loadAttachments(this.boletimId!);
+        event.target.value = ''; // Clean input
+      },
+      error: (err) => {
+        this.uploading = false;
+        this.notificationService.showError(
+          err.error?.error || 'Erro ao enviar arquivos.'
+        );
+      },
+    });
+  }
+
+  removeAttachment(id: number): void {
+    if (confirm('Tem certeza que deseja remover este anexo?')) {
+      this.uploadService.deleteAttachment(id).subscribe({
+        next: () => {
+          this.notificationService.showSuccess('Anexo removido.');
+          this.attachments = this.attachments.filter((a) => a.id !== id);
+        },
+        error: () => this.notificationService.showError('Erro ao remover anexo.'),
+      });
+    }
+  }
+
+  getFileIcon(mimeType: string): string {
+    if (mimeType.includes('pdf')) return '📄';
+    if (mimeType.includes('word') || mimeType.includes('docx')) return '📝';
+    if (mimeType.includes('image')) return '🖼️';
+    if (mimeType.includes('video')) return '🎥';
+    return '📁';
   }
 }
