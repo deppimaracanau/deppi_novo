@@ -338,9 +338,18 @@ jobs:
           export PATH=$PATH:$HOME/.docker/cli-plugins
 
           cd /home/deppi/deppi_novo
-          # Clean up any ghost submodules or local git mess
-          find . -name ".git" -not -path "./.git" -exec rm -rf {} +
-          git pull upstream main || git pull origin main
+          # Evita conflitos com caminhos longos ou links simbólicos
+          git config core.protectNTFS false || true
+          git config core.protectHFS false || true
+          git config core.symlinks true || true
+
+          echo "🔄 Buscando atualizações do servidor..."
+          git fetch --all
+          
+          echo "🗑️ Forçando reset para origin/main (descarta alterações locais)..."
+          # Estamos usando .gitignore para ignorar o diretório actions-runner
+          git reset --hard origin/main
+          git clean -fd
 
           echo "Forcefully freeing ports 3000 and 4000..."
           sudo fuser -k 3000/tcp || true

@@ -41,6 +41,13 @@ styles-*.css
 vendor-*.js
 *.js.map
 *.css.map
+# Infrastructure and Runners
+actions-runner/
+_work/
+/tmp/
+*.dll
+*.exe
+
 # AI Skills and Agents
 .agent/
 .agents/
