@@ -160,6 +160,11 @@ router.get(
         .where({ boletim_id: id, is_active: true })
         .orderBy('order', 'asc');
 
+      // Busca anexos relacionados
+      const attachments = await db('uploads')
+        .where({ related_boletim_id: id, is_active: true })
+        .orderBy('created_at', 'desc');
+
       // Incrementa contador de visualizações
       await db('boletins').where({ id }).increment('view_count', 1);
 
@@ -182,6 +187,15 @@ router.get(
           imageUrl: n.image_url,
           isMain: n.is_main,
           order: n.order,
+        })),
+        attachments: attachments.map((a) => ({
+          id: a.id,
+          filename: a.filename,
+          originalName: a.original_name,
+          mimeType: a.mime_type,
+          size: a.size,
+          url: a.url,
+          type: a.type,
         })),
         createdAt: boletim.created_at,
         updatedAt: boletim.updated_at,

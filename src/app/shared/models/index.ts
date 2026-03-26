@@ -27,6 +27,17 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface Attachment {
+  id: number;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  url: string;
+  type: string;
+  relatedBoletimId?: number;
+}
+
 export interface Boletim {
   id: number;
   title: string;
@@ -40,6 +51,7 @@ export interface Boletim {
   viewCount?: number;
   authorName?: string;
   news?: NewsItem[];
+  attachments?: Attachment[];
   createdAt?: string;
   updatedAt?: string;
 }
