@@ -270,6 +270,10 @@ export class PdfGeneratorService {
       body: [
         ['Servidor:', data.identificacao.nome],
         ['Siape:', data.identificacao.siape],
+        ['Campus:', data.identificacao.campus],
+        ['Curso:', data.identificacao.curso],
+        ['Vínculo:', data.identificacao.vinculo],
+        ['Regime:', data.identificacao.regime],
         ['Semestre:', data.semestre],
       ],
       theme: 'plain',

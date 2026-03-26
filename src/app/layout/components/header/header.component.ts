@@ -20,10 +20,11 @@ import { CommonModule } from '@angular/common';
       class="header"
       [ngClass]="headerClass"
       [class.scrolled]="isScrolled"
+      [class.menu-open]="isMenuOpen"
     >
       <nav class="nav-container glass">
         <div class="nav-brand">
-          <a routerLink="/home" class="brand-link">
+          <a routerLink="/home" class="brand-link" (click)="closeMenu()">
             <div class="logo-wrapper">
               <span class="logo-circle">IF</span>
               <span class="brand-text">DEPPI</span>
@@ -31,13 +32,14 @@ import { CommonModule } from '@angular/common';
           </a>
         </div>
 
-        <div class="nav-menu">
+        <div class="nav-menu" [class.mobile-open]="isMenuOpen">
           <a
             routerLink="/home"
             class="nav-link"
             [class.active]="isActive('/home')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Início</span>
           </a>
@@ -47,6 +49,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/research')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Pesquisa</span>
           </a>
@@ -56,6 +59,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/extension')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Extensão</span>
           </a>
@@ -65,6 +69,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/innovation')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Inovação</span>
           </a>
@@ -74,6 +79,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/post-graduation')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Pós</span>
           </a>
@@ -83,6 +89,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/boletins')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Boletins</span>
           </a>
@@ -92,6 +99,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/pit-rit')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>PIT/RIT</span>
           </a>
@@ -101,6 +109,7 @@ import { CommonModule } from '@angular/common';
             [class.active]="isActive('/contact')"
             (mouseenter)="setHoverPos($event)"
             (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
           >
             <span>Contato</span>
           </a>
@@ -121,17 +130,30 @@ import { CommonModule } from '@angular/common';
           </button>
 
           <ng-container *ngIf="!isAuthenticated; else userMenu">
-            <a routerLink="/boletins/login" class="btn btn-primary login-btn">
+            <a routerLink="/boletins/login" class="btn btn-primary login-btn" (click)="closeMenu()">
               Acesso
             </a>
           </ng-container>
 
           <ng-template #userMenu>
-            <div class="user-chip" routerLink="/boletins">
+            <div class="user-chip" routerLink="/boletins" (click)="closeMenu()">
               <span class="user-avatar">👤</span>
               <span class="user-name-abbr">{{ userFirstLetter }}</span>
             </div>
           </ng-template>
+
+          <button
+            class="mobile-menu-toggle"
+            (click)="toggleMenu()"
+            [attr.aria-expanded]="isMenuOpen"
+            aria-label="Menu principal"
+          >
+            <div class="hamburger">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
         </div>
       </nav>
     </header>
@@ -147,6 +169,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isDarkTheme = false;
   headerClass = '';
   isScrolled = false;
+  isMenuOpen = false;
   indicatorTransform = 'scaleX(0)';
   indicatorOpacity = '0';
 
@@ -202,6 +225,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+    document.body.style.overflow = '';
   }
 
   setHoverPos(event: MouseEvent): void {
