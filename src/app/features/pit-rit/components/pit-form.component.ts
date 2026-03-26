@@ -371,7 +371,15 @@ export interface PitTableRow {
         margin-bottom: 0.5rem;
         display: block;
       }
-      .form-input,
+      .form-input {
+        padding: 0.75rem 1rem;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: white;
+        color: #1a1a1a;
+        cursor: text;
+      }
       .form-select {
         padding: 0.75rem 1rem;
         border: 2px solid #ccc;
