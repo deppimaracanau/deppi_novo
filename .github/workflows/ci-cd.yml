@@ -392,8 +392,18 @@ jobs:
           
           echo "🗑️ Forçando reset para origin/main..."
           git reset --hard origin/main
+
+          # Remove diretórios criados pelo Docker com dono root (ex: database/init)
+          # que o git clean não consegue remover sem sudo
+          sudo rm -rf database/init 2>/dev/null || true
+
           # Limpeza profunda, mas mantendo o .env que acabamos de criar
-          git clean -fd -e .env -e actions-runner/
+          # (o runner fica em ~/actions-runner fora do repo, não precisa de -e)
+          git clean -fd -e .env
+
+          # Restaura permissão de execução no runner (caminho real fora do repo)
+          chmod +x /home/deppi/actions-runner/runsvc.sh 2>/dev/null || true
+          chmod +x /home/deppi/actions-runner/run.sh 2>/dev/null || true
 
           echo "Forcefully freeing ports 3000 and 4000..."
           sudo fuser -k 3000/tcp || true
