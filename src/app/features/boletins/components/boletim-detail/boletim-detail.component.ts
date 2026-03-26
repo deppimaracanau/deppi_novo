@@ -108,6 +108,25 @@ import { CommonModule } from '@angular/common';
           </div>
         </section>
 
+        <section class="attachments-section" *ngIf="boletim.attachments?.length">
+          <div class="section-header">
+            <h2 class="section-title">Anexos e Documentos</h2>
+            <div class="section-divider"></div>
+          </div>
+          <div class="attachments-grid">
+            <div class="attachment-card surface" *ngFor="let file of boletim.attachments">
+              <div class="file-icon">{{ getFileIcon(file.mimeType) }}</div>
+              <div class="file-info">
+                <span class="file-name">{{ file.originalName || file.filename }}</span>
+                <span class="file-meta">{{ (file.size / 1024 / 1024).toFixed(2) }} MB • {{ file.mimeType }}</span>
+              </div>
+              <a [href]="file.url" target="_blank" class="btn btn-secondary btn-sm download-btn">
+                Baixar
+              </a>
+            </div>
+          </div>
+        </section>
+
         <footer class="detail-footer-actions">
           <button (click)="goBack()" class="btn-back">
             <span>&larr;</span> Voltar para a lista
@@ -426,6 +445,72 @@ import { CommonModule } from '@angular/common';
           height: 44px;
         }
       }
+
+      .attachments-section {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-border-light);
+      }
+
+      .attachments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .attachment-card {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 1.2rem;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition-fast);
+      }
+
+      .attachment-card:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .file-icon {
+        font-size: 2rem;
+        min-width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--color-primary-rgb), 0.1);
+        border-radius: var(--border-radius-md);
+      }
+
+      .file-info {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        overflow: hidden;
+      }
+
+      .file-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--color-text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-meta {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+      }
+
+      .download-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
     `,
   ],
 })
@@ -483,5 +568,13 @@ export class BoletimDetailComponent implements OnInit {
       top: 0,
       behavior: 'smooth',
     });
+  }
+
+  getFileIcon(mimeType: string): string {
+    if (mimeType.includes('pdf')) return '📄';
+    if (mimeType.includes('word') || mimeType.includes('docx')) return '📝';
+    if (mimeType.includes('image')) return '🖼️';
+    if (mimeType.includes('video')) return '🎥';
+    return '📁';
   }
 }

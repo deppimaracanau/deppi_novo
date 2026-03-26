@@ -98,8 +98,45 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
                 name="siape"
                 mask="0000000 || 00000000"
                 (change)="update()"
+                placeholder="Número Siape"
                 class="form-input"
               />
+            </div>
+            <div class="form-group">
+              <label>Campus</label>
+              <input
+                type="text"
+                [(ngModel)]="data.identificacao.campus"
+                name="campus"
+                placeholder="Ex: Maracanaú"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Curso / Coordenadoria</label>
+              <input
+                type="text"
+                [(ngModel)]="data.identificacao.curso"
+                name="curso"
+                placeholder="Ex: Telemática"
+                (change)="update()"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>Vínculo</label>
+              <select
+                [(ngModel)]="data.identificacao.vinculo"
+                name="vinculo"
+                (change)="update()"
+                class="form-select"
+              >
+                <option value="Efetivo">Efetivo</option>
+                <option value="Substituto">Substituto</option>
+                <option value="Temporário">Temporário</option>
+                <option value="Colaborador">Colaborador</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Telefone</label>
