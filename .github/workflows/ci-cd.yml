@@ -327,6 +327,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate required secrets
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        run: |
+          MISSING=()
+          [ -z "$DB_PASSWORD" ]       && MISSING+=("DB_PASSWORD")
+          [ -z "$JWT_SECRET" ]        && MISSING+=("JWT_SECRET")
+          [ -z "$JWT_REFRESH_SECRET" ] && MISSING+=("JWT_REFRESH_SECRET")
+          [ -z "$SESSION_SECRET" ]    && MISSING+=("SESSION_SECRET")
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "❌ Os seguintes secrets estão vazios ou não configurados no GitHub:"
+            for s in "${MISSING[@]}"; do echo "   - $s"; done
+            echo ""
+            echo "👉 Acesse: Settings > Secrets and variables > Actions > New repository secret"
+            exit 1
+          fi
+          echo "✅ Todos os secrets obrigatórios estão configurados."
+
       - name: Create .env file
         run: |
           cd /home/deppi/deppi_novo
