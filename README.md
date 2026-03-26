@@ -97,16 +97,22 @@ cd backend && npm run migrate && npm run seed
 
 ## 🌟 Funcionalidades
 
-- ✅ **Frontend Angular** com design system
-- ✅ **Backend Node.js** com PostgreSQL
-- ✅ **Autenticação JWT**
-- ✅ **Área restrita de boletins**
-- ✅ **Sistema de uploads**
-- ✅ **API RESTful**
+- ✅ **Frontend Angular** com design system modular e temas dinâmicos
+- ✅ **Nova interface Premium (Glassmorphism)** com Suporte Nativo ao Modo Escuro
+- ✅ **Backend Node.js** com PostgreSQL via Docker
+- ✅ **Gerador de Relatórios e Formulários (PIT e RIT) em PDF**
+- ✅ **Autenticação JWT & Google Sign-In**
+- ✅ **Área restrita de boletins com Editor de Texto Avançado (Quill v2)**
+- ✅ **Sistema de Uploads (Arquivos e Imagens) com Nginx Proxy**
+- ✅ **API RESTful** segura
 - ✅ **Testes automatizados**
-- ✅ **CI/CD com GitHub Actions**
-- ✅ **Monitoramento com Sentry**
-- ✅ **Docker e infraestrutura**
+- ✅ **CI/CD com GitHub Actions** e Deploy contínuo
+- ✅ **Infraestrutura Orquestrada via Docker Compose** (App, DB, Redis, Logs)
+
+## 🆕 Últimas Atualizações
+* Formulários PIT/RIT refinados, suportando múltiplos vínculos (ex: Dedicação Exclusiva 40h D.E, 30h, 20h).
+* Infraestrutura de Uploads otimizada suportando anexos de grandes formatos (até 50MB) pelo Nginx.
+* UI de formulários utilizando Glassmorphism com leitura dinâmica e total suporte ao tema escuro.
 
 ## 📚 Documentação
 
