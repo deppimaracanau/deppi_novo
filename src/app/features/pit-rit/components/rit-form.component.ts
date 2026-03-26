@@ -133,6 +133,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
                 class="form-select"
               >
                 <option value="Efetivo">Efetivo</option>
+                <option value="Dedicação Exclusiva (D.E.)">Dedicação Exclusiva (D.E.)</option>
                 <option value="Substituto">Substituto</option>
                 <option value="Temporário">Temporário</option>
                 <option value="Colaborador">Colaborador</option>
@@ -498,6 +499,16 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         font-size: 0.8rem;
         height: 36px;
         transition: background-color 0.3s;
+        cursor: pointer;
+      }
+      .btn-primary, .btn-secondary {
+        cursor: pointer;
+      }
+      .form-input, .form-textarea {
+        cursor: text;
+      }
+      .form-select {
+        cursor: pointer;
       }
       .slot-select[data-activity='Aula'] {
         background-color: var(--slot-bg-Aula);

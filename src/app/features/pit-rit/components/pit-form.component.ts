@@ -107,6 +107,7 @@ export interface PitTableRow {
                 class="form-select"
               >
                 <option value="Efetivo">Efetivo</option>
+                <option value="Dedicação Exclusiva (D.E.)">Dedicação Exclusiva (D.E.)</option>
                 <option value="Substituto">Substituto</option>
                 <option value="Temporário">Temporário</option>
                 <option value="Colaborador">Colaborador</option>
@@ -378,6 +379,7 @@ export interface PitTableRow {
         font-size: 0.95rem;
         background: white;
         color: #1a1a1a;
+        cursor: pointer;
       }
 
       .spreadsheet-table {
@@ -480,6 +482,13 @@ export interface PitTableRow {
         border: 1px solid #ddd;
         border-radius: 4px;
         transition: background-color 0.3s;
+        cursor: pointer;
+      }
+      .btn-primary, .btn-secondary {
+        cursor: pointer;
+      }
+      .table-input {
+        cursor: text;
       }
       .slot-select[data-activity='Aula'] {
         background-color: var(--slot-bg-Aula);
@@ -655,9 +664,8 @@ export class PitFormComponent {
           peso: 0.8,
           max: 14,
           unidade: 'Horas',
-          q: '-',
+          q: 'q4',
           t: 't4',
-          readonly: true,
         },
         {
           code: '2.2',
@@ -665,9 +673,8 @@ export class PitFormComponent {
           peso: 0.2,
           max: 4,
           unidade: 'Horas',
-          q: '-',
+          q: 'q5',
           t: 't5',
-          readonly: true,
         },
         { isSubtotal: true },
       ],
@@ -681,9 +688,8 @@ export class PitFormComponent {
           peso: 1,
           max: 1,
           unidade: '-',
-          q: '-',
+          q: 'q6',
           t: 't6',
-          readonly: true,
         },
         { isSubtotal: true },
       ],
@@ -1097,7 +1103,8 @@ export class PitFormComponent {
     const qNum = parseInt(qKey.substring(1));
     const d = this.data.atividades;
     if (qNum <= 3) return d.ensino.aulas[qKey] || 0;
-    if (qNum <= 6) return 0;
+    if (qNum <= 5) return d.ensino.manutencao[qKey] || 0;
+    if (qNum === 6) return d.ensino.apoio[qKey] || 0;
     if (qNum <= 11) return d.ensino.orientacao[qKey] || 0;
     if (qNum <= 13) return d.ensino.extracurricular[qKey] || 0;
     if (qNum <= 20) return d.pesquisa[qKey] || 0;
@@ -1113,6 +1120,8 @@ export class PitFormComponent {
     const qNum = parseInt(qKey.substring(1));
     const d = this.data.atividades;
     if (qNum <= 3) d.ensino.aulas[qKey] = val;
+    else if (qNum <= 5) d.ensino.manutencao[qKey] = val;
+    else if (qNum === 6) d.ensino.apoio[qKey] = val;
     else if (qNum <= 11) d.ensino.orientacao[qKey] = val;
     else if (qNum <= 13) d.ensino.extracurricular[qKey] = val;
     else if (qNum <= 20) d.pesquisa[qKey] = val;

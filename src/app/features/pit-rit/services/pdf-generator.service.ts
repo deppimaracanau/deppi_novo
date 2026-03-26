@@ -182,7 +182,7 @@ export class PdfGeneratorService {
     // Final Total Row
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 5,
-      body: [['TOTAL GERAL (Máximo 40h)', `${data.total}h`]],
+      body: [[`TOTAL GERAL (Máximo ${data.identificacao.regime || '40h'})`, `${data.total}h`]],
       theme: 'grid',
       styles: { fontSize: 10, fontStyle: 'bold' },
       columnStyles: {

@@ -23,8 +23,8 @@ export interface PitData {
         t2: number;
         t3: number;
       };
-      manutencao: { t4: number; t5: number };
-      apoio: { t6: number };
+      manutencao: { q4: number; q5: number; t4: number; t5: number };
+      apoio: { q6: number; t6: number };
       orientacao: {
         q7: number;
         q8: number;
@@ -168,8 +168,8 @@ export class PitRitService {
       atividades: {
         ensino: {
           aulas: { q1: 0, q2: 0, q3: 0, t1: 0, t2: 0, t3: 0 },
-          manutencao: { t4: 0, t5: 0 },
-          apoio: { t6: 0 },
+          manutencao: { q4: 0, q5: 0, t4: 0, t5: 0 },
+          apoio: { q6: 0, t6: 0 },
           orientacao: {
             q7: 0,
             q8: 0,
@@ -311,6 +311,9 @@ export class PitRitService {
       q1: 1,
       q2: 1,
       q3: 0.05,
+      q4: 0.8,
+      q5: 0.2,
+      q6: 1,
       q7: 1,
       q8: 1,
       q9: 2,
@@ -368,6 +371,14 @@ export class PitRitService {
           (data.atividades as any)[category][qKey] * multipliers[qKey];
       }
     });
+    
+    // Check for manual overrides for t4, t5, t6
+    const m = data.atividades.ensino.manutencao;
+    const a = data.atividades.ensino.apoio;
+    
+    if (m.q4 > 0) m.t4 = m.q4 * 0.8;
+    if (m.q5 > 0) m.t5 = m.q5 * 0.2;
+    if (a.q6 > 0) a.t6 = a.q6 * 1;
 
     // Special calculations for Ensino (Maintenance and Support)
     const aulasTotal =
@@ -375,18 +386,18 @@ export class PitRitService {
       data.atividades.ensino.aulas.t2 +
       data.atividades.ensino.aulas.t3;
     const x = Math.min(aulasTotal, 20);
-
+    
     if (regime === '20h') {
-      data.atividades.ensino.manutencao.t5 = Math.min(Math.ceil(x * 0.2), 2);
-      const T6 = Math.ceil(x - data.atividades.ensino.manutencao.t5);
-      data.atividades.ensino.manutencao.t4 = Math.min(T6, 4);
+      if (m.q5 <= 0) m.t5 = Math.min(Math.ceil(x * 0.2), 2);
+      const T4_calc = Math.ceil(x - m.t5);
+      if (m.q4 <= 0) m.t4 = Math.min(T4_calc, 4);
     } else {
-      data.atividades.ensino.manutencao.t5 = Math.ceil(x * 0.2);
-      const T6 = Math.ceil(x - data.atividades.ensino.manutencao.t5);
-      data.atividades.ensino.manutencao.t4 = Math.min(T6, 14);
+      if (m.q5 <= 0) m.t5 = Math.ceil(x * 0.2);
+      const T4_calc = Math.ceil(x - m.t5);
+      if (m.q4 <= 0) m.t4 = Math.min(T4_calc, 14);
     }
 
-    data.atividades.ensino.apoio.t6 = aulasTotal > 0 ? 2 : 0;
+    if (a.q6 <= 0) a.t6 = aulasTotal > 0 ? 2 : 0;
 
     // Calculate sum for total field
     let total = 0;
