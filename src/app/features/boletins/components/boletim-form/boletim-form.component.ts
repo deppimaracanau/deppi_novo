@@ -7,8 +7,6 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { PartialObserver } from 'rxjs';
 import { Boletim } from '../../../../shared/models';
 
-import Quill from 'quill';
-
 @Component({
   selector: 'app-boletim-form',
   standalone: false,
@@ -621,21 +619,28 @@ export class BoletimFormComponent implements OnInit {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      const q: any = Quill;
-      const actualQuill = q.default || q;
-      (window as any).Quill = actualQuill;
+      // Registro dinâmico do plugin quill-image-resize:
+      // O import estático de Quill no topo do arquivo causa erro TDZ
+      // (Cannot access before initialization) em builds AOT de produção
+      // com módulos lazy-loaded. O import dinâmico resolve isso.
+      import('quill').then((quillModule) => {
+        const actualQuill: any = quillModule.default || quillModule;
+        (window as any).Quill = actualQuill;
 
-      // @ts-ignore
-      import('quill-image-resize')
-        .then((module) => {
-          const ImageResize = module.default || module;
-          if (actualQuill && typeof actualQuill.register === 'function') {
-            actualQuill.register('modules/imageResize', ImageResize);
-          }
-        })
-        .catch((e) => {
-          console.warn('Could not load or register quill-image-resize:', e);
-        });
+        // @ts-ignore
+        import('quill-image-resize')
+          .then((module) => {
+            const ImageResize = module.default || module;
+            if (actualQuill && typeof actualQuill.register === 'function') {
+              actualQuill.register('modules/imageResize', ImageResize);
+            }
+          })
+          .catch((e) => {
+            console.warn('Could not load or register quill-image-resize:', e);
+          });
+      }).catch((e) => {
+        console.warn('Could not load Quill dynamically:', e);
+      });
     }
   }
 

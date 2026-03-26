@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { QuillModule } from 'ngx-quill';
+import { provideNgxMask } from 'ngx-mask';
 
 // Components
 import { BoletinsComponent } from './components/boletins/boletins.component';
@@ -73,8 +74,8 @@ const routes: Routes = [
     SharedModule,
     StoreModule.forFeature('boletins', boletinsReducer),
     EffectsModule.forFeature([BoletinsEffects]),
-    QuillModule,
+    QuillModule.forRoot(),
   ],
-  providers: [BoletinsService, BoletinsGuard],
+  providers: [BoletinsService, BoletinsGuard, provideNgxMask()],
 })
 export class BoletinsModule {}
