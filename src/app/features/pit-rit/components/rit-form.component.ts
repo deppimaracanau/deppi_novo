@@ -384,11 +384,11 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .section-title {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--color-text);
         margin-bottom: 0.5rem;
       }
       .section-desc {
-        color: #666;
+        color: var(--color-text-secondary);
         font-size: 0.95rem;
       }
 
@@ -398,7 +398,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .subsection-title {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #0066b3;
+        color: var(--color-primary);
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
@@ -408,7 +408,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         content: '';
         flex: 1;
         height: 1px;
-        background: #eee;
+        background: var(--color-border);
       }
 
       .grid-form {
@@ -425,12 +425,12 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         display: block;
         font-weight: 700;
         margin-bottom: 0.5rem;
-        color: #1a1a1a !important;
+        color: var(--color-text) !important;
         font-size: 1rem;
       }
       .field-help {
         font-size: 0.85rem;
-        color: #555;
+        color: var(--color-text-secondary);
         margin-bottom: 0.75rem;
       }
 
@@ -440,11 +440,12 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .slot-select {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 1px solid #ddd;
+        border: 1px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.95rem;
         transition: all 0.2s ease;
-        background: white;
+        background: var(--color-background-secondary);
+        color: var(--color-text);
       }
       .form-textarea {
         resize: vertical;
@@ -453,7 +454,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .form-group label {
         font-size: 0.9rem;
         font-weight: 700;
-        color: #1a1a1a !important;
+        color: var(--color-text) !important;
         margin-bottom: 0.5rem;
         display: block;
       }
@@ -463,15 +464,15 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .slot-select {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 2px solid #ccc;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.95rem;
         transition: all 0.2s ease;
-        background: white;
-        color: #1a1a1a;
+        background: var(--color-background-secondary);
+        color: var(--color-text);
       }
       .form-input::placeholder {
-        color: #777;
+        color: var(--color-text-muted);
       }
 
       .schedule-table {
@@ -482,15 +483,15 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .schedule-table th {
         padding: 0.75rem;
         font-size: 0.85rem;
-        color: #666;
+        color: var(--color-text-secondary);
         font-weight: 600;
       }
       .period-cell {
-        background: #f8f9fa;
+        background: rgba(0, 0, 0, 0.05);
         font-weight: 700;
         font-size: 0.8rem;
         text-align: center;
-        color: #0066b3;
+        color: var(--color-primary);
         text-transform: uppercase;
         border-radius: 4px;
       }
@@ -572,12 +573,11 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       }
 
       .form-group.has-error .form-input {
-        border-color: #ff5252;
-        background-color: #fff8f8;
+        border-color: var(--color-error);
       }
       .error-msg {
         font-size: 0.75rem;
-        color: #ff5252;
+        color: var(--color-error);
         font-weight: 500;
         margin-top: 2px;
       }
@@ -588,10 +588,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         gap: 1rem;
         margin-top: 2rem;
         padding-top: 2rem;
-        border-top: 1px solid #eee;
+        border-top: 1px solid var(--color-border);
       }
       .btn-primary {
-        background: #0066b3;
+        background: var(--color-primary);
         color: white;
         border: none;
         padding: 0.8rem 2.5rem;
@@ -601,9 +601,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         transition: all 0.2s;
       }
       .btn-secondary {
-        background: white;
-        color: #666;
-        border: 1px solid #ddd;
+        background: var(--color-background-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
@@ -611,8 +611,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       }
       .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 102, 179, 0.3);
-        background: #005696;
+        box-shadow: var(--shadow-primary);
+        background: var(--color-primary-dark);
       }
 
       @media (max-width: 600px) {

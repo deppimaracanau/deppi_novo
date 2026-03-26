@@ -343,11 +343,11 @@ export interface PitTableRow {
       .section-title {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--color-text);
         margin-bottom: 0.5rem;
       }
       .section-desc {
-        color: #666;
+        color: var(--color-text-secondary);
         font-size: 0.95rem;
       }
       .form-section {
@@ -356,7 +356,7 @@ export interface PitTableRow {
       .subsection-title {
         font-size: 1.2rem;
         font-weight: 600;
-        color: #0066b3;
+        color: var(--color-primary);
         margin-bottom: 1.5rem;
       }
       .grid-form {
@@ -367,26 +367,26 @@ export interface PitTableRow {
       .form-group label {
         font-size: 0.9rem;
         font-weight: 700;
-        color: #1a1a1a !important;
+        color: var(--color-text) !important;
         margin-bottom: 0.5rem;
         display: block;
       }
       .form-input {
         padding: 0.75rem 1rem;
-        border: 2px solid #ccc;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.95rem;
-        background: white;
-        color: #1a1a1a;
+        background: var(--color-background-secondary);
+        color: var(--color-text);
         cursor: text;
       }
       .form-select {
         padding: 0.75rem 1rem;
-        border: 2px solid #ccc;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.95rem;
-        background: white;
-        color: #1a1a1a;
+        background: var(--color-background-secondary);
+        color: var(--color-text);
         cursor: pointer;
       }
 
@@ -394,29 +394,30 @@ export interface PitTableRow {
         width: 100%;
         border-collapse: collapse;
         margin-top: 1rem;
-        border: 1px solid #ccc;
+        border: 1px solid var(--color-border);
       }
       .spreadsheet-table th,
       .spreadsheet-table td {
-        border: 1px solid #ccc;
+        border: 1px solid var(--color-border);
         padding: 0.5rem;
         font-size: 0.85rem;
       }
       .spreadsheet-table th {
-        background: #f0f0f0;
+        background: rgba(0, 0, 0, 0.05);
         text-align: center;
-        color: #333;
+        color: var(--color-text);
         font-weight: bold;
       }
       .section-row td {
-        background: #e0e0e0;
+        background: rgba(0, 0, 0, 0.1);
         font-weight: bold;
         font-size: 0.9rem;
         text-align: left;
+        color: var(--color-text);
       }
       .desc-cell {
         font-size: 0.8rem;
-        color: #444;
+        color: var(--color-text-secondary);
       }
       .text-center {
         text-align: center;
@@ -429,12 +430,12 @@ export interface PitTableRow {
       }
       .input-cell {
         padding: 0 !important;
-        background: #c8e6c9;
+        background: rgba(var(--color-primary-rgb), 0.1);
       }
       .readonly-cell {
-        background: #f9f9f9;
+        background: rgba(0, 0, 0, 0.02);
         text-align: center;
-        color: #888;
+        color: var(--color-text-muted);
       }
       .input-cell input {
         width: 100%;
@@ -444,20 +445,22 @@ export interface PitTableRow {
         text-align: center;
         font-size: 0.85rem;
         font-weight: bold;
+        color: var(--color-text);
         min-height: 28px;
       }
       .input-cell input:focus {
         outline: 2px solid #2e7d32;
       }
       .result-cell {
-        background: #fff3e0;
+        background: rgba(var(--color-accent-rgb), 0.1);
         font-weight: bold;
+        color: var(--color-text);
       }
       .subtotal-cell {
-        background: #ffea00;
+        background: rgba(var(--color-accent-rgb), 0.3);
         font-weight: bold;
         font-size: 0.95rem;
-        color: #333;
+        color: var(--color-text);
       }
 
       .table-responsive {
@@ -471,15 +474,15 @@ export interface PitTableRow {
       .schedule-table th {
         padding: 0.75rem;
         font-size: 0.85rem;
-        color: #666;
+        color: var(--color-text-secondary);
         font-weight: 600;
       }
       .period-cell {
-        background: #f8f9fa;
+        background: rgba(0, 0, 0, 0.05);
         font-weight: 700;
         font-size: 0.8rem;
         text-align: center;
-        color: #0066b3;
+        color: var(--color-primary);
         border-radius: 4px;
       }
       .slot-select {
@@ -560,12 +563,12 @@ export interface PitTableRow {
       }
 
       .total-alert {
-        background: #e3f2fd;
+        background: rgba(var(--color-primary-rgb), 0.1);
         padding: 1.5rem;
         text-align: center;
         border-radius: 8px;
         font-size: 1.2rem;
-        color: #1565c0;
+        color: var(--color-primary);
         margin-top: 1rem;
       }
       .form-actions {
@@ -573,11 +576,11 @@ export interface PitTableRow {
         justify-content: flex-end;
         gap: 1rem;
         margin-top: 2rem;
-        border-top: 1px solid #eee;
+        border-top: 1px solid var(--color-border);
         padding-top: 2rem;
       }
       .btn-primary {
-        background: #0066b3;
+        background: var(--color-primary);
         color: white;
         border: none;
         padding: 0.8rem 2rem;
@@ -587,9 +590,9 @@ export interface PitTableRow {
         transition: transform 0.2s;
       }
       .btn-secondary {
-        background: white;
-        color: #666;
-        border: 1px solid #ddd;
+        background: var(--color-background-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
@@ -597,7 +600,7 @@ export interface PitTableRow {
       }
       .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 102, 179, 0.3);
+        box-shadow: var(--shadow-primary);
       }
       @media (max-width: 600px) {
         .grid-form {
