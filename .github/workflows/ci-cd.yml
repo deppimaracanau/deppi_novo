@@ -327,6 +327,50 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create .env file
+        run: |
+          cd /home/deppi/deppi_novo
+          # Banco de Dados
+          echo "DB_USER=deppi" > .env
+          echo "DB_NAME=deppi" >> .env
+          echo "DB_HOST=postgres" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DATABASE_URL=postgresql://deppi:${{ secrets.DB_PASSWORD }}@postgres:5432/deppi" >> .env
+          echo "POSTGRES_USER=deppi" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "POSTGRES_DB=deppi" >> .env
+
+          # Redis
+          echo "REDIS_HOST=redis" >> .env
+          echo "REDIS_PORT=6379" >> .env
+          echo "REDIS_URL=redis://redis:6379" >> .env
+
+          # Autenticação
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+          echo "JWT_EXPIRES_IN=7d" >> .env
+          echo "JWT_REFRESH_EXPIRES_IN=30d" >> .env
+          echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> .env
+
+          # E-mail (SMTP)
+          echo "SMTP_HOST=smtp.gmail.com" >> .env
+          echo "SMTP_PORT=587" >> .env
+          echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env
+          echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> .env
+          echo "EMAIL_FROM=${{ secrets.EMAIL_FROM }}" >> .env
+          echo "EMAIL_FROM_NAME=DEPPI IFCE Maracanaú" >> .env
+
+          # Infra/Rede
+          echo "CORS_ORIGIN=https://deppi.maracanau.ifce.edu.br" >> .env
+          echo "FRONTEND_URL=https://deppi.maracanau.ifce.edu.br" >> .env
+          echo "API_URL=https://deppi.maracanau.ifce.edu.br/api" >> .env
+          echo "NODE_ENV=production" >> .env
+
+          # Monitoramento
+          echo "GRAFANA_PASSWORD=${{ secrets.GRAFANA_PASSWORD }}" >> .env
+          echo "PROMETHEUS_PASSWORD=${{ secrets.PROMETHEUS_PASSWORD }}" >> .env
+
       - name: Setup Docker Compose (Self-hosted)
         run: |
           if ! docker compose version > /dev/null 2>&1; then
@@ -346,15 +390,15 @@ jobs:
           echo "🔄 Buscando atualizações do servidor..."
           git fetch --all
           
-          echo "🗑️ Forçando reset para origin/main (descarta alterações locais)..."
-          # Estamos usando .gitignore para ignorar o diretório actions-runner
+          echo "🗑️ Forçando reset para origin/main..."
           git reset --hard origin/main
-          git clean -fd
+          # Limpeza profunda, mas mantendo o .env que acabamos de criar
+          git clean -fd -e .env -e actions-runner/
 
           echo "Forcefully freeing ports 3000 and 4000..."
           sudo fuser -k 3000/tcp || true
           sudo fuser -k 4000/tcp || true
-          sleep 2 # Give a moment for the port to be released
+          sleep 2
 
           # Force pull and recreate
           docker compose pull app
