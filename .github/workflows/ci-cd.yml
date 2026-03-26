@@ -349,17 +349,29 @@ jobs:
           echo "✅ Todos os secrets obrigatórios estão configurados."
 
       - name: Create .env file
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
+          PROMETHEUS_PASSWORD: ${{ secrets.PROMETHEUS_PASSWORD }}
         run: |
           cd /home/deppi/deppi_novo
+          # Função para escrever secret sem quebras de linha (base64 faz wrap que corrompe .env)
+          safe() { printf '%s' "${!1}" | tr -d '\n\r'; }
+
           # Banco de Dados
           echo "DB_USER=deppi" > .env
           echo "DB_NAME=deppi" >> .env
           echo "DB_HOST=postgres" >> .env
           echo "DB_PORT=5432" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DATABASE_URL=postgresql://deppi:${{ secrets.DB_PASSWORD }}@postgres:5432/deppi" >> .env
+          echo "DB_PASSWORD=$(safe DB_PASSWORD)" >> .env
+          echo "DATABASE_URL=postgresql://deppi:$(safe DB_PASSWORD)@postgres:5432/deppi" >> .env
           echo "POSTGRES_USER=deppi" >> .env
-          echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "POSTGRES_PASSWORD=$(safe DB_PASSWORD)" >> .env
           echo "POSTGRES_DB=deppi" >> .env
 
           # Redis
@@ -368,18 +380,18 @@ jobs:
           echo "REDIS_URL=redis://redis:6379" >> .env
 
           # Autenticação
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+          echo "JWT_SECRET=$(safe JWT_SECRET)" >> .env
+          echo "JWT_REFRESH_SECRET=$(safe JWT_REFRESH_SECRET)" >> .env
           echo "JWT_EXPIRES_IN=7d" >> .env
           echo "JWT_REFRESH_EXPIRES_IN=30d" >> .env
-          echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> .env
+          echo "SESSION_SECRET=$(safe SESSION_SECRET)" >> .env
 
           # E-mail (SMTP)
           echo "SMTP_HOST=smtp.gmail.com" >> .env
           echo "SMTP_PORT=587" >> .env
-          echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env
-          echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> .env
-          echo "EMAIL_FROM=${{ secrets.EMAIL_FROM }}" >> .env
+          echo "SMTP_USER=$(safe SMTP_USER)" >> .env
+          echo "SMTP_PASS=$(safe SMTP_PASS)" >> .env
+          echo "EMAIL_FROM=noreply@deppi.ifce.edu.br" >> .env
           echo "EMAIL_FROM_NAME=DEPPI IFCE Maracanaú" >> .env
 
           # Infra/Rede
@@ -389,8 +401,8 @@ jobs:
           echo "NODE_ENV=production" >> .env
 
           # Monitoramento
-          echo "GRAFANA_PASSWORD=${{ secrets.GRAFANA_PASSWORD }}" >> .env
-          echo "PROMETHEUS_PASSWORD=${{ secrets.PROMETHEUS_PASSWORD }}" >> .env
+          echo "GRAFANA_PASSWORD=$(safe GRAFANA_PASSWORD)" >> .env
+          echo "PROMETHEUS_PASSWORD=$(safe PROMETHEUS_PASSWORD)" >> .env
 
       - name: Setup Docker Compose (Self-hosted)
         run: |
