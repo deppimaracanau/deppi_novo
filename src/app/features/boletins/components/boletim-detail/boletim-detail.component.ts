@@ -571,10 +571,12 @@ export class BoletimDetailComponent implements OnInit {
   }
 
   getFileIcon(mimeType: string): string {
-    if (mimeType.includes('pdf')) return '📄';
-    if (mimeType.includes('word') || mimeType.includes('docx')) return '📝';
-    if (mimeType.includes('image')) return '🖼️';
-    if (mimeType.includes('video')) return '🎥';
+    if (!mimeType) return '📁';
+    const lower = mimeType.toLowerCase();
+    if (lower.includes('pdf')) return '📄';
+    if (lower.includes('word') || lower.includes('docx') || lower.includes('msword')) return '📝';
+    if (lower.includes('image')) return '🖼️';
+    if (lower.includes('video')) return '🎥';
     return '📁';
   }
 }

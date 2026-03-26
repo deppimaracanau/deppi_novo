@@ -100,6 +100,7 @@ import { Boletim } from '../../../../shared/models';
               "
             >
               <quill-editor
+                *ngIf="quillReady"
                 formControlName="content"
                 [styles]="{
                   height: '450px',
@@ -113,6 +114,9 @@ import { Boletim } from '../../../../shared/models';
                 placeholder="Escreva o conteúdo completo do seu boletim aqui..."
               >
               </quill-editor>
+              <div *ngIf="!quillReady" class="editor-placeholder">
+                <p>Preparando editor de texto...</p>
+              </div>
             </div>
             <span
               class="error-message"
@@ -616,31 +620,43 @@ export class BoletimFormComponent implements OnInit {
   uploading = false;
   actionType: 'draft' | 'published' = 'published';
   attachments: Attachment[] = [];
+  quillReady = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
-      // Registro dinâmico do plugin quill-image-resize:
-      // O import estático de Quill no topo do arquivo causa erro TDZ
-      // (Cannot access before initialization) em builds AOT de produção
-      // com módulos lazy-loaded. O import dinâmico resolve isso.
+      // Se o Quill já estiver definido globalmente e o ImageResize já estiver registrado, apenas marque como pronto
+      if ((window as any).Quill && (window as any).Quill.modules && (window as any).Quill.modules.imageResize) {
+        this.quillReady = true;
+        return;
+      }
+
+      // Registro dinâmico do plugin quill-image-resize com guardas globais para evitar loop
       import('quill').then((quillModule) => {
         const actualQuill: any = quillModule.default || quillModule;
         (window as any).Quill = actualQuill;
 
-        // @ts-ignore
         import('quill-image-resize')
           .then((module) => {
             const ImageResize = module.default || module;
             if (actualQuill && typeof actualQuill.register === 'function') {
-              actualQuill.register('modules/imageResize', ImageResize);
+              try {
+                actualQuill.register('modules/imageResize', ImageResize);
+              } catch (e) {
+                // Registrar silenciosamente se já existir
+              }
             }
+            this.quillReady = true;
           })
           .catch((e) => {
-            console.warn('Could not load or register quill-image-resize:', e);
+            console.warn('Could not load quill-image-resize:', e);
+            this.quillReady = true; // Continua sem o plugin de resize
           });
       }).catch((e) => {
         console.warn('Could not load Quill dynamically:', e);
       });
+    } else {
+      // No servidor (SSR), não renderiza o editor
+      this.quillReady = false;
     }
   }
 
@@ -817,10 +833,12 @@ export class BoletimFormComponent implements OnInit {
   }
 
   getFileIcon(mimeType: string): string {
-    if (mimeType.includes('pdf')) return '📄';
-    if (mimeType.includes('word') || mimeType.includes('docx')) return '📝';
-    if (mimeType.includes('image')) return '🖼️';
-    if (mimeType.includes('video')) return '🎥';
+    if (!mimeType) return '📁';
+    const lower = mimeType.toLowerCase();
+    if (lower.includes('pdf')) return '📄';
+    if (lower.includes('word') || lower.includes('docx') || lower.includes('msword')) return '📝';
+    if (lower.includes('image')) return '🖼️';
+    if (lower.includes('video')) return '🎥';
     return '📁';
   }
 }
