@@ -8,10 +8,15 @@ import { logger } from '../utils/logger';
 const router = Router();
 
 // Ensure uploads directory exists
-const uploadDir = path.resolve(process.cwd(), 'uploads');
+const defaultUploadDir = path.resolve(process.cwd(), 'uploads');
+const uploadDir = process.env['UPLOADS_PATH'] || 
+                   (fs.existsSync('/app/uploads') ? '/app/uploads' : defaultUploadDir);
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+logger.info(`Uploads directory configured at: ${uploadDir}`);
 
 // Strict MIME whitelist (both MIME type and extension must match)
 const ALLOWED = new Map<string, string[]>([

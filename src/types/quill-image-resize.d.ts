@@ -1,4 +1,4 @@
-declare module 'quill-image-resize' {
+declare module '@mgreminger/quill-image-resize-module' {
   const ImageResize: any;
   export default ImageResize;
 }

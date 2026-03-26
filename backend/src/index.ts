@@ -1,4 +1,6 @@
 import express from 'express';
+import path from 'path';
+import fs from 'fs';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -108,6 +110,12 @@ class Application {
   private initializeRoutes(): void {
     // Health check
     this.app.use('/health', healthRoutes);
+
+    // Static files
+    const defaultUploadDir = path.resolve(process.cwd(), 'uploads');
+    const uploadsPath = process.env['UPLOADS_PATH'] || 
+                       (fs.existsSync('/app/uploads') ? '/app/uploads' : defaultUploadDir);
+    this.app.use('/uploads', express.static(uploadsPath));
 
     // API routes
     this.app.use('/api/auth', authRoutes);

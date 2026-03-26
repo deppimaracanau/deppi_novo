@@ -635,7 +635,7 @@ export class BoletimFormComponent implements OnInit {
         const actualQuill: any = quillModule.default || quillModule;
         (window as any).Quill = actualQuill;
 
-        import('quill-image-resize')
+        import('@mgreminger/quill-image-resize-module')
           .then((module) => {
             const ImageResize = module.default || module;
             if (actualQuill && typeof actualQuill.register === 'function') {
