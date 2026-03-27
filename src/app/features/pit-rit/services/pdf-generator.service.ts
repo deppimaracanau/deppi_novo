@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { PitData, RitData } from './pit-rit.service';
+import { PIT_SHEET_DATA } from '../constants/pit.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -90,93 +91,36 @@ export class PdfGeneratorService {
     doc.text('ATIVIDADES DOCENTES', 15, currentY);
     currentY += 5;
 
-    // 1. ENSINO
-    autoTable(doc, {
-      startY: currentY,
-      head: [['1. ATIVIDADES DE ENSINO', 'H']],
-      body: [
-        [
-          'Aulas em cursos Técnico/Licenciaturas',
-          data.atividades?.ensino?.aulas?.t1 || 0,
-        ],
-        [
-          'Aulas em Especialização/Graduação/Pós',
-          data.atividades?.ensino?.aulas?.t2 || 0,
-        ],
-        ['Aulas em cursos FIC', data.atividades?.ensino?.aulas?.t3 || 0],
-        [
-          'Preparação + Planejamento (até 18h)',
-          data.atividades?.ensino?.manutencao?.t4 || 0,
-        ],
-        ['Atendimento a Estudantes', data.atividades?.ensino?.manutencao?.t5 || 0],
-        ['Apoio ao Ensino', data.atividades?.ensino?.apoio?.t6 || 0],
-        ['Orientação de TCC', data.atividades?.ensino?.orientacao?.t7 || 0],
-        ['Orientação de Estágio', data.atividades?.ensino?.orientacao?.t8 || 0],
-        [
-          'Monitoria / PIBID / Programas de Êxito',
-          data.atividades?.ensino?.orientacao?.t11 || 0,
-        ],
-        ['Total Ensino', this.getCategoryTotal(data.atividades?.ensino || {})],
-      ],
-      theme: 'grid',
-      headStyles: {
-        fillColor: [230, 230, 230],
-        textColor: [0, 0, 0],
-        fontStyle: 'bold',
-      },
-      styles: { fontSize: 8 },
-      columnStyles: {
-        0: { cellWidth: pageWidth - 45 },
-        1: { halign: 'center' },
-      },
-    });
-    currentY = (doc as any).lastAutoTable.finalY + 5;
+    PIT_SHEET_DATA.forEach((section) => {
+      const body: any[] = [];
+      let subtotal = 0;
+      section.rows.forEach(row => {
+        if (!row.isSubtotal && row.t) {
+          const val = this.getTValue(data, row.t);
+          body.push([row.desc || '', val]);
+          subtotal += val;
+        }
+      });
+      // Add Subtotal row
+      body.push([{ content: 'Subtotal ' + (section.title.split(' ')[0] || ''), styles: { fontStyle: 'bold' } }, { content: subtotal, styles: { fontStyle: 'bold' } }]);
 
-    // 2. PESQUISA
-    autoTable(doc, {
-      startY: currentY,
-      head: [['2. ATIVIDADES DE PESQUISA', 'H']],
-      body: [
-        [
-          'Coordenação de projetos de pesquisa/inovação',
-          data.atividades?.pesquisa?.t14 || 0,
-        ],
-        ['Orientação de Mestrado/Doutorado', data.atividades?.pesquisa?.t17 || 0],
-        [
-          'Artigos científicos e Produção Intelectual',
-          data.atividades?.pesquisa?.t18 || 0,
-        ],
-        ['Total Pesquisa', this.getCategoryTotal(data.atividades?.pesquisa || {})],
-      ],
-      theme: 'grid',
-      headStyles: { fillColor: [230, 230, 230], textColor: [0, 0, 0] },
-      styles: { fontSize: 8 },
-      columnStyles: {
-        0: { cellWidth: pageWidth - 45 },
-        1: { halign: 'center' },
-      },
-    });
-    currentY = (doc as any).lastAutoTable.finalY + 5;
-
-    // 3. EXTENSÃO
-    autoTable(doc, {
-      startY: currentY,
-      head: [['3. ATIVIDADES DE EXTENSÃO', 'H']],
-      body: [
-        [
-          'Coordenação/Participação em projetos de Extensão',
-          data.atividades?.extensao?.t21 || 0,
-        ],
-        ['Produção Técnica e Cultural', data.atividades?.extensao?.t23 || 0],
-        ['Total Extensão', this.getCategoryTotal(data.atividades?.extensao || {})],
-      ],
-      theme: 'grid',
-      headStyles: { fillColor: [230, 230, 230], textColor: [0, 0, 0] },
-      styles: { fontSize: 8 },
-      columnStyles: {
-        0: { cellWidth: pageWidth - 45 },
-        1: { halign: 'center' },
-      },
+      autoTable(doc, {
+        startY: currentY,
+        head: [[section.title, 'H']],
+        body: body,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [230, 230, 230],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold',
+        },
+        styles: { fontSize: 8 },
+        columnStyles: {
+          0: { cellWidth: pageWidth - 45 },
+          1: { halign: 'center' },
+        },
+      });
+      currentY = (doc as any).lastAutoTable.finalY + 5;
     });
 
     // Final Total Row
@@ -353,5 +297,21 @@ export class PdfGeneratorService {
       else if (key.startsWith('t')) total += category[key];
     }
     return total;
+  }
+
+  private getTValue(data: any, tKey: string | undefined): number {
+    if (!tKey) return 0;
+    const qNum = parseInt(tKey.substring(1));
+    const d = data.atividades || {};
+    if (qNum <= 3) return d.ensino?.aulas?.[tKey] || 0;
+    if (qNum === 4 || qNum === 5) return d.ensino?.manutencao?.[tKey] || 0;
+    if (qNum === 6) return d.ensino?.apoio?.[tKey] || 0;
+    if (qNum <= 11) return d.ensino?.orientacao?.[tKey] || 0;
+    if (qNum <= 13) return d.ensino?.extracurricular?.[tKey] || 0;
+    if (qNum <= 20) return d.pesquisa?.[tKey] || 0;
+    if (qNum <= 29) return d.extensao?.[tKey] || 0;
+    if (qNum <= 37) return d.gestao?.[tKey] || 0;
+    if (qNum <= 46) return d.comissoes?.[tKey] || 0;
+    return 0;
   }
 }
