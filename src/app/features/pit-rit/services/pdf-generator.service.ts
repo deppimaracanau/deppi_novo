@@ -64,14 +64,14 @@ export class PdfGeneratorService {
       startY: 80,
       head: [['IDENTIFICAÇÃO DO SERVIDOR', '']],
       body: [
-        ['Nome:', data.identificacao.nome],
-        ['Siape:', data.identificacao.siape],
-        ['Curso:', data.identificacao.curso],
-        ['Campus:', data.identificacao.campus],
-        ['Telefone:', data.identificacao.telefone],
-        ['Email:', data.identificacao.email],
-        ['Vínculo:', data.identificacao.vinculo],
-        ['Regime:', data.identificacao.regime],
+        ['Nome:', data.identificacao?.nome || ''],
+        ['Siape:', data.identificacao?.siape || ''],
+        ['Curso:', data.identificacao?.curso || ''],
+        ['Campus:', data.identificacao?.campus || ''],
+        ['Telefone:', data.identificacao?.telefone || ''],
+        ['Email:', data.identificacao?.email || ''],
+        ['Vínculo:', data.identificacao?.vinculo || ''],
+        ['Regime:', data.identificacao?.regime || ''],
       ],
       theme: 'plain',
       styles: { cellPadding: 1, fontSize: 9 },
@@ -97,26 +97,26 @@ export class PdfGeneratorService {
       body: [
         [
           'Aulas em cursos Técnico/Licenciaturas',
-          data.atividades.ensino.aulas.t1,
+          data.atividades?.ensino?.aulas?.t1 || 0,
         ],
         [
           'Aulas em Especialização/Graduação/Pós',
-          data.atividades.ensino.aulas.t2,
+          data.atividades?.ensino?.aulas?.t2 || 0,
         ],
-        ['Aulas em cursos FIC', data.atividades.ensino.aulas.t3],
+        ['Aulas em cursos FIC', data.atividades?.ensino?.aulas?.t3 || 0],
         [
           'Preparação + Planejamento (até 18h)',
-          data.atividades.ensino.manutencao.t4,
+          data.atividades?.ensino?.manutencao?.t4 || 0,
         ],
-        ['Atendimento a Estudantes', data.atividades.ensino.manutencao.t5],
-        ['Apoio ao Ensino', data.atividades.ensino.apoio.t6],
-        ['Orientação de TCC', data.atividades.ensino.orientacao.t7],
-        ['Orientação de Estágio', data.atividades.ensino.orientacao.t8],
+        ['Atendimento a Estudantes', data.atividades?.ensino?.manutencao?.t5 || 0],
+        ['Apoio ao Ensino', data.atividades?.ensino?.apoio?.t6 || 0],
+        ['Orientação de TCC', data.atividades?.ensino?.orientacao?.t7 || 0],
+        ['Orientação de Estágio', data.atividades?.ensino?.orientacao?.t8 || 0],
         [
           'Monitoria / PIBID / Programas de Êxito',
-          data.atividades.ensino.orientacao.t11,
+          data.atividades?.ensino?.orientacao?.t11 || 0,
         ],
-        ['Total Ensino', this.getCategoryTotal(data.atividades.ensino)],
+        ['Total Ensino', this.getCategoryTotal(data.atividades?.ensino || {})],
       ],
       theme: 'grid',
       headStyles: {
@@ -139,14 +139,14 @@ export class PdfGeneratorService {
       body: [
         [
           'Coordenação de projetos de pesquisa/inovação',
-          data.atividades.pesquisa.t14,
+          data.atividades?.pesquisa?.t14 || 0,
         ],
-        ['Orientação de Mestrado/Doutorado', data.atividades.pesquisa.t17],
+        ['Orientação de Mestrado/Doutorado', data.atividades?.pesquisa?.t17 || 0],
         [
           'Artigos científicos e Produção Intelectual',
-          data.atividades.pesquisa.t18,
+          data.atividades?.pesquisa?.t18 || 0,
         ],
-        ['Total Pesquisa', this.getCategoryTotal(data.atividades.pesquisa)],
+        ['Total Pesquisa', this.getCategoryTotal(data.atividades?.pesquisa || {})],
       ],
       theme: 'grid',
       headStyles: { fillColor: [230, 230, 230], textColor: [0, 0, 0] },
@@ -165,10 +165,10 @@ export class PdfGeneratorService {
       body: [
         [
           'Coordenação/Participação em projetos de Extensão',
-          data.atividades.extensao.t21,
+          data.atividades?.extensao?.t21 || 0,
         ],
-        ['Produção Técnica e Cultural', data.atividades.extensao.t23],
-        ['Total Extensão', this.getCategoryTotal(data.atividades.extensao)],
+        ['Produção Técnica e Cultural', data.atividades?.extensao?.t23 || 0],
+        ['Total Extensão', this.getCategoryTotal(data.atividades?.extensao || {})],
       ],
       theme: 'grid',
       headStyles: { fillColor: [230, 230, 230], textColor: [0, 0, 0] },
@@ -182,7 +182,7 @@ export class PdfGeneratorService {
     // Final Total Row
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 5,
-      body: [[`TOTAL GERAL (Máximo ${data.identificacao.regime || '40h'})`, `${data.total}h`]],
+      body: [[`TOTAL GERAL (Máximo ${data.identificacao?.regime || '40h'})`, `${data.total || 0}h`]],
       theme: 'grid',
       styles: { fontSize: 10, fontStyle: 'bold' },
       columnStyles: {
@@ -192,28 +192,30 @@ export class PdfGeneratorService {
     });
 
     // Schedule Grid for PIT
-    if (currentY > 180) {
-      doc.addPage();
-      currentY = 20;
+    if (data.horarios && data.horarios.length > 0) {
+      if (currentY > 180) {
+        doc.addPage();
+        currentY = 20;
+      }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('DISTRIBUIÇÃO DE CARGA HORÁRIA', 15, currentY);
+
+      const scheduleBodyPit = data.horarios.map((row, i) => {
+        const periodLabel = i < 4 ? 'Manhã' : i < 8 ? 'Tarde' : 'Noite';
+        const slotLabel = String.fromCharCode(65 + (i % 4));
+        return [`${periodLabel} ${slotLabel}`, ...(row || [])];
+      });
+
+      autoTable(doc, {
+        startY: currentY + 5,
+        head: [['Horário', 'SEG', 'TER', 'QUA', 'QUI', 'SEX']],
+        body: scheduleBodyPit,
+        theme: 'grid',
+        styles: { fontSize: 7, halign: 'center' },
+        columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
+      });
     }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.text('DISTRIBUIÇÃO DE CARGA HORÁRIA', 15, currentY);
-
-    const scheduleBodyPit = data.horarios.map((row, i) => {
-      const periodLabel = i < 4 ? 'Manhã' : i < 8 ? 'Tarde' : 'Noite';
-      const slotLabel = String.fromCharCode(65 + (i % 4));
-      return [`${periodLabel} ${slotLabel}`, ...row];
-    });
-
-    autoTable(doc, {
-      startY: currentY + 5,
-      head: [['Horário', 'SEG', 'TER', 'QUA', 'QUI', 'SEX']],
-      body: scheduleBodyPit,
-      theme: 'grid',
-      styles: { fontSize: 7, halign: 'center' },
-      columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
-    });
 
     // Signatures
     currentY = (doc as any).lastAutoTable.finalY + 30;
@@ -222,13 +224,22 @@ export class PdfGeneratorService {
       currentY = 40;
     }
     doc.setFontSize(9);
+    
+    // Server Signature
     doc.text('_________________________________', 30, currentY);
-    doc.text('Professor(a)', 45, currentY + 5);
+    let serverName = data.identificacao?.nome || 'Professor(a)';
+    let nameWidth = doc.getTextWidth(serverName);
+    let lineCenter = 30 + (doc.getTextWidth('_________________________________') / 2);
+    doc.text(serverName, lineCenter - (nameWidth / 2), currentY + 5);
 
+    // Department Signature
     doc.text('_________________________________', pageWidth - 100, currentY);
-    doc.text('Departamento de Ensino', pageWidth - 85, currentY + 5);
+    let deptName = 'Departamento de Ensino';
+    let deptWidth = doc.getTextWidth(deptName);
+    let deptLineCenter = (pageWidth - 100) + (doc.getTextWidth('_________________________________') / 2);
+    doc.text(deptName, deptLineCenter - (deptWidth / 2), currentY + 5);
 
-    doc.save(`PIT_${data.identificacao.nome.replace(/\s/g, '_')}.pdf`);
+    doc.save(`PIT_${(data.identificacao?.nome || 'Servidor').replace(/\s/g, '_')}.pdf`);
   }
 
   async generateRitPdf(data: RitData) {
@@ -268,13 +279,13 @@ export class PdfGeneratorService {
       startY: 65,
       head: [['IDENTIFICAÇÃO', '']],
       body: [
-        ['Servidor:', data.identificacao.nome],
-        ['Siape:', data.identificacao.siape],
-        ['Campus:', data.identificacao.campus],
-        ['Curso:', data.identificacao.curso],
-        ['Vínculo:', data.identificacao.vinculo],
-        ['Regime:', data.identificacao.regime],
-        ['Semestre:', data.semestre],
+        ['Servidor:', data.identificacao?.nome || ''],
+        ['Siape:', data.identificacao?.siape || ''],
+        ['Campus:', data.identificacao?.campus || ''],
+        ['Curso:', data.identificacao?.curso || ''],
+        ['Vínculo:', data.identificacao?.vinculo || ''],
+        ['Regime:', data.identificacao?.regime || ''],
+        ['Semestre:', data.semestre || ''],
       ],
       theme: 'plain',
       styles: { fontSize: 9 },
@@ -307,31 +318,31 @@ export class PdfGeneratorService {
       currentY += lines.length * 5 + 8;
     });
 
-    // Schedule Grid
-    if (currentY > 180) {
+    currentY += 15; // Give some space before signatures
+
+    // Signatures
+    if (currentY > 260) {
       doc.addPage();
-      currentY = 20;
+      currentY = 40;
     }
-    doc.setFont('helvetica', 'bold');
-    doc.text('DISTRIBUIÇÃO DE CARGA HORÁRIA', 15, currentY);
+    
+    doc.setFontSize(9);
+    
+    // Server Signature
+    doc.text('_________________________________', 30, currentY);
+    let serverName = data.identificacao?.nome || 'Professor(a)';
+    let nameWidth = doc.getTextWidth(serverName);
+    let lineCenter = 30 + (doc.getTextWidth('_________________________________') / 2);
+    doc.text(serverName, lineCenter - (nameWidth / 2), currentY + 5);
 
-    const days = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB']; // Matching length
-    const scheduleBody = data.horarios.map((row, i) => {
-      const periodLabel = i < 4 ? 'Manhã' : i < 8 ? 'Tarde' : 'Noite';
-      const slotLabel = String.fromCharCode(65 + (i % 4));
-      return [`${periodLabel} ${slotLabel}`, ...row];
-    });
+    // Department Signature
+    doc.text('_________________________________', pageWidth - 100, currentY);
+    let deptName = 'Departamento de Ensino';
+    let deptWidth = doc.getTextWidth(deptName);
+    let deptLineCenter = (pageWidth - 100) + (doc.getTextWidth('_________________________________') / 2);
+    doc.text(deptName, deptLineCenter - (deptWidth / 2), currentY + 5);
 
-    autoTable(doc, {
-      startY: currentY + 5,
-      head: [['Horário', 'SEG', 'TER', 'QUA', 'QUI', 'SEX']],
-      body: scheduleBody,
-      theme: 'grid',
-      styles: { fontSize: 7, halign: 'center' },
-      columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
-    });
-
-    doc.save(`RIT_${data.identificacao.nome.replace(/\s/g, '_')}.pdf`);
+    doc.save(`RIT_${(data.identificacao?.nome || 'Servidor').replace(/\s/g, '_')}.pdf`);
   }
 
   private getCategoryTotal(category: any): number {
