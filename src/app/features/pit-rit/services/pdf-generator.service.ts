@@ -142,7 +142,35 @@ export class PdfGeneratorService {
       margin: { left: 15, right: 15 },
     });
 
-    // Sem tabela de horários no PDF conforme solicitado
+    // Tabela de Distribuição de Carga Horária (PIT)
+    currentY = (doc as any).lastAutoTable.finalY + 4;
+    if (data.horarios && data.horarios.length > 0) {
+      if (currentY > 230) {
+        doc.addPage();
+        currentY = 20;
+      }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.text('DISTRIBUIÇÃO DE CARGA HORÁRIA SEMANAL', 15, currentY);
+      currentY += 3;
+
+      const scheduleBodyPit = data.horarios.map((row: string[], i: number) => {
+        const periodoLabel = i < 4 ? 'Manhã' : i < 8 ? 'Tarde' : 'Noite';
+        const slotLabel = String.fromCharCode(65 + (i % 4)); // A, B, C, D
+        return [`${periodoLabel} ${slotLabel}`, ...(row || [])];
+      });
+
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Horário', 'SEG', 'TER', 'QUA', 'QUI', 'SEX']],
+        body: scheduleBodyPit,
+        theme: 'grid',
+        headStyles: { fillColor: [210, 210, 210], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7, cellPadding: 1.5 },
+        styles: { fontSize: 7, halign: 'center', cellPadding: 1 },
+        columnStyles: { 0: { fontStyle: 'bold', halign: 'left', cellWidth: 20 } },
+        margin: { left: 15, right: 15 },
+      });
+    }
 
     // Assinaturas
     currentY = (doc as any).lastAutoTable.finalY + 20;
@@ -251,29 +279,35 @@ export class PdfGeneratorService {
       currentY += lines.length * 5 + 8;
     });
 
-    currentY += 15; // Give some space before signatures
+    currentY += 15; // Espaço antes das assinaturas
 
-    // Signatures
+    // Assinaturas
     if (currentY > 260) {
       doc.addPage();
       currentY = 40;
     }
-    
-    doc.setFontSize(9);
-    
-    // Server Signature
-    doc.text('_________________________________', 30, currentY);
-    let serverName = data.identificacao?.nome || 'Professor(a)';
-    let nameWidth = doc.getTextWidth(serverName);
-    let lineCenter = 30 + (doc.getTextWidth('_________________________________') / 2);
-    doc.text(serverName, lineCenter - (nameWidth / 2), currentY + 5);
 
-    // Department Signature
-    doc.text('_________________________________', pageWidth - 100, currentY);
-    let deptName = 'Departamento de Ensino';
-    let deptWidth = doc.getTextWidth(deptName);
-    let deptLineCenter = (pageWidth - 100) + (doc.getTextWidth('_________________________________') / 2);
-    doc.text(deptName, deptLineCenter - (deptWidth / 2), currentY + 5);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+
+    const assinaturaLinhaRit = '_________________________________';
+    const linhaLarguraRit = doc.getTextWidth(assinaturaLinhaRit);
+
+    // Assinatura do Servidor
+    const xServidorRit = 15;
+    doc.text(assinaturaLinhaRit, xServidorRit, currentY);
+    const nomeServidorRit = data.identificacao?.nome || 'Professor(a)';
+    const nomeServidorRitLargura = doc.getTextWidth(nomeServidorRit);
+    doc.text(nomeServidorRit, xServidorRit + (linhaLarguraRit / 2) - (nomeServidorRitLargura / 2), currentY + 5);
+    doc.text('Servidor(a)', xServidorRit + (linhaLarguraRit / 2) - (doc.getTextWidth('Servidor(a)') / 2), currentY + 9);
+
+    // Assinatura do Departamento
+    const xDeptoRit = pageWidth - 15 - linhaLarguraRit;
+    doc.text(assinaturaLinhaRit, xDeptoRit, currentY);
+    const nomeDeptoRit = 'Departamento de Ensino';
+    const nomeDeptoRitLargura = doc.getTextWidth(nomeDeptoRit);
+    doc.text(nomeDeptoRit, xDeptoRit + (linhaLarguraRit / 2) - (nomeDeptoRitLargura / 2), currentY + 5);
+    doc.text('Chefe de Departamento', xDeptoRit + (linhaLarguraRit / 2) - (doc.getTextWidth('Chefe de Departamento') / 2), currentY + 9);
 
     doc.save(`RIT_${(data.identificacao?.nome || 'Servidor').replace(/\s/g, '_')}.pdf`);
   }
