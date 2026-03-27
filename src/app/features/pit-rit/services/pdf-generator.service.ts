@@ -83,13 +83,13 @@ export class PdfGeneratorService {
       margin: { left: 15, right: 15 },
     });
 
-    let currentY = (doc as any).lastAutoTable.finalY + 10;
+    let currentY = (doc as any).lastAutoTable.finalY + 4;
 
     // Header ATIVIDADES DOCENTES
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.text('ATIVIDADES DOCENTES', 15, currentY);
-    currentY += 5;
+    currentY += 3;
 
     PIT_SHEET_DATA.forEach((section) => {
       const body: any[] = [];
@@ -101,87 +101,76 @@ export class PdfGeneratorService {
           subtotal += val;
         }
       });
-      // Add Subtotal row
-      body.push([{ content: 'Subtotal ' + (section.title.split(' ')[0] || ''), styles: { fontStyle: 'bold' } }, { content: subtotal, styles: { fontStyle: 'bold' } }]);
+      // Linha de subtotal
+      body.push([
+        { content: 'Subtotal', styles: { fontStyle: 'bold' } },
+        { content: subtotal, styles: { fontStyle: 'bold' } }
+      ]);
 
       autoTable(doc, {
         startY: currentY,
-        head: [[section.title, 'H']],
+        head: [[{ content: section.title, colSpan: 1 }, 'H']],
         body: body,
         theme: 'grid',
         headStyles: {
-          fillColor: [230, 230, 230],
+          fillColor: [210, 210, 210],
           textColor: [0, 0, 0],
           fontStyle: 'bold',
+          fontSize: 7,
+          cellPadding: 1.5,
         },
-        styles: { fontSize: 8 },
+        styles: { fontSize: 7, cellPadding: 1 },
         columnStyles: {
           0: { cellWidth: pageWidth - 45 },
-          1: { halign: 'center' },
+          1: { halign: 'center', cellWidth: 20 },
         },
+        margin: { left: 15, right: 15 },
       });
-      currentY = (doc as any).lastAutoTable.finalY + 5;
+      currentY = (doc as any).lastAutoTable.finalY + 1;
     });
 
-    // Final Total Row
+    // Linha de Total Geral
     autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY + 5,
+      startY: (doc as any).lastAutoTable.finalY + 2,
       body: [[`TOTAL GERAL (Máximo ${data.identificacao?.regime || '40h'})`, `${data.total || 0}h`]],
       theme: 'grid',
-      styles: { fontSize: 10, fontStyle: 'bold' },
+      styles: { fontSize: 9, fontStyle: 'bold', cellPadding: 2 },
       columnStyles: {
         0: { cellWidth: pageWidth - 45 },
-        1: { halign: 'center' },
+        1: { halign: 'center', cellWidth: 20 },
       },
+      margin: { left: 15, right: 15 },
     });
 
-    // Schedule Grid for PIT
-    if (data.horarios && data.horarios.length > 0) {
-      if (currentY > 180) {
-        doc.addPage();
-        currentY = 20;
-      }
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text('DISTRIBUIÇÃO DE CARGA HORÁRIA', 15, currentY);
+    // Sem tabela de horários no PDF conforme solicitado
 
-      const scheduleBodyPit = data.horarios.map((row, i) => {
-        const periodLabel = i < 4 ? 'Manhã' : i < 8 ? 'Tarde' : 'Noite';
-        const slotLabel = String.fromCharCode(65 + (i % 4));
-        return [`${periodLabel} ${slotLabel}`, ...(row || [])];
-      });
-
-      autoTable(doc, {
-        startY: currentY + 5,
-        head: [['Horário', 'SEG', 'TER', 'QUA', 'QUI', 'SEX']],
-        body: scheduleBodyPit,
-        theme: 'grid',
-        styles: { fontSize: 7, halign: 'center' },
-        columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
-      });
-    }
-
-    // Signatures
-    currentY = (doc as any).lastAutoTable.finalY + 30;
-    if (currentY > 270) {
+    // Assinaturas
+    currentY = (doc as any).lastAutoTable.finalY + 20;
+    if (currentY > 268) {
       doc.addPage();
       currentY = 40;
     }
     doc.setFontSize(9);
-    
-    // Server Signature
-    doc.text('_________________________________', 30, currentY);
-    let serverName = data.identificacao?.nome || 'Professor(a)';
-    let nameWidth = doc.getTextWidth(serverName);
-    let lineCenter = 30 + (doc.getTextWidth('_________________________________') / 2);
-    doc.text(serverName, lineCenter - (nameWidth / 2), currentY + 5);
+    doc.setFont('helvetica', 'normal');
 
-    // Department Signature
-    doc.text('_________________________________', pageWidth - 100, currentY);
-    let deptName = 'Departamento de Ensino';
-    let deptWidth = doc.getTextWidth(deptName);
-    let deptLineCenter = (pageWidth - 100) + (doc.getTextWidth('_________________________________') / 2);
-    doc.text(deptName, deptLineCenter - (deptWidth / 2), currentY + 5);
+    const assinaturaLinha = '_________________________________';
+    const linhaLargura = doc.getTextWidth(assinaturaLinha);
+
+    // Assinatura do Servidor
+    const xServidor = 15;
+    doc.text(assinaturaLinha, xServidor, currentY);
+    const nomeServidor = data.identificacao?.nome || 'Professor(a)';
+    const nomeServidorLargura = doc.getTextWidth(nomeServidor);
+    doc.text(nomeServidor, xServidor + (linhaLargura / 2) - (nomeServidorLargura / 2), currentY + 5);
+    doc.text('Servidor(a)', xServidor + (linhaLargura / 2) - (doc.getTextWidth('Servidor(a)') / 2), currentY + 9);
+
+    // Assinatura do Departamento
+    const xDepto = pageWidth - 15 - linhaLargura;
+    doc.text(assinaturaLinha, xDepto, currentY);
+    const nomeDepto = 'Departamento de Ensino';
+    const nomeDeptoLargura = doc.getTextWidth(nomeDepto);
+    doc.text(nomeDepto, xDepto + (linhaLargura / 2) - (nomeDeptoLargura / 2), currentY + 5);
+    doc.text('Chefe de Departamento', xDepto + (linhaLargura / 2) - (doc.getTextWidth('Chefe de Departamento') / 2), currentY + 9);
 
     doc.save(`PIT_${(data.identificacao?.nome || 'Servidor').replace(/\s/g, '_')}.pdf`);
   }
