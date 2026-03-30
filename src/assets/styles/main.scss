@@ -109,12 +109,16 @@ p {
   border-radius: var(--border-radius-full);
   font-weight: 600;
   font-size: var(--font-size-sm);
-  cursor: pointer;
+  cursor: pointer !important;
   transition: all var(--transition-normal);
   border: none;
   text-decoration: none;
   position: relative;
   overflow: hidden;
+
+  * {
+    pointer-events: none;
+  }
 }
 
 .btn-primary {
@@ -135,6 +139,7 @@ p {
     transform: translateY(-2px);
     box-shadow: 0 12px 24px -6px rgba(var(--color-primary-rgb), 0.5);
     background: var(--color-primary-dark);
+    cursor: pointer !important;
 
     &::after {
       opacity: 1;

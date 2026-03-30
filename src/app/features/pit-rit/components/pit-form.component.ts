@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
@@ -325,6 +325,8 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         margin: 2rem auto;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transform: translateZ(0); /* Estabilização de renderização */
+        backface-visibility: hidden;
       }
       .form-header {
         margin-bottom: 2.5rem;
@@ -491,7 +493,10 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         cursor: pointer;
       }
       .btn-primary, .btn-secondary {
-        cursor: pointer;
+        cursor: pointer !important;
+      }
+      .btn-primary *, .btn-secondary * {
+        pointer-events: none;
       }
       .table-input {
         cursor: text;
@@ -626,6 +631,7 @@ export class PitFormComponent {
   private pitRitService = inject(PitRitService);
   private pdfService = inject(PdfGeneratorService);
   private notificationService = inject(NotificationService);
+  private cd = inject(ChangeDetectorRef);
 
   data: any = {};
   readonly periods = ['Manhã', 'Tarde', 'Noite'];
@@ -649,6 +655,7 @@ export class PitFormComponent {
   constructor() {
     this.pitRitService.currentPitData$.subscribe((d) => {
       this.data = JSON.parse(JSON.stringify(d));
+      this.cd.markForCheck();
     });
   }
 
