@@ -129,5 +129,5 @@ cd backend && npm run migrate && npm run seed
 5. Abra um Pull Request
 
 ## 📄 Licença
-
+GNU GPLv3
 Este projeto é mantido pelo IFCE Maracanaú.
