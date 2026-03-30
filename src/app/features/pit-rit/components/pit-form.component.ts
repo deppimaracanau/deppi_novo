@@ -221,10 +221,11 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         </div>
 
         <div class="form-section">
-          <div class="total-alert">
+          <div class="total-alert" [class.total-excedido]="getGrandTotal() > getMaxCH()">
             Carga Horária Total:
-            <strong>{{ data.total | number: '1.1-1' }}h</strong> (Máximo
-            {{ data.identificacao.regime }})
+            <strong>{{ getGrandTotal() | number: '1.1-1' }}h</strong>
+            <span class="total-max"> (Máximo {{ data.identificacao.regime || '40h D.E.' }}: {{ getMaxCH() }}h)</span>
+            <span *ngIf="getGrandTotal() > getMaxCH()" class="total-aviso"> ⚠ CH excede o limite!</span>
           </div>
         </div>
 
@@ -421,11 +422,13 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
       .input-cell {
         padding: 0 !important;
         background: rgba(var(--color-primary-rgb), 0.1);
+        cursor: text;
       }
       .readonly-cell {
         background: rgba(0, 0, 0, 0.02);
         text-align: center;
         color: var(--color-text-muted);
+        cursor: default;
       }
       .input-cell input {
         width: 100%;
@@ -437,6 +440,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         font-weight: bold;
         color: var(--color-text);
         min-height: 28px;
+        cursor: text;
       }
       .input-cell input:focus {
         outline: 2px solid #2e7d32;
@@ -474,6 +478,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         text-align: center;
         color: var(--color-primary);
         border-radius: 4px;
+        cursor: default;
       }
       .slot-select {
         padding: 0.4rem;
@@ -560,6 +565,23 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         font-size: 1.2rem;
         color: var(--color-primary);
         margin-top: 1rem;
+        transition: background 0.3s;
+      }
+      .total-alert.total-excedido {
+        background: rgba(211, 47, 47, 0.1);
+        color: #c62828;
+        border: 1px solid rgba(211, 47, 47, 0.3);
+      }
+      .total-max {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-left: 4px;
+      }
+      .total-aviso {
+        display: block;
+        font-size: 0.85rem;
+        margin-top: 4px;
+        font-weight: 600;
       }
       .form-actions {
         display: flex;
@@ -685,6 +707,23 @@ export class PitFormComponent {
       if (!row.isSubtotal) total += this.getTValue(row.t);
     });
     return total;
+  }
+
+  getGrandTotal(): number {
+    let total = 0;
+    this.sheetData.forEach(sec => {
+      sec.rows.forEach((row: any) => {
+        if (!row.isSubtotal) total += this.getTValue(row.t);
+      });
+    });
+    return total;
+  }
+
+  getMaxCH(): number {
+    const regime = this.data?.identificacao?.regime || '40h D.E.';
+    if (regime === '20h') return 20;
+    if (regime === '30h') return 30;
+    return 40;
   }
 
   update() {
