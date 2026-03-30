@@ -97,14 +97,15 @@ export class PdfGeneratorService {
       section.rows.forEach(row => {
         if (!row.isSubtotal && row.t) {
           const val = this.getTValue(data, row.t);
-          body.push([row.desc || '', val]);
+          body.push([row.desc || '', val.toFixed(1)]);
           subtotal += val;
         }
       });
       // Linha de subtotal
+      const subtotalRounded = Math.round(subtotal * 10) / 10;
       body.push([
         { content: 'Subtotal', styles: { fontStyle: 'bold' } },
-        { content: subtotal, styles: { fontStyle: 'bold' } }
+        { content: subtotalRounded.toFixed(1), styles: { fontStyle: 'bold' } }
       ]);
 
       autoTable(doc, {
@@ -138,6 +139,7 @@ export class PdfGeneratorService {
         }
       });
     });
+    totalGeralPit = Math.round(totalGeralPit * 10) / 10;
     const maxCH = data.identificacao?.regime === '20h' ? 20 : data.identificacao?.regime === '30h' ? 30 : 40;
 
     // Linha de Total Geral
@@ -337,15 +339,16 @@ export class PdfGeneratorService {
     if (!tKey) return 0;
     const qNum = parseInt(tKey.substring(1));
     const d = data.atividades || {};
-    if (qNum <= 3) return d.ensino?.aulas?.[tKey] || 0;
-    if (qNum === 4 || qNum === 5) return d.ensino?.manutencao?.[tKey] || 0;
-    if (qNum === 6) return d.ensino?.apoio?.[tKey] || 0;
-    if (qNum <= 11) return d.ensino?.orientacao?.[tKey] || 0;
-    if (qNum <= 13) return d.ensino?.extracurricular?.[tKey] || 0;
-    if (qNum <= 20) return d.pesquisa?.[tKey] || 0;
-    if (qNum <= 29) return d.extensao?.[tKey] || 0;
-    if (qNum <= 37) return d.gestao?.[tKey] || 0;
-    if (qNum <= 46) return d.comissoes?.[tKey] || 0;
-    return 0;
+    let val = 0;
+    if (qNum <= 3) val = d.ensino?.aulas?.[tKey] || 0;
+    else if (qNum === 4 || qNum === 5) val = d.ensino?.manutencao?.[tKey] || 0;
+    else if (qNum === 6) val = d.ensino?.apoio?.[tKey] || 0;
+    else if (qNum <= 11) val = d.ensino?.orientacao?.[tKey] || 0;
+    else if (qNum <= 13) val = d.ensino?.extracurricular?.[tKey] || 0;
+    else if (qNum <= 20) val = d.pesquisa?.[tKey] || 0;
+    else if (qNum <= 29) val = d.extensao?.[tKey] || 0;
+    else if (qNum <= 37) val = d.gestao?.[tKey] || 0;
+    else if (qNum <= 46) val = d.comissoes?.[tKey] || 0;
+    return Math.round(val * 10) / 10;
   }
 }

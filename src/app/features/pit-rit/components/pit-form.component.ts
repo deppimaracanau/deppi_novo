@@ -689,16 +689,17 @@ export class PitFormComponent {
     if (!tKey) return 0;
     const qNum = parseInt(tKey.substring(1));
     const d = this.data.atividades;
-    if (qNum <= 3) return d.ensino.aulas[tKey] || 0;
-    if (qNum === 4 || qNum === 5) return d.ensino.manutencao[tKey] || 0;
-    if (qNum === 6) return d.ensino.apoio[tKey] || 0;
-    if (qNum <= 11) return d.ensino.orientacao[tKey] || 0;
-    if (qNum <= 13) return d.ensino.extracurricular[tKey] || 0;
-    if (qNum <= 20) return d.pesquisa[tKey] || 0;
-    if (qNum <= 29) return d.extensao[tKey] || 0;
-    if (qNum <= 37) return d.gestao[tKey] || 0;
-    if (qNum <= 46) return d.comissoes[tKey] || 0;
-    return 0;
+    let val = 0;
+    if (qNum <= 3) val = d.ensino.aulas[tKey] || 0;
+    else if (qNum === 4 || qNum === 5) val = d.ensino.manutencao[tKey] || 0;
+    else if (qNum === 6) val = d.ensino.apoio[tKey] || 0;
+    else if (qNum <= 11) val = d.ensino.orientacao[tKey] || 0;
+    else if (qNum <= 13) val = d.ensino.extracurricular[tKey] || 0;
+    else if (qNum <= 20) val = d.pesquisa[tKey] || 0;
+    else if (qNum <= 29) val = d.extensao[tKey] || 0;
+    else if (qNum <= 37) val = d.gestao[tKey] || 0;
+    else if (qNum <= 46) val = d.comissoes[tKey] || 0;
+    return Math.round(val * 10) / 10;
   }
 
   getSubtotal(section: any): number {
@@ -706,7 +707,7 @@ export class PitFormComponent {
     section.rows.forEach((row: any) => {
       if (!row.isSubtotal) total += this.getTValue(row.t);
     });
-    return total;
+    return Math.round(total * 10) / 10;
   }
 
   getGrandTotal(): number {
@@ -716,7 +717,7 @@ export class PitFormComponent {
         if (!row.isSubtotal) total += this.getTValue(row.t);
       });
     });
-    return total;
+    return Math.round(total * 10) / 10;
   }
 
   getMaxCH(): number {
