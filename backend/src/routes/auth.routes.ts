@@ -106,7 +106,7 @@ router.post(
       if (typeof roles === 'string') {
         try {
           roles = JSON.parse(roles);
-        } catch (e) {
+        } catch {
           roles = ['user'];
         }
       }
@@ -195,7 +195,7 @@ router.post(
       if (typeof roles === 'string') {
         try {
           roles = JSON.parse(roles);
-        } catch (e) {
+        } catch {
           roles = ['user'];
         }
       }

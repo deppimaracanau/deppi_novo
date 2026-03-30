@@ -129,10 +129,21 @@ export class PdfGeneratorService {
       currentY = (doc as any).lastAutoTable.finalY + 1;
     });
 
+    // --- Calcular total geral localmente para garantir valor correto ---
+    let totalGeralPit = 0;
+    PIT_SHEET_DATA.forEach((section) => {
+      section.rows.forEach(row => {
+        if (!row.isSubtotal && row.t) {
+          totalGeralPit += this.getTValue(data, row.t);
+        }
+      });
+    });
+    const maxCH = data.identificacao?.regime === '20h' ? 20 : data.identificacao?.regime === '30h' ? 30 : 40;
+
     // Linha de Total Geral
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 2,
-      body: [[`TOTAL GERAL (Máximo ${data.identificacao?.regime || '40h'})`, `${data.total || 0}h`]],
+      body: [[`TOTAL GERAL (Máximo ${data.identificacao?.regime || '40h D.E.'}: ${maxCH}h)`, `${totalGeralPit.toFixed(1)}h`]],
       theme: 'grid',
       styles: { fontSize: 9, fontStyle: 'bold', cellPadding: 2 },
       columnStyles: {

@@ -101,8 +101,8 @@ export const optionalAuthMiddleware = (
     }
 
     next();
-  } catch (_error) {
-    // Don't fail, just continue without user
+  } catch {
+    // Sem token ou token inválido: continua sem autenticar
     next();
   }
 };

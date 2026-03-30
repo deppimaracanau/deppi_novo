@@ -25,7 +25,7 @@ router.get('/profile', async (req: Request, res: Response) => {
     const { password_hash: _, ...safeUser } = user;
     safeUser.roles = roles;
     res.json(safeUser);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Erro ao buscar perfil' });
   }
 });
@@ -52,7 +52,7 @@ router.put('/profile', async (req: Request, res: Response) => {
     const updated = await db('users').where({ id: req.user!.id }).first();
     const { password_hash: _, ...safeUser } = updated;
     res.json({ message: 'Perfil atualizado com sucesso', user: safeUser });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Erro ao atualizar perfil' });
   }
 });

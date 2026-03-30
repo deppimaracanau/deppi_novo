@@ -275,58 +275,6 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
           </div>
         </div>
 
-        <!-- QUADRO DE HORÁRIOS -->
-        <div class="form-section">
-          <h3 class="subsection-title">
-            Distribuição de Carga Horária (Semestre Anterior)
-          </h3>
-          <div class="table-responsive">
-            <table class="schedule-table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Segunda</th>
-                  <th>Terça</th>
-                  <th>Quarta</th>
-                  <th>Quinta</th>
-                  <th>Sexta</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let period of periods; let pid = index">
-                  <tr *ngFor="let slot of slots; let sid = index">
-                    <td
-                      *ngIf="sid === 0"
-                      [attr.rowspan]="slots.length"
-                      class="period-cell"
-                    >
-                      {{ period }}
-                    </td>
-                    <td *ngFor="let day of days; let did = index">
-                      <select
-                        [(ngModel)]="
-                          data.horarios[pid * slots.length + sid][did]
-                        "
-                        [name]="'h' + pid + sid + did"
-                        (change)="update()"
-                        class="slot-select"
-                      >
-                        <option value="">--</option>
-                        <option
-                          *ngFor="let opt of activityOptions"
-                          [value]="opt"
-                        >
-                          {{ opt }}
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
         <div class="form-actions">
           <button type="button" class="btn-secondary" (click)="reset()">
             Limpar
@@ -436,32 +384,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
       .form-input,
       .form-select,
-      .form-textarea,
-      .slot-select {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-        background: var(--color-background-secondary);
-        color: var(--color-text);
-      }
       .form-textarea {
-        resize: vertical;
-        min-height: 100px;
-      }
-      .form-group label {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--color-text) !important;
-        margin-bottom: 0.5rem;
-        display: block;
-      }
-      .form-input,
-      .form-select,
-      .form-textarea,
-      .slot-select {
         width: 100%;
         padding: 0.75rem 1rem;
         border: 2px solid var(--color-border);
@@ -471,106 +394,21 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         background: var(--color-background-secondary);
         color: var(--color-text);
       }
-      .form-input::placeholder {
-        color: var(--color-text-muted);
-      }
-
-      .schedule-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 4px;
-      }
-      .schedule-table th {
-        padding: 0.75rem;
-        font-size: 0.85rem;
-        color: var(--color-text-secondary);
-        font-weight: 600;
-      }
-      .period-cell {
-        background: rgba(0, 0, 0, 0.05);
-        font-weight: 700;
-        font-size: 0.8rem;
-        text-align: center;
-        color: var(--color-primary);
-        text-transform: uppercase;
-        border-radius: 4px;
-      }
-      .slot-select {
-        padding: 0.4rem;
-        font-size: 0.8rem;
-        height: 36px;
-        transition: background-color 0.3s;
-        cursor: pointer;
-      }
-      .btn-primary, .btn-secondary {
-        cursor: pointer;
-      }
-      .form-input, .form-textarea {
+      .form-input,
+      .form-textarea {
         cursor: text;
       }
       .form-select {
         cursor: pointer;
       }
-      .slot-select[data-activity='Aula'] {
-        background-color: var(--slot-bg-Aula);
-        color: var(--slot-color-Aula);
-        border-color: var(--slot-color-Aula);
-        font-weight: 600;
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
       }
-      .slot-select[data-activity='Planejamento'] {
-        background-color: var(--slot-bg-Planejamento);
-        color: var(--slot-color-Planejamento);
-        border-color: var(--slot-color-Planejamento);
-        font-weight: 600;
+      .form-input::placeholder {
+        color: var(--color-text-muted);
       }
-      .slot-select[data-activity='Atendimento'] {
-        background-color: var(--slot-bg-Atendimento);
-        color: var(--slot-color-Atendimento);
-        border-color: var(--slot-color-Atendimento);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Apoio'] {
-        background-color: var(--slot-bg-Apoio);
-        color: var(--slot-color-Apoio);
-        border-color: var(--slot-color-Apoio);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Orientação'] {
-        background-color: var(--slot-bg-Orientação);
-        color: var(--slot-color-Orientação);
-        border-color: var(--slot-color-Orientação);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Extracurricular'] {
-        background-color: var(--slot-bg-Extracurricular);
-        color: var(--slot-color-Extracurricular);
-        border-color: var(--slot-color-Extracurricular);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Pesquisa'] {
-        background-color: var(--slot-bg-Pesquisa);
-        color: var(--slot-color-Pesquisa);
-        border-color: var(--slot-color-Pesquisa);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Extensão'] {
-        background-color: var(--slot-bg-Extensão);
-        color: var(--slot-color-Extensão);
-        border-color: var(--slot-color-Extensão);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Gestão'] {
-        background-color: var(--slot-bg-Gestão);
-        color: var(--slot-color-Gestão);
-        border-color: var(--slot-color-Gestão);
-        font-weight: 600;
-      }
-      .slot-select[data-activity='Comissões'] {
-        background-color: var(--slot-bg-Comissões);
-        color: var(--slot-color-Comissões);
-        border-color: var(--slot-color-Comissões);
-        font-weight: 600;
-      }
+
 
       .form-group.has-error .form-input {
         border-color: var(--color-error);
@@ -629,21 +467,6 @@ export class RitFormComponent {
   private notificationService = inject(NotificationService);
 
   data!: RitData;
-  readonly periods = ['Manhã', 'Tarde', 'Noite'];
-  readonly slots = ['A', 'B', 'C', 'D'];
-  readonly days = [0, 1, 2, 3, 4];
-  readonly activityOptions = [
-    'Aula',
-    'Planejamento',
-    'Atendimento',
-    'Apoio',
-    'Orientação',
-    'Extracurricular',
-    'Pesquisa',
-    'Extensão',
-    'Gestão',
-    'Comissões',
-  ];
 
   constructor() {
     this.pitRitService.currentRitData$.subscribe((d) => {
