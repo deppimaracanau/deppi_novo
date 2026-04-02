@@ -270,6 +270,9 @@ import { Subscription } from 'rxjs';
         line-height: 1.3;
         color: var(--color-text);
         transition: color var(--transition-fast);
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
       }
 
       .boletim-card:hover .card-title {
@@ -296,6 +299,9 @@ import { Subscription } from 'rxjs';
         -webkit-box-orient: vertical;
         overflow: hidden;
         line-height: 1.7;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
       }
 
       .card-footer {

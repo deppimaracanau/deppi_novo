@@ -401,7 +401,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         cursor: text;
       }
       .form-select {
-        cursor: pointer;
+        cursor: default;
       }
       .form-textarea {
         resize: vertical;
