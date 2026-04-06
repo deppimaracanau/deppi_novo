@@ -380,7 +380,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         font-size: 0.95rem;
         background: var(--color-background-secondary);
         color: var(--color-text);
-        cursor: default;
+        cursor: pointer;
       }
 
       .spreadsheet-table {
@@ -490,7 +490,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         border: 1px solid #ddd;
         border-radius: 4px;
         transition: background-color 0.3s;
-        cursor: default;
+        cursor: pointer;
       }
       .btn-primary, .btn-secondary {
         cursor: pointer !important;
