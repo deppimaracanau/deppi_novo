@@ -80,6 +80,11 @@ select {
   border-radius: var(--border-radius-md);
   padding: var(--spacing-3) var(--spacing-4);
   transition: var(--transition-fast);
+  cursor: text;
+}
+
+select {
+  cursor: pointer;
 }
 
 input:focus,

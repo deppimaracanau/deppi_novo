@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
@@ -316,6 +316,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         margin: 2rem auto;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transform: translateZ(0);
+        backface-visibility: hidden;
       }
       .alert-info {
         background: #e3f2fd;
@@ -435,7 +437,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.8rem 2.5rem;
         border-radius: 50px;
         font-weight: 600;
-        cursor: pointer;
+        cursor: pointer !important;
         transition: all 0.2s;
       }
       .btn-secondary {
@@ -445,7 +447,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
-        cursor: pointer;
+        cursor: pointer !important;
+      }
+      .btn-primary *, .btn-secondary * {
+        pointer-events: none;
       }
       .btn-primary:hover {
         transform: translateY(-2px);
@@ -465,12 +470,14 @@ export class RitFormComponent {
   private pitRitService = inject(PitRitService);
   private pdfService = inject(PdfGeneratorService);
   private notificationService = inject(NotificationService);
+  private cd = inject(ChangeDetectorRef);
 
   data!: RitData;
 
   constructor() {
     this.pitRitService.currentRitData$.subscribe((d) => {
       this.data = JSON.parse(JSON.stringify(d));
+      this.cd.markForCheck();
     });
   }
 

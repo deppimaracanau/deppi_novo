@@ -224,8 +224,9 @@ import { CommonModule } from '@angular/common';
         margin-bottom: 1.5rem;
         color: var(--color-text);
         line-height: 1.1;
-        word-break: normal;
-        overflow-wrap: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
         text-wrap: pretty;
       }
 
@@ -284,8 +285,12 @@ import { CommonModule } from '@angular/common';
         font-size: 1.15rem;
         line-height: 1.8;
         color: var(--color-text);
-        word-break: normal;
-        overflow-wrap: anywhere;
+      }
+      .detail-main-content,
+      .detail-main-content * {
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
         white-space: normal;
       }
       .detail-main-content img {
@@ -372,12 +377,18 @@ import { CommonModule } from '@angular/common';
         font-size: 1.4rem;
         margin-bottom: 1rem;
         color: var(--color-text);
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
       }
 
       .news-content {
         font-size: 1rem;
         line-height: 1.7;
         color: var(--color-text-secondary);
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
       }
 
       .float-btn {

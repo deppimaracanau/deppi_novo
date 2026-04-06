@@ -401,6 +401,10 @@ import { Boletim } from '../../../../shared/models';
         font-size: 1rem !important;
         color: var(--color-text);
         line-height: 1.7;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        white-space: pre-wrap !important;
       }
 
       .checkbox-group {
