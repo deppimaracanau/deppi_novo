@@ -1,0 +1,47 @@
+<div class="container" style="padding-top: 120px; padding-bottom: 50px;">
+  <a routerLink="/laboratorios" style="color: var(--color-primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem;">
+    <span>&larr;</span> Voltar para Laboratórios
+  </a>
+
+  <ng-container *ngIf="loading">
+    <div style="text-align: center; padding: 3rem;">Carregando laboratório...</div>
+  </ng-container>
+
+  <div *ngIf="!loading && lab" class="surface reveal-up">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+      <h1 class="font-display" style="margin-bottom: 0;">{{ lab.name }}</h1>
+      <a *ngIf="isAdmin$ | async" [routerLink]="['/laboratorios', lab.id, 'editar']" class="btn btn-primary" style="font-size: 0.9rem;">
+        Editar Laboratório
+      </a>
+    </div>
+    
+    <p style="font-size: 1.1rem; max-width: 100%;">{{ lab.description }}</p>
+    
+    <hr style="border: none; border-top: 1px solid var(--color-border); margin: 2rem 0;">
+
+    <div class="innovative-grid">
+      <div>
+        <h3 class="font-display">Infraestrutura e Serviços</h3>
+        <div *ngIf="!lab.services || lab.services.length === 0">
+          <p>Nenhum serviço cadastrado.</p>
+        </div>
+        <div *ngFor="let serv of lab.services" class="glass" style="margin-bottom: 1rem; padding: 1rem; border-radius: 8px;">
+          <h4 style="margin-bottom: 0.2rem;">{{ serv.name }} <span style="font-size: 0.8em; opacity: 0.7;">({{ serv.type }})</span></h4>
+          <p style="margin-bottom: 0; font-size: 0.9em;">{{ serv.description }}</p>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display">Produções de Destaque</h3>
+        <div *ngIf="!lab.productions || lab.productions.length === 0">
+          <p>Nenhuma produção cadastrada.</p>
+        </div>
+        <div *ngFor="let prod of lab.productions" class="glass" style="margin-bottom: 1rem; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-primary);">
+          <h4 style="margin-bottom: 0.2rem;">{{ prod.title }}</h4>
+          <p style="margin-bottom: 0.5rem; font-size: 0.9em;">{{ prod.type }} - {{ prod.year }}</p>
+          <a *ngIf="prod.link" [href]="prod.link" target="_blank" style="color: var(--color-primary); font-size: 0.85em; text-decoration: none;">Ver publicação &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
