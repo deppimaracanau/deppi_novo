@@ -23,6 +23,7 @@ import boletimRoutes from './routes/boletim.routes';
 import uploadRoutes from './routes/upload.routes';
 import healthRoutes from './routes/health.routes';
 import contactRoutes from './routes/contact.routes';
+import laboratorioRoutes from './routes/laboratorios.routes';
 
 // Sentry
 import * as Sentry from '@sentry/node';
@@ -123,6 +124,7 @@ class Application {
     this.app.use('/api/boletins', boletimRoutes);
     this.app.use('/api/upload', authMiddleware, uploadRoutes);
     this.app.use('/api/contact', contactRoutes);
+    this.app.use('/api/laboratorios', laboratorioRoutes);
 
     // API status routes
     this.app.get('/api', (_req, res) => {
