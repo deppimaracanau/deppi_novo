@@ -84,6 +84,16 @@ import { CommonModule } from '@angular/common';
             <span>Pós</span>
           </a>
           <a
+            routerLink="/laboratorios"
+            class="nav-link"
+            [class.active]="isActive('/laboratorios')"
+            (mouseenter)="setHoverPos($event)"
+            (mouseleave)="clearHoverPos()"
+            (click)="closeMenu()"
+          >
+            <span>Vitrine</span>
+          </a>
+          <a
             routerLink="/boletins"
             class="nav-link"
             [class.active]="isActive('/boletins')"
