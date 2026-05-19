@@ -428,7 +428,7 @@ jobs:
 
           # Remove diretórios criados pelo Docker com dono root (ex: database/init)
           # que o git clean não consegue remover sem sudo
-          sudo rm -rf database/init 2>/dev/null || true
+          sudo rm -rf database/ backend/uploads/ scripts/backup.sh 2>/dev/null || true
 
           # Limpeza profunda, mas mantendo o .env que acabamos de criar
           # (o runner fica em ~/actions-runner fora do repo, não precisa de -e)
@@ -442,6 +442,14 @@ jobs:
           sudo fuser -k 3000/tcp || true
           sudo fuser -k 4000/tcp || true
           sleep 2
+
+          # Previne que o Docker crie os volumes como root criando-os preventivamente como o usuário atual
+          echo "📁 Criando pastas de volume preventivamente..."
+          mkdir -p database/init backend/uploads scripts
+          if [ ! -f scripts/backup.sh ]; then
+            touch scripts/backup.sh
+            chmod +x scripts/backup.sh
+          fi
 
           # Force pull and recreate
           docker compose pull app
