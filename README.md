@@ -1,133 +1,220 @@
-# DEPPI - Aplicação Web
+# DEPPI - Aplicação Web (IFCE Campus Maracanaú)
 
-Sistema de boletins e informações do Departamento de Extensão, Pesquisa, Pós-Graduação e Inovação do IFCE Maracanaú.
+Sistema de gestão de boletins, vitrine tecnológica, relatórios docentes (PIT/RIT) e portal informativo do **Departamento de Extensão, Pesquisa, Pós-Graduação e Inovação (DEPPI)** do IFCE Campus Maracanaú.
 
-## 🚀 Executar a Aplicação
+---
 
-### Método Rápido (Recomendado)
+## 🚀 Arquitetura e Tecnologias
+
+A aplicação utiliza uma stack moderna baseada em microsserviços e SPA:
+- **Frontend**: Angular 17+ (TypeScript, SCSS com Glassmorphism e Modo Escuro nativo).
+- **Backend**: Node.js 18/20 LTS (Express, Knex.js, TypeScript, validação com Joi/Express-Validator).
+- **Banco de Dados**: PostgreSQL 15+ (com suporte a migrações e seeds automatizados).
+- **Cache e Fila**: Redis 7 (opcional/integrado via Docker).
+- **Servidor Web e Proxy**: Nginx (para proxy reverso, compressão Gzip e servir uploads de grandes arquivos de até 50MB).
+- **Orquestração e Processos**: Docker Compose e PM2.
+
+---
+
+## 📋 Pré-requisitos
+
+Antes de iniciar, certifique-se de ter instalado em sua máquina:
+- **Node.js** (versão 18.0.0 ou superior; recomendamos Node 20 LTS).
+- **NPM** (versão 9.0.0 ou superior).
+- **PostgreSQL** (versão 15 ou superior, caso rode o banco localmente fora do Docker).
+- **Docker e Docker Compose** (opcional, para rodar a infraestrutura completa via containers).
+- **Git** e ferramentas de compilação básicas (`build-essential`).
+
+---
+
+## 🛠️ Instalação e Configuração Inicial
+
+Siga o passo a passo abaixo para configurar o ambiente de desenvolvimento pela primeira vez:
+
+### 1. Clonar o Repositório e Instalar Dependências
+No diretório raiz do projeto, execute a instalação das dependências do frontend e do backend:
 ```bash
-# Executa frontend e backend simultaneamente
-./start-app.sh
+# Instala as dependências do frontend Angular e ferramentas de dev na raiz
+npm install
+
+# Instala as dependências do backend Node.js
+cd backend
+npm install
+cd ..
 ```
 
-### Método Manual
+### 2. Configurar Variáveis de Ambiente (.env)
+Crie o arquivo de configuração `.env` na raiz do projeto copiando o exemplo fornecido:
+```bash
+cp .env.example .env
+```
+> **Nota**: O script de setup do banco (passo seguinte) ajustará automaticamente as credenciais locais no seu arquivo `.env`.
 
-#### 1. Iniciar Backend
+### 3. Configurar o Banco de Dados PostgreSQL
+Para instalar e configurar o PostgreSQL localmente (criando o banco `deppi`, usuário `deppi` e atribuindo as permissões), utilize o script automatizado:
+```bash
+./setup-postgres.sh
+```
+
+### 4. Build do Backend e Execução de Migrations / Seeds
+> **⚠️ PASSO CRÍTICO**: O Knex CLI necessita dos arquivos compilados em JavaScript (`dist/`) para executar as migrações. Portanto, é obrigatório realizar o build do backend antes de rodar as migrations.
+
 ```bash
 cd backend
-npm run dev
-```
-Backend disponível em: http://localhost:3000
 
-#### 2. Iniciar Frontend (em outro terminal)
+# 1. Compila o código TypeScript para JavaScript na pasta dist/
+npm run build
+
+# 2. Executa as migrações para criar as tabelas no banco de dados
+npm run migrate
+
+# 3. Popula o banco com dados iniciais de teste (usuários, laboratórios, boletins)
+npm run seed
+
+cd ..
+```
+
+---
+
+## 🖥️ Executando a Aplicação
+
+Você pode rodar a aplicação de três maneiras diferentes, dependendo da sua necessidade:
+
+### Opção A: Método Rápido Automatizado (Recomendado para Dev)
+O script `start-app.sh` verifica as portas, inicializa o PostgreSQL (se necessário) e sobe o backend e o frontend simultaneamente.
+```bash
+./start-app.sh
+```
+- **Frontend Angular**: http://localhost:4200
+- **Backend API**: http://localhost:3000
+- **Health Check da API**: http://localhost:3000/health
+
+### Opção B: Método Manual em Terminais Separados
+Se preferir gerenciar os processos manualmente em abas distintas do terminal:
+
+**Terminal 1 (Backend em modo de desenvolvimento com Nodemon)**:
+```bash
+npm run backend:dev
+# Ou entrando na pasta: cd backend && npm run dev
+```
+
+**Terminal 2 (Frontend Angular com Live Reload)**:
 ```bash
 npm run dev
+# Ou diretamente: npm start
 ```
-Frontend disponível em: http://localhost:4200
 
-## 🔐 Credenciais de Teste
+### Opção C: Orquestração Completa via Docker Compose
+Para subir toda a infraestrutura (Aplicação, PostgreSQL, Redis, Prometheus, Grafana e serviço de Backup) em containers Docker:
+```bash
+# Constrói as imagens e sobe os containers em segundo plano
+npm run docker:up
+# Ou diretamente: docker-compose up -d
 
-- **Usuário**: `12345`
+# Para acompanhar os logs
+docker-compose logs -f app
+
+# Para derrubar a infraestrutura
+npm run docker:down
+```
+
+---
+
+## 🚀 Deploy em Produção (Servidores Linux / Ubuntu)
+
+Para ambientes de produção (Ubuntu 22.04+), o projeto conta com o script de deploy automatizado `deploy-ubuntu.sh`. Ele instala as dependências do sistema, configura o Node.js 20 LTS, instala e configura o Nginx como proxy reverso, faz o build de produção do Angular e gerencia a API com o **PM2**.
+
+```bash
+chmod +x deploy-ubuntu.sh
+sudo ./deploy-ubuntu.sh
+```
+> **Pós-Deploy**: O script sugerirá a execução do Certbot (`sudo certbot --nginx -d seu-dominio.com.br`) para habilitar criptografia SSL/TLS gratuitamente.
+
+---
+
+## 🔐 Credenciais de Teste e Demonstração
+
+Após rodar os seeds (`npm run seed`), o sistema terá um usuário administrador padrão configurado para acesso à área restrita:
+
+- **Matrícula / Usuário**: `12345`
 - **Senha**: `123456`
-- **Área Restrita**: http://localhost:4200/boletins/login
+- **URL de Acesso**: http://localhost:4200/boletins/login (ou `/boletins` na navegação)
+
+---
 
 ## 📁 Estrutura do Projeto
 
-```
+```text
 deppi_novo/
-├── src/                    # Frontend Angular
-├── backend/               # Backend Node.js
-├── assets/                # Assets compartilhados
-├── cypress/               # Testes E2E
-├── docker-compose.yml     # Infraestrutura Docker
-└── start-app.sh          # Script de inicialização
+├── src/                    # Frontend Angular (SPA modular)
+│   ├── app/
+│   │   ├── core/           # Serviços de autenticação, interceptors, guards e i18n
+│   │   ├── features/       # Módulos de funcionalidades (Boletins, Laboratórios, PIT/RIT, Home)
+│   │   ├── layout/         # Componentes estruturais (Header, Footer, Navegação)
+│   │   └── shared/         # Componentes, pipes e diretivas reutilizáveis
+│   └── assets/             # Imagens, ícones, arquivos i18n e design tokens
+├── backend/                # Backend Node.js / Express / TypeScript
+│   ├── src/
+│   │   ├── controllers/    # Controladores da API REST
+│   │   ├── database/       # Configuração do Knex, Migrations e Seeds
+│   │   ├── middleware/     # Middlewares de autenticação (JWT), erro e validação
+│   │   ├── models/         # Interfaces e esquemas de dados
+│   │   └── routes/         # Definição das rotas da API
+├── cypress/                # Testes E2E (Cypress)
+├── nginx.conf              # Configuração do Nginx (Proxy, Cache, Gzip, Uploads)
+├── docker-compose.yml      # Definição da infraestrutura de containers
+├── start-app.sh            # Script de inicialização local
+└── deploy-ubuntu.sh        # Script automatizado de deploy para produção
 ```
 
-## 🗄️ Banco de Dados
+---
 
-- **PostgreSQL** configurado automaticamente
-- **Migrations** executadas
-- **Seeds** populados com dados de teste
+## 🌟 Principais Funcionalidades
 
-## 🧪 Testes
+- ✅ **Vitrine Tecnológica**: Catálogo dinâmico de laboratórios, pesquisas, inovações e serviços do campus.
+- ✅ **Formulários e Relatórios PIT/RIT**: Sistema avançado para geração de Plano Individual de Trabalho e Relatório Individual de Trabalho em PDF, com cálculo automático de carga horária e suporte a múltiplos regimes (20h, 30h, 40h, 40h D.E.).
+- ✅ **Área Restrita de Boletins**: Gestão completa de informativos com Editor de Texto Avançado (**Quill v2**) e upload de imagens.
+- ✅ **Design System Premium (Glassmorphism)**: Interface moderna, fluida e com suporte nativo e persistente ao **Modo Escuro**.
+- ✅ **Segurança Avançada**: Autenticação via JWT (com Refresh Tokens), proteção contra XSS (Helmet), Rate Limiting e CORS estrito.
+- ✅ **Infraestrutura e Armazenamento**: Suporte a uploads de grandes arquivos (até 50MB) gerenciados de forma eficiente pelo Nginx.
 
+---
+
+## 🧪 Testes e Monitoramento
+
+### Testes Automatizados
 ```bash
-# Testar API
+# Executar testes unitários do Frontend
+npm run test
+
+# Executar testes do Backend
+cd backend && npm run test
+
+# Testar endpoints da API via script de curl
 ./test-api.sh
 
-# Testes E2E
+# Executar testes End-to-End (Cypress)
 npm run e2e
 ```
 
-## 📊 Monitoramento
+### Monitoramento e Saúde da API
+- **Health Check Endpoint**: http://localhost:3000/health
+- **Métricas Prometheus**: http://localhost:9090 (quando rodando via Docker Compose)
+- **Dashboard Grafana**: http://localhost:3001 (quando rodando via Docker Compose)
 
-- **Health Check**: http://localhost:3000/health
-- **API Docs**: http://localhost:3000/api-docs (quando implementado)
-
-## 🛠️ Desenvolvimento
-
-### Configuração Inicial
-```bash
-# Instalar dependências
-npm install
-cd backend && npm install
-
-# Configurar banco
-./setup-postgres.sh
-
-# Executar migrations
-cd backend && npm run migrate && npm run seed
-```
-
-### Scripts Disponíveis
-
-#### Frontend
-- `npm run dev` - Desenvolvimento
-- `npm run build` - Build de produção
-- `npm run test` - Testes unitários
-- `npm run e2e` - Testes E2E
-
-#### Backend
-- `npm run dev` - Desenvolvimento com nodemon
-- `npm run build` - Compilar TypeScript
-- `npm run start` - Produção
-- `npm run migrate` - Executar migrations
-- `npm run seed` - Popular banco
-- `npm run test` - Testes
-
-## 🌟 Funcionalidades
-
-- ✅ **Frontend Angular** com design system modular e temas dinâmicos
-- ✅ **Nova interface Premium (Glassmorphism)** com Suporte Nativo ao Modo Escuro
-- ✅ **Backend Node.js** com PostgreSQL via Docker
-- ✅ **Gerador de Relatórios e Formulários (PIT e RIT) em PDF**
-- ✅ **Autenticação JWT & Google Sign-In**
-- ✅ **Área restrita de boletins com Editor de Texto Avançado (Quill v2)**
-- ✅ **Sistema de Uploads (Arquivos e Imagens) com Nginx Proxy**
-- ✅ **API RESTful** segura
-- ✅ **Testes automatizados**
-- ✅ **CI/CD com GitHub Actions** e Deploy contínuo
-- ✅ **Infraestrutura Orquestrada via Docker Compose** (App, DB, Redis, Logs)
-
-## 🆕 Últimas Atualizações
-* Formulários PIT/RIT refinados, suportando múltiplos vínculos (ex: Dedicação Exclusiva 40h D.E, 30h, 20h).
-* Infraestrutura de Uploads otimizada suportando anexos de grandes formatos (até 50MB) pelo Nginx.
-* UI de formulários utilizando Glassmorphism com leitura dinâmica e total suporte ao tema escuro.
-
-## 📚 Documentação
-
-- [README Arquitetura](./README_ARQUITETURA.md) - Documentação técnica completa
-- [Design Tokens](./assets/README.md) - Sistema de design
-- [API Docs](./backend/README.md) - Documentação da API
+---
 
 ## 🤝 Contribuição
 
-1. Faça fork do projeto
-2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -am 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
+1. Faça um fork do repositório.
+2. Crie uma branch para sua funcionalidade ou correção: `git checkout -b feature/minha-funcionalidade`.
+3. Faça o commit de suas alterações seguindo o padrão convencional (ex: `feat: adiciona filtro na vitrine`): `git commit -m 'feat: adiciona filtro na vitrine'`.
+4. Faça o push para a branch: `git push origin feature/minha-funcionalidade`.
+5. Abra um Pull Request explicando detalhadamente as mudanças realizadas.
 
-## 📄 Licença
-GNU GPLv3
-Este projeto é mantido pelo IFCE Maracanaú.
+---
+
+## 📄 Licença e Manutenção
+
+Este projeto é mantido pelo **IFCE Campus Maracanaú**.  
+Licenciado sob a **GNU GPLv3**.

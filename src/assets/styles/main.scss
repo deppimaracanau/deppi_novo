@@ -90,12 +90,11 @@ p {
   border-radius: var(--border-radius-lg);
   padding: 2rem;
   box-shadow: var(--shadow-md);
-  transition:
-    transform var(--transition-normal),
-    box-shadow var(--transition-normal);
+  transition: box-shadow var(--transition-normal);
 
+  /* Sem transform no hover para evitar flickering (o elemento não se desloca,
+     o que faria o cursor "sair" momentaneamente e alternar entre states) */
   &:hover {
-    transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
   }
 }
@@ -261,4 +260,40 @@ p {
   &:hover {
     background: var(--color-text-muted);
   }
+}
+
+/* Loading Utilities */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(var(--color-primary-rgb), 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

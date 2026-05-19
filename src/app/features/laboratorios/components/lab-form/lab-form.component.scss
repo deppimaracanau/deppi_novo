@@ -1,0 +1,128 @@
+.lab-form-container {
+  padding-top: 120px;
+  padding-bottom: 50px;
+
+  .back-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateX(-5px);
+    }
+  }
+
+  .form-surface {
+    padding: 2.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .form-header {
+    margin-bottom: 2.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      color: var(--color-text-primary);
+      transition: all 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.1);
+        background: rgba(255, 255, 255, 0.08);
+      }
+    }
+  }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 3rem 0;
+  }
+
+  .section-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .section-hint {
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .item-card {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      
+      b {
+        font-size: 1.1rem;
+        color: var(--color-primary);
+      }
+    }
+
+    .btn-remove {
+      color: var(--color-error, #ff4d4f);
+      
+      &:hover {
+        background: rgba(255, 77, 79, 0.1);
+        border-color: #ff4d4f;
+      }
+    }
+  }
+
+  .add-btn {
+    width: 100%;
+    border-style: dashed;
+    margin-bottom: 2rem;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: 3rem;
+    border-radius: 12px;
+
+    .loading-text {
+      margin-top: 1rem;
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .form-actions {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.5rem;
+  }
+}
