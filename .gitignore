@@ -84,4 +84,9 @@ Thumbs.db
 cargahoraria/**
 cargahoraria/bootstrap/**/*.map
 cargahoraria/favicon.ico
+
+# Docker Volumes
+database/
+backend/uploads/
+scripts/backup.sh
 ```
