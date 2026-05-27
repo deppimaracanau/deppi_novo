@@ -399,10 +399,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       }
       .form-input,
       .form-textarea {
-        cursor: default !important;
       }
       .form-select {
-        cursor: default !important;
       }
       .form-textarea {
         resize: vertical;
@@ -438,7 +436,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.8rem 2.5rem;
         border-radius: 50px;
         font-weight: 600;
-        cursor: pointer !important;
+        cursor: pointer;
         transition: all 0.2s;
       }
       .btn-secondary {
@@ -448,7 +446,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
-        cursor: pointer !important;
+        cursor: pointer;
       }
       .btn-primary *, .btn-secondary * {
         pointer-events: none;

@@ -67,7 +67,7 @@ button:disabled {
   opacity: 0.6;
 }
 
-/* Inputs */
+/* Inputs — cursor herda do elemento pai para evitar flickering em qualquer contexto */
 input,
 textarea,
 select {
@@ -80,11 +80,11 @@ select {
   border-radius: var(--border-radius-md);
   padding: var(--spacing-3) var(--spacing-4);
   transition: var(--transition-fast);
-  cursor: text;
+  cursor: inherit;
 }
 
 select {
-  cursor: pointer;
+  cursor: inherit;
 }
 
 input:focus,

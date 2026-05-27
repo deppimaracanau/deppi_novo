@@ -372,7 +372,6 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         background: var(--color-background-secondary);
         color: var(--color-text);
         transition: border-color 0.2s ease;
-        cursor: default !important;
       }
       .form-select {
         padding: 0.75rem 1rem;
@@ -382,7 +381,6 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         background: var(--color-background-secondary);
         color: var(--color-text);
         transition: border-color 0.2s ease;
-        cursor: default !important;
       }
 
       .spreadsheet-table {
@@ -491,13 +489,12 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         cursor: default !important;
       }
       .btn-primary, .btn-secondary {
-        cursor: pointer !important;
+        cursor: pointer;
       }
       .btn-primary *, .btn-secondary * {
         pointer-events: none;
       }
       .table-input {
-        cursor: default !important;
       }
       .slot-select[data-activity='Aula'] {
         background-color: var(--slot-bg-Aula);
