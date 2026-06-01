@@ -10,6 +10,7 @@ import { PitFormComponent } from './components/pit-form.component';
 import { RitFormComponent } from './components/rit-form.component';
 
 @Component({
+  standalone: false,
   selector: 'app-pit-rit',
   template: `
     <main class="page-container">

@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
 import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
+  standalone: false,
   selector: 'app-contact',
   template: `
     <main class="page-container ifce-bg-accent">

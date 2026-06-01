@@ -5,6 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-post-graduation',
   template: `
     <main class="page-container">

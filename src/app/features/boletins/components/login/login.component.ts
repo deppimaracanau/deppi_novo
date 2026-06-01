@@ -6,6 +6,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'app-login',
   template: `
     <div class="login-page">

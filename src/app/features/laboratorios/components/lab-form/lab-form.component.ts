@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LaboratoriosService } from '../../services/laboratorios.service';
 
 @Component({
+  standalone: false,
   selector: 'app-lab-form',
   templateUrl: './lab-form.component.html',
   styleUrls: ['./lab-form.component.scss'],

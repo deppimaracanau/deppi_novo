@@ -11,6 +11,7 @@ import { PartialObserver } from 'rxjs';
 import { Boletim } from '../../../../shared/models';
 
 @Component({
+  standalone: false,
   selector: 'app-boletim-form',
   template: `
     <div class="boletim-form-page animate-in">

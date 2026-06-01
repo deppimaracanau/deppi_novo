@@ -13,6 +13,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'app-header',
   template: `
     <header

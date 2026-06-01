@@ -6,6 +6,7 @@ import { Boletim } from '../../../../shared/models';
 import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'app-boletim-detail',
   template: `
     <div class="boletim-detail-page animate-in">

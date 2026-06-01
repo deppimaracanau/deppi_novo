@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-boletim-list',
   template: `
     <div class="boletim-list-page animate-in">

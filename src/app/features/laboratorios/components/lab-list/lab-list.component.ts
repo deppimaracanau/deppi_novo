@@ -5,6 +5,7 @@ import { Laboratorio } from '../../models/laboratorio.model';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
+  standalone: false,
   selector: 'app-lab-list',
   templateUrl: './lab-list.component.html',
   styleUrls: ['./lab-list.component.scss'],
