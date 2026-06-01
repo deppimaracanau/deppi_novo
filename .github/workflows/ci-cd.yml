@@ -265,6 +265,8 @@ jobs:
 
       - name: Create .env file
         run: |
+          cd /home/deppi/deppi_novo
+          sudo touch .env && sudo chown $USER:$USER .env
           # Banco de Dados
           URL_PASS=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "${{ secrets.DB_PASSWORD }}")
           echo "DB_USER=deppi" > .env
@@ -378,6 +380,7 @@ jobs:
           PROMETHEUS_PASSWORD: ${{ secrets.PROMETHEUS_PASSWORD }}
         run: |
           cd /home/deppi/deppi_novo
+          sudo touch .env && sudo chown $USER:$USER .env
           # Função para escrever secret sem quebras de linha (base64 faz wrap que corrompe .env)
           safe() { printf '%s' "${!1}" | tr -d '\n\r'; }
 
