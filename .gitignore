@@ -79,7 +79,7 @@ Thumbs.db
 
 # Linter and hints
 .hintrc
-
+.log
 # Old bootstrap maps and system noise
 cargahoraria/**
 cargahoraria/bootstrap/**/*.map
@@ -89,4 +89,3 @@ cargahoraria/favicon.ico
 database/
 backend/uploads/
 scripts/backup.sh
-```
