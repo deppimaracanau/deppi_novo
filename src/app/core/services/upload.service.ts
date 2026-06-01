@@ -15,7 +15,7 @@ export interface Attachment {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadService {
   private readonly http = inject(HttpClient);
@@ -36,13 +36,19 @@ export class UploadService {
   /**
    * Faz upload de múltiplos arquivos
    */
-  uploadMultiple(files: File[], relatedId?: number): Observable<{ files: Attachment[], count: number }> {
+  uploadMultiple(
+    files: File[],
+    relatedId?: number
+  ): Observable<{ files: Attachment[]; count: number }> {
     const formData = new FormData();
-    files.forEach(file => formData.append('files', file));
+    files.forEach((file) => formData.append('files', file));
     if (relatedId) {
       formData.append('relatedId', relatedId.toString());
     }
-    return this.http.post<{ files: Attachment[], count: number }>(`${this.apiUrl}/multiple`, formData);
+    return this.http.post<{ files: Attachment[]; count: number }>(
+      `${this.apiUrl}/multiple`,
+      formData
+    );
   }
 
   /**

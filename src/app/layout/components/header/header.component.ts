@@ -14,7 +14,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  standalone: false,
   template: `
     <header
       class="header"
@@ -140,7 +139,11 @@ import { CommonModule } from '@angular/common';
           </button>
 
           <ng-container *ngIf="!isAuthenticated; else userMenu">
-            <a routerLink="/boletins/login" class="btn btn-primary login-btn" (click)="closeMenu()">
+            <a
+              routerLink="/boletins/login"
+              class="btn btn-primary login-btn"
+              (click)="closeMenu()"
+            >
               Acesso
             </a>
           </ng-container>

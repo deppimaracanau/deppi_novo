@@ -108,19 +108,34 @@ import { CommonModule } from '@angular/common';
           </div>
         </section>
 
-        <section class="attachments-section" *ngIf="boletim.attachments?.length">
+        <section
+          class="attachments-section"
+          *ngIf="boletim.attachments?.length"
+        >
           <div class="section-header">
             <h2 class="section-title">Anexos e Documentos</h2>
             <div class="section-divider"></div>
           </div>
           <div class="attachments-grid">
-            <div class="attachment-card surface" *ngFor="let file of boletim.attachments">
+            <div
+              class="attachment-card surface"
+              *ngFor="let file of boletim.attachments"
+            >
               <div class="file-icon">{{ getFileIcon(file.mimeType) }}</div>
               <div class="file-info">
-                <span class="file-name">{{ file.originalName || file.filename }}</span>
-                <span class="file-meta">{{ (file.size / 1024 / 1024).toFixed(2) }} MB • {{ file.mimeType }}</span>
+                <span class="file-name">{{
+                  file.originalName || file.filename
+                }}</span>
+                <span class="file-meta"
+                  >{{ (file.size / 1024 / 1024).toFixed(2) }} MB •
+                  {{ file.mimeType }}</span
+                >
               </div>
-              <a [href]="file.url" target="_blank" class="btn btn-secondary btn-sm download-btn">
+              <a
+                [href]="file.url"
+                target="_blank"
+                class="btn btn-secondary btn-sm download-btn"
+              >
                 Baixar
               </a>
             </div>
@@ -585,7 +600,12 @@ export class BoletimDetailComponent implements OnInit {
     if (!mimeType) return '📁';
     const lower = mimeType.toLowerCase();
     if (lower.includes('pdf')) return '📄';
-    if (lower.includes('word') || lower.includes('docx') || lower.includes('msword')) return '📝';
+    if (
+      lower.includes('word') ||
+      lower.includes('docx') ||
+      lower.includes('msword')
+    )
+      return '📝';
     if (lower.includes('image')) return '🖼️';
     if (lower.includes('video')) return '🎥';
     return '📁';

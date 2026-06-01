@@ -29,7 +29,7 @@
 
   .form-group {
     margin-bottom: 1.5rem;
-    
+
     label {
       display: block;
       margin-bottom: 0.5rem;
@@ -38,7 +38,8 @@
       color: var(--color-text-secondary);
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--color-border);
@@ -85,7 +86,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      
+
       b {
         font-size: 1.1rem;
         color: var(--color-primary);
@@ -94,7 +95,7 @@
 
     .btn-remove {
       color: var(--color-error, #ff4d4f);
-      
+
       &:hover {
         background: rgba(255, 77, 79, 0.1);
         border-color: #ff4d4f;

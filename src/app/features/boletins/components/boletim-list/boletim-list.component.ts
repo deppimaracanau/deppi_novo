@@ -15,7 +15,6 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-boletim-list',
-  standalone: false,
   template: `
     <div class="boletim-list-page animate-in">
       <header class="list-header">

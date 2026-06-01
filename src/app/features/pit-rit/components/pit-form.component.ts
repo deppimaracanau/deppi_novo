@@ -1,4 +1,9 @@
-import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
@@ -97,7 +102,9 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
                 class="form-select"
               >
                 <option value="Efetivo">Efetivo</option>
-                <option value="Dedicação Exclusiva (D.E.)">Dedicação Exclusiva (D.E.)</option>
+                <option value="Dedicação Exclusiva (D.E.)">
+                  Dedicação Exclusiva (D.E.)
+                </option>
                 <option value="Substituto">Substituto</option>
                 <option value="Temporário">Temporário</option>
                 <option value="Colaborador">Colaborador</option>
@@ -221,11 +228,19 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         </div>
 
         <div class="form-section">
-          <div class="total-alert" [class.total-excedido]="getGrandTotal() > getMaxCH()">
+          <div
+            class="total-alert"
+            [class.total-excedido]="getGrandTotal() > getMaxCH()"
+          >
             Carga Horária Total:
             <strong>{{ getGrandTotal() | number: '1.1-1' }}h</strong>
-            <span class="total-max"> (Máximo {{ data.identificacao.regime || '40h D.E.' }}: {{ getMaxCH() }}h)</span>
-            <span *ngIf="getGrandTotal() > getMaxCH()" class="total-aviso"> ⚠ CH excede o limite!</span>
+            <span class="total-max">
+              (Máximo {{ data.identificacao.regime || '40h D.E.' }}:
+              {{ getMaxCH() }}h)</span
+            >
+            <span *ngIf="getGrandTotal() > getMaxCH()" class="total-aviso">
+              ⚠ CH excede o limite!</span
+            >
           </div>
         </div>
 
@@ -488,10 +503,12 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         transition: background-color 0.3s;
         cursor: default !important;
       }
-      .btn-primary, .btn-secondary {
+      .btn-primary,
+      .btn-secondary {
         cursor: pointer;
       }
-      .btn-primary *, .btn-secondary * {
+      .btn-primary *,
+      .btn-secondary * {
         pointer-events: none;
       }
       .table-input {
@@ -714,7 +731,7 @@ export class PitFormComponent {
 
   getGrandTotal(): number {
     let total = 0;
-    this.sheetData.forEach(sec => {
+    this.sheetData.forEach((sec) => {
       sec.rows.forEach((row: any) => {
         if (!row.isSubtotal) total += this.getTValue(row.t);
       });
@@ -772,7 +789,10 @@ export class PitFormComponent {
       return;
     }
 
-    if ((regime === '40h' || regime === '40h D.E.') && totalAtual < maxPermitido) {
+    if (
+      (regime === '40h' || regime === '40h D.E.') &&
+      totalAtual < maxPermitido
+    ) {
       this.notificationService.showError(
         `Regime ${regime}: a carga horária deve ser exatamente ${maxPermitido}h. Atual: ${totalAtual.toFixed(1)}h. Ajuste as atividades.`
       );

@@ -1,4 +1,9 @@
-import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
@@ -133,7 +138,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
                 class="form-select"
               >
                 <option value="Efetivo">Efetivo</option>
-                <option value="Dedicação Exclusiva (D.E.)">Dedicação Exclusiva (D.E.)</option>
+                <option value="Dedicação Exclusiva (D.E.)">
+                  Dedicação Exclusiva (D.E.)
+                </option>
                 <option value="Substituto">Substituto</option>
                 <option value="Temporário">Temporário</option>
                 <option value="Colaborador">Colaborador</option>
@@ -393,7 +400,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         border-radius: 8px;
         font-size: 0.95rem;
         /* Apenas border-color na transition para evitar re-layout e flickering */
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
         background: var(--color-background-secondary);
         color: var(--color-text);
       }
@@ -409,7 +418,6 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
       .form-input::placeholder {
         color: var(--color-text-muted);
       }
-
 
       .form-group.has-error .form-input {
         border-color: var(--color-error);
@@ -448,7 +456,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         font-weight: 600;
         cursor: pointer;
       }
-      .btn-primary *, .btn-secondary * {
+      .btn-primary *,
+      .btn-secondary * {
         pointer-events: none;
       }
       .btn-primary:hover {

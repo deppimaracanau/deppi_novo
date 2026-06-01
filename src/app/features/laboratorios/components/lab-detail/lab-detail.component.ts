@@ -7,9 +7,8 @@ import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-lab-detail',
-  standalone: false,
   templateUrl: './lab-detail.component.html',
-  styleUrls: ['./lab-detail.component.scss']
+  styleUrls: ['./lab-detail.component.scss'],
 })
 export class LabDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -22,7 +21,7 @@ export class LabDetailComponent implements OnInit {
   isAdmin$: Observable<boolean> = this.authService.isAuthenticated$; // For now, any auth user. Can be refined to this.authService.currentUser$.pipe(map(u => !!u?.roles?.includes('ADMIN')))
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.loadLab(id);
@@ -39,20 +38,24 @@ export class LabDetailComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.router.navigate(['/laboratorios']);
-      }
+      },
     });
   }
 
   deleteLab() {
     if (!this.lab?.id) return;
-    if (confirm(`Tem certeza que deseja remover o laboratório "${this.lab.name}"?`)) {
+    if (
+      confirm(
+        `Tem certeza que deseja remover o laboratório "${this.lab.name}"?`
+      )
+    ) {
       this.labsService.delete(this.lab.id).subscribe({
         next: () => {
           this.router.navigate(['/laboratorios']);
         },
         error: () => {
           alert('Erro ao remover laboratório');
-        }
+        },
       });
     }
   }
