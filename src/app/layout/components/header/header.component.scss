@@ -55,11 +55,9 @@
   font-size: 1.4rem;
   letter-spacing: -0.03em;
   color: var(--color-text);
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-secondary)
-  );
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -119,7 +117,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,7 +144,7 @@
   background: rgba(var(--color-primary-rgb), 0.1);
   padding: 0.25rem 0.25rem 0.25rem 0.75rem;
   border-radius: var(--border-radius-full);
-  cursor: pointer;
+
   transition: all var(--transition-fast);
   border: 1px solid rgba(var(--color-primary-rgb), 0.1);
 
@@ -178,7 +176,7 @@
     display: flex;
     background: transparent;
     border: none;
-    cursor: pointer;
+
     padding: 0.5rem;
     z-index: 1001;
     align-items: center;
@@ -216,10 +214,12 @@
       span:nth-child(1) {
         transform: translateY(8px) rotate(45deg);
       }
+
       span:nth-child(2) {
         opacity: 0;
         transform: translateX(10px);
       }
+
       span:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
       }

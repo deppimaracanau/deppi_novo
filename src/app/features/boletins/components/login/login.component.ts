@@ -234,7 +234,7 @@ import { CommonModule } from '@angular/common';
         right: 1rem;
         background: none;
         border: none;
-        cursor: pointer;
+        
         font-size: 1.2rem;
         color: var(--color-text-muted);
       }

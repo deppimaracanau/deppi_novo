@@ -224,7 +224,7 @@ import { Subscription } from 'rxjs';
         flex-direction: column;
         padding: 2.5rem;
         border-radius: var(--border-radius-lg);
-        cursor: pointer;
+        
         position: relative;
         overflow: hidden;
       }
@@ -347,7 +347,7 @@ import { Subscription } from 'rxjs';
         font-size: 0.85rem;
         font-weight: 800;
         color: var(--color-primary);
-        cursor: pointer;
+        
         padding: 0;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -368,7 +368,7 @@ import { Subscription } from 'rxjs';
         border: 1px solid var(--color-border-light);
         border-radius: 0.5rem;
         padding: 0.5rem;
-        cursor: pointer;
+        
         font-size: 1rem;
         display: flex;
         align-items: center;
@@ -432,7 +432,7 @@ import { Subscription } from 'rxjs';
         border: 1px solid var(--color-border);
         color: var(--color-text);
         font-weight: 600;
-        cursor: pointer;
+        
         transition: all var(--transition-fast);
       }
 

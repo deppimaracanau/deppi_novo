@@ -229,7 +229,7 @@ import { CommonModule } from '@angular/common';
         border: 1px solid rgba(var(--color-secondary-rgb), 0.1);
         color: var(--color-secondary);
         border-radius: var(--border-radius-md);
-        cursor: pointer;
+        
         font-weight: 700;
         font-size: 0.85rem;
         transition: all var(--transition-fast);

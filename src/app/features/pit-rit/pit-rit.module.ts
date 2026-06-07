@@ -177,7 +177,7 @@ import { RitFormComponent } from './components/rit-form.component';
         border: 1px solid #ddd;
         background: white;
         font-weight: 600;
-        cursor: pointer;
+        
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
@@ -236,7 +236,7 @@ import { RitFormComponent } from './components/rit-form.component';
         font-weight: 600;
         text-decoration: none;
         transition: all 0.33s cubic-bezier(0.4, 0, 0.2, 1);
-        cursor: pointer;
+        
         border: none;
       }
       .btn-primary {
@@ -312,4 +312,4 @@ const routes: Routes = [{ path: '', component: PitRitComponent }];
   ],
   providers: [],
 })
-export class PitRitModule {}
+export class PitRitModule { }

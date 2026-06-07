@@ -268,7 +268,6 @@ import { Boletim } from '../../../../shared/models';
         color: var(--color-text-secondary);
         font-weight: 600;
         font-size: 0.9rem;
-        cursor: pointer;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -441,7 +440,6 @@ import { Boletim } from '../../../../shared/models';
         position: relative;
         padding-left: 35px;
         margin-bottom: 12px;
-        cursor: pointer;
         font-size: 1rem;
         font-weight: 500;
         user-select: none;
@@ -451,7 +449,7 @@ import { Boletim } from '../../../../shared/models';
       .custom-checkbox input {
         position: absolute;
         opacity: 0;
-        cursor: pointer;
+        
         height: 0;
         width: 0;
       }
@@ -590,7 +588,7 @@ import { Boletim } from '../../../../shared/models';
         background: none;
         border: none;
         font-size: 1.2rem;
-        cursor: pointer;
+        
         padding: 0.5rem;
         border-radius: var(--border-radius-sm);
         transition: background var(--transition-fast);
