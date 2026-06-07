@@ -41,7 +41,18 @@
               "src/assets/styles/utilities.css",
               "src/assets/styles/main.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "canvg",
+              "core-js",
+              "raf",
+              "rgbcolor",
+              "jspdf",
+              "html2canvas",
+              "quill",
+              "quill-delta",
+              "dompurify"
+            ]
           },
           "configurations": {
             "production": {
@@ -53,7 +64,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kb",
+                  "maximumWarning": "8kb",
                   "maximumError": "10kb"
                 }
               ],

@@ -458,7 +458,7 @@ button {
   color: #ffffff;
 
   &:hover {
-    background: darken(#e40521, 10%);
+    filter: brightness(0.88);
     transform: translateY(-2px);
     text-decoration: none;
     color: #ffffff;
