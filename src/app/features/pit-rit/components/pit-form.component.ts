@@ -339,7 +339,8 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         max-width: 1200px;
         margin: 2rem auto;
         border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        background-color: var(--color-background);
+        box-shadow: var(--shadow-md);
         transform: translateZ(0); /* Estabilização de renderização */
         backface-visibility: hidden;
       }
@@ -411,13 +412,13 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         font-size: 0.85rem;
       }
       .spreadsheet-table th {
-        background: rgba(0, 0, 0, 0.05);
+        background: var(--color-background-hover);
         text-align: center;
         color: var(--color-text);
         font-weight: bold;
       }
       .section-row td {
-        background: rgba(0, 0, 0, 0.1);
+        background: var(--color-background-secondary);
         font-weight: bold;
         font-size: 0.9rem;
         text-align: left;
@@ -441,7 +442,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         background: rgba(var(--color-primary-rgb), 0.1);
       }
       .readonly-cell {
-        background: rgba(0, 0, 0, 0.02);
+        background: var(--color-background-hover);
         text-align: center;
         color: var(--color-text-muted);
       }
@@ -486,7 +487,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         font-weight: 600;
       }
       .period-cell {
-        background: rgba(0, 0, 0, 0.05);
+        background: var(--color-background-hover);
         font-weight: 700;
         font-size: 0.8rem;
         text-align: center;
@@ -498,8 +499,10 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         font-size: 0.8rem;
         height: 36px;
         width: 100%;
-        border: 1px solid #ddd;
+        border: 1px solid var(--color-border);
         border-radius: 4px;
+        background: var(--color-background-secondary);
+        color: var(--color-text);
         transition: background-color 0.3s;
         cursor: default !important;
       }

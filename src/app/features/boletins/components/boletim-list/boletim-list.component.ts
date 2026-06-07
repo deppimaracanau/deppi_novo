@@ -224,7 +224,9 @@ import { Subscription } from 'rxjs';
         flex-direction: column;
         padding: 2.5rem;
         border-radius: var(--border-radius-lg);
-        
+        background-color: var(--color-background-secondary);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-sm);
         position: relative;
         overflow: hidden;
       }
@@ -391,6 +393,9 @@ import { Subscription } from 'rxjs';
         grid-column: 1 / -1;
         text-align: center;
         padding: 10rem 2rem;
+        background-color: var(--color-background-secondary);
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--color-border);
       }
 
       .empty-visual {
