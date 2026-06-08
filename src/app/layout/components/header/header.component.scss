@@ -22,6 +22,12 @@
   height: 64px;
   border-radius: var(--border-radius-full);
   box-shadow: var(--shadow-lg);
+  
+  /* Glassmorphism Effect */
+  background: rgba(var(--color-surface-rgb), 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.15);
 }
 
 .nav-brand {
