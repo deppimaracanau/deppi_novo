@@ -55,9 +55,11 @@
   font-size: 1.4rem;
   letter-spacing: -0.03em;
   color: var(--color-text);
-  background: linear-gradient(135deg,
-      var(--color-primary),
-      var(--color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

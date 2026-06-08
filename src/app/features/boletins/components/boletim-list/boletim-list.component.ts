@@ -351,7 +351,7 @@ import { Subscription } from 'rxjs';
         font-size: 0.85rem;
         font-weight: 800;
         color: var(--color-primary);
-        
+
         padding: 0;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -372,7 +372,7 @@ import { Subscription } from 'rxjs';
         border: 1px solid var(--color-border-light);
         border-radius: 0.5rem;
         padding: 0.5rem;
-        
+
         font-size: 1rem;
         display: flex;
         align-items: center;
@@ -442,7 +442,7 @@ import { Subscription } from 'rxjs';
         border: 1px solid var(--color-border);
         color: var(--color-text);
         font-weight: 600;
-        
+
         transition: all var(--transition-fast);
       }
 
