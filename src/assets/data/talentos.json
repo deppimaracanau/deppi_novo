@@ -1,0 +1,17 @@
+[
+  {
+    "id": "e4d909c2",
+    "nome": "João Victor (Exemplo)",
+    "curso": "Engenharia de Computação",
+    "semestre": "6º Semestre",
+    "superpoder": "Desenvolvimento Full Stack",
+    "bio": "Estudante apaixonado por tecnologia e inovação, buscando oportunidade de estágio.",
+    "skills": [
+      "Programação e Desenvolvimento",
+      "Análise de Software"
+    ],
+    "github": "https://github.com",
+    "linkedin": "https://linkedin.com",
+    "avatar_seed": "joao-victor-exemplo"
+  }
+]
