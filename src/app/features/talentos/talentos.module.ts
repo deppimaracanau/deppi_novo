@@ -908,6 +908,97 @@ function diceBearUrl(seed: string): string {
           letter-spacing: -1px;
         }
       }
+
+      /* ─── Dark Mode ──────────────────────────────────── */
+      :host-context([data-theme='dark']) .hub-container {
+        background: var(--color-background);
+      }
+      :host-context([data-theme='dark']) .hero-title,
+      :host-context([data-theme='dark']) .card-name,
+      :host-context([data-theme='dark']) .power-value {
+        color: var(--color-text);
+      }
+      :host-context([data-theme='dark']) .hero-sub,
+      :host-context([data-theme='dark']) .card-course,
+      :host-context([data-theme='dark']) .card-bio,
+      :host-context([data-theme='dark']) .loading-state,
+      :host-context([data-theme='dark']) .empty-state {
+        color: var(--color-text-secondary);
+      }
+      :host-context([data-theme='dark']) .hero-accent {
+        color: var(--color-background);
+        background: var(--color-text);
+      }
+      :host-context([data-theme='dark']) .hero-badge {
+        background: var(--color-text);
+        color: var(--color-background);
+        border-color: var(--color-text);
+      }
+      :host-context([data-theme='dark']) .stat-pill,
+      :host-context([data-theme='dark']) .search-wrapper,
+      :host-context([data-theme='dark']) .chip,
+      :host-context([data-theme='dark']) .card-face.card-front,
+      :host-context([data-theme='dark']) .card-power {
+        background: var(--color-surface);
+        border-color: var(--color-border);
+        color: var(--color-text);
+      }
+      :host-context([data-theme='dark']) .search-input {
+        color: var(--color-text);
+      }
+      :host-context([data-theme='dark']) .stat-pill,
+      :host-context([data-theme='dark']) .search-wrapper {
+        box-shadow: 3px 3px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .card-face {
+        box-shadow: 4px 4px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .chip:hover,
+      :host-context([data-theme='dark']) .chip.active {
+        background: var(--color-text);
+        color: var(--color-background);
+        box-shadow: 3px 3px 0 #f5c842;
+        border-color: var(--color-text);
+      }
+      :host-context([data-theme='dark']) .card-face.card-back {
+        background: var(--color-surface-secondary);
+        border-color: var(--color-border);
+        box-shadow: 4px 4px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .card-avatar {
+        background: var(--color-background);
+        border-color: var(--color-border);
+      }
+      :host-context([data-theme='dark']) .power-label,
+      :host-context([data-theme='dark']) .card-tap-hint {
+        color: var(--color-text-secondary);
+      }
+      :host-context([data-theme='dark'])
+        .talent-card:not(.blurred-card):hover
+        .card-front {
+        box-shadow: 8px 8px 0 rgba(255, 255, 255, 0.15);
+      }
+      :host-context([data-theme='dark']) .cta-card {
+        border-color: var(--color-border);
+        box-shadow: 6px 6px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .cta-btn {
+        background: var(--color-text);
+        color: var(--color-background);
+        border-color: var(--color-border);
+        box-shadow: 3px 3px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .github-btn {
+        background: var(--color-surface);
+        color: var(--color-text);
+        border-color: var(--color-border);
+      }
+      :host-context([data-theme='dark']) .talent-card.blurred-card::after {
+        box-shadow: 4px 4px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .cta-text h2 {
+        color: #1a1a1a;
+      }
     `,
   ],
 })
