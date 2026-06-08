@@ -29,11 +29,11 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     <div class="rit-form-container glass-card animate-fade-in">
       <div class="form-section">
         <div class="alert-info">
-          <h4 style="margin-bottom: 8px; color: #0066b3;">
+          <h4 style="margin-bottom: 8px; color: var(--color-info);">
             Orientações para preenchimento do RIT
           </h4>
           <ol
-            style="margin-left: 20px; font-size: 0.9rem; line-height: 1.5; color: #444;"
+            style="margin-left: 20px; font-size: 0.9rem; line-height: 1.5; color: var(--color-text-secondary);"
           >
             <li>
               A carga horária (C.H.) deve ser contabilizada em horas de 60
@@ -322,14 +322,18 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         max-width: 1000px;
         margin: 2rem auto;
         border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-md);
         transform: translateZ(0);
         backface-visibility: hidden;
       }
       .alert-info {
-        background: #e3f2fd;
+        background: var(--color-background-hover);
         padding: 1.5rem;
-        border-left: 4px solid #1565c0;
+        border-left: 4px solid var(--color-info);
         border-radius: 8px;
         margin-bottom: 2rem;
       }
