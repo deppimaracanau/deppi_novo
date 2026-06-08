@@ -102,7 +102,7 @@ import { NotificationMessage } from '../../../shared/models';
         border: none;
         font-size: 1.5rem;
         color: var(--color-text-secondary);
-        
+
         padding: 4px;
         line-height: 1;
         opacity: 0.6;

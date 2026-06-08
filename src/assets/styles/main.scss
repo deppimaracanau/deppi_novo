@@ -51,7 +51,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   // Transição suave ao alternar temas (ThemeService)
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
 }
 
 // Seleção de texto com cores da marca IFCE
@@ -135,7 +137,9 @@ p {
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: color var(--transition-fast), opacity var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    opacity var(--transition-fast);
 
   &:hover {
     color: var(--color-primary-dark);
@@ -197,7 +201,9 @@ select {
   border: 2px solid var(--color-border);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-sm) var(--spacing-md);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
   width: 100%;
 
   &:focus {
@@ -326,7 +332,9 @@ button {
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+  transition:
+    box-shadow var(--transition-normal),
+    transform var(--transition-normal);
   position: relative;
   overflow: hidden;
 
@@ -343,7 +351,11 @@ button {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-secondary)
+    );
     transform: scaleX(0);
     transform-origin: left;
     transition: transform var(--transition-normal);
@@ -535,7 +547,9 @@ button {
   font-size: var(--font-size-base);
   background: var(--color-background);
   color: var(--color-text);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 
   &:focus {
     outline: none;
@@ -732,7 +746,11 @@ button {
     display: block;
     width: 60px;
     height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-secondary)
+    );
     border-radius: var(--border-radius-full);
     margin: var(--spacing-sm) auto 0;
   }
@@ -761,7 +779,11 @@ button {
   display: inline-flex;
   align-items: center;
   padding: 0.3em var(--spacing-md);
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
   color: #ffffff;
   font-size: var(--font-size-sm);
   font-weight: 600;
@@ -783,10 +805,12 @@ button {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg,
-        var(--color-primary),
-        var(--color-secondary),
-        var(--color-accent));
+    background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-secondary),
+      var(--color-accent)
+    );
   }
 }
 
@@ -805,7 +829,9 @@ button {
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition:
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 
   &:hover {
     box-shadow: var(--shadow-md);
@@ -820,7 +846,11 @@ button {
   line-height: 1;
   margin-bottom: var(--spacing-xs);
   // Efeito gradiente no número
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -878,7 +908,6 @@ button {
 
 // Pulsação suave para indicadores de status ativo
 @keyframes pulsar {
-
   0%,
   100% {
     opacity: 1;
@@ -892,7 +921,7 @@ button {
 }
 
 // Entrada de conteúdo das páginas via router-outlet
-router-outlet+* {
+router-outlet + * {
   animation: aparecer 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -1003,7 +1032,6 @@ router-outlet+* {
 
 // Desabilita animações para usuários que preferem menos movimento
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -1013,7 +1041,7 @@ router-outlet+* {
     scroll-behavior: auto !important;
   }
 
-  router-outlet+* {
+  router-outlet + * {
     animation: none;
   }
 }
@@ -1037,7 +1065,7 @@ router-outlet+* {
 // Modo escuro automático (sistema operacional)
 // Só ativado quando o atributo data-theme="auto" está presente
 @media (prefers-color-scheme: dark) {
-  [data-theme="auto"] {
+  [data-theme='auto'] {
     --color-background: #0f172a;
     --color-background-secondary: #1e293b;
     --color-background-hover: #334155;
@@ -1048,7 +1076,7 @@ router-outlet+* {
     --color-border-light: #1e293b;
     --glass-bg: rgba(15, 23, 42, 0.7);
     --glass-border: rgba(255, 255, 255, 0.05);
-    
+
     /* Contrastes ajustados para Modo Escuro */
     --color-primary: #4ade80;
     --color-primary-rgb: 74, 222, 128;

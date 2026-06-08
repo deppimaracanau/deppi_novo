@@ -188,7 +188,7 @@ import { CommonModule } from '@angular/common';
         font-size: 0.9rem;
         font-weight: 700;
         color: var(--color-primary);
-        
+
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -418,7 +418,7 @@ import { CommonModule } from '@angular/common';
         color: white;
         border: none;
         box-shadow: var(--shadow-xl);
-        
+
         display: flex;
         align-items: center;
         justify-content: center;

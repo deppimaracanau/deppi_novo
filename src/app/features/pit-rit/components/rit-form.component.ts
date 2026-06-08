@@ -446,7 +446,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.8rem 2.5rem;
         border-radius: 50px;
         font-weight: 600;
-        
+
         transition: all 0.2s;
       }
       .btn-secondary {
@@ -456,7 +456,6 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
-        
       }
       .btn-primary *,
       .btn-secondary * {

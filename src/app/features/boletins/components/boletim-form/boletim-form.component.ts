@@ -449,7 +449,7 @@ import { Boletim } from '../../../../shared/models';
       .custom-checkbox input {
         position: absolute;
         opacity: 0;
-        
+
         height: 0;
         width: 0;
       }
@@ -588,7 +588,7 @@ import { Boletim } from '../../../../shared/models';
         background: none;
         border: none;
         font-size: 1.2rem;
-        
+
         padding: 0.5rem;
         border-radius: var(--border-radius-sm);
         transition: background var(--transition-fast);

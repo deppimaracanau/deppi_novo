@@ -5,6 +5,8 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+  schedule:
+    - cron: "0 2 * * *" # Executa todo dia as 2 da manhã para pegar novos talentos
 
 env:
   NODE_VERSION: "22"
@@ -33,6 +35,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
           cache-dependency-path: "./package-lock.json"
+
+      - name: Sync Talentos Data
+        run: python3 bin/sync_talentos.py
 
       - name: Install dependencies
         run: npm ci
@@ -222,6 +227,9 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Sync Talentos Data
+        run: python3 bin/sync_talentos.py
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3

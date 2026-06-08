@@ -509,7 +509,6 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
       }
       .btn-primary,
       .btn-secondary {
-        
       }
       .btn-primary *,
       .btn-secondary * {
@@ -619,7 +618,7 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
-        
+
         transition: transform 0.2s;
       }
       .btn-secondary {
@@ -629,7 +628,6 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         padding: 0.8rem 2rem;
         border-radius: 50px;
         font-weight: 600;
-        
       }
       .btn-primary:hover {
         transform: translateY(-2px);

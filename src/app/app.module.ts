@@ -180,6 +180,13 @@ import { AuthGuard } from './core/guards/auth.guard';
             ),
         },
         {
+          path: 'talentos',
+          loadChildren: () =>
+            import('./features/talentos/talentos.module').then(
+              (m) => m.TalentosModule
+            ),
+        },
+        {
           path: '**',
           redirectTo: 'home',
         },
