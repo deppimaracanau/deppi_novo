@@ -339,7 +339,10 @@ import { PitTableRow, PIT_SHEET_DATA } from '../constants/pit.constants';
         max-width: 1200px;
         margin: 2rem auto;
         border-radius: 20px;
-        background-color: var(--color-background);
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
+        border: 1px solid var(--glass-border);
         box-shadow: var(--shadow-md);
         transform: translateZ(0); /* Estabilização de renderização */
         backface-visibility: hidden;
