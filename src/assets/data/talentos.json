@@ -1,14 +1,30 @@
 [
   {
-    "id": "e4d909c2",
-    "nome": "João Victor (Exemplo)",
-    "curso": "Engenharia de Computação",
-    "semestre": "6º Semestre",
-    "superpoder": "Desenvolvimento Full Stack",
-    "bio": "Estudante apaixonado por tecnologia e inovação, buscando oportunidade de estágio.",
-    "skills": ["Programação e Desenvolvimento", "Análise de Software"],
-    "github": "https://github.com",
-    "linkedin": "https://linkedin.com",
-    "avatar_seed": "joao-victor-exemplo"
+    "id": "8534be97",
+    "nome": "Antônio Augusto Frota martins",
+    "curso": "Técnico Integrado em Informática",
+    "semestre": "4",
+    "superpoder": "Programação e Desenvolvimento (Front-...",
+    "bio": "Programaçao em c, Java, python, domínio da ferramenta Power bi, Photoshop, coreldraw, pacote office.\n\nProatividade, aprendizado rápido, liderança, ...",
+    "skills": [
+      "Programação e Desenvolvimento (Front-end/Back-end/Mobile)",
+      "Redes de Computadores e Segurança",
+      "Análise e Qualidade de Software",
+      "Eletrônica e Automação Industrial"
+    ],
+    "github": null,
+    "linkedin": null,
+    "avatar_seed": "antonio-augusto-frota-martins",
+    "foto": "https://drive.google.com/uc?export=view&id=19wNNp04wxuWrcnV7n85B_c7KE9y3ukeu",
+    "turno": "Diurno (Manhã e/ou Tarde)",
+    "disponibilidade": "Flexível (A definir)",
+    "idiomas": [
+      "Inglês: Intermediário",
+      "Espanhol: Básico",
+      "Outro: Básico"
+    ],
+    "experiencia": "Sim, informal (projetos, voluntariado)",
+    "curriculo": "https://roaring-melba-589f50.netlify.app/",
+    "autorizado": true
   }
 ]
