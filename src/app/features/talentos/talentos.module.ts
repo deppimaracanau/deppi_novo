@@ -264,6 +264,10 @@ function diceBearUrl(seed: string): string {
           *ngFor="let t of filtered; let i = index"
           [style.animation-delay]="i * 60 + 'ms'"
           (click)="openCard(t)"
+          (touchstart)="onTouchStart($event)"
+          (touchend)="onTouchEnd($event, t)"
+          (mousedown)="onTouchStart($event)"
+          (mouseup)="onTouchEnd($event, t)"
           [class.flipped]="flippedId === t.id"
           [class.blurred-card]="t.autorizado === false"
           tabindex="0"
@@ -296,7 +300,7 @@ function diceBearUrl(seed: string): string {
               </div>
               <p class="card-bio">{{ t.bio }}</p>
             </div>
-            <div class="card-tap-hint">toque para ver skills ↗</div>
+            <div class="card-tap-hint">toque para ver skills ↗ &bull; arraste para contatar ↔️</div>
           </div>
 
           <!-- Back -->
@@ -336,17 +340,6 @@ function diceBearUrl(seed: string): string {
             </div>
 
             <div class="card-links">
-              <!-- Botão principal de contato corporativo -->
-              <a
-                [href]="getContactUrl(t)"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-btn contact-btn"
-                (click)="$event.stopPropagation()"
-                title="Sinalizar interesse para a Coordenação de Estágio"
-              >
-                🤝 Tenho Interesse
-              </a>
               <a
                 *ngIf="t.curriculo"
                 [href]="t.curriculo"
@@ -1082,6 +1075,10 @@ export class TalentosComponent implements OnInit {
   loading = true;
   flippedId: string | null = null;
 
+  touchStartX = 0;
+  touchStartY = 0;
+  isSwiping = false;
+
   readonly diceBearUrl = diceBearUrl;
   readonly getEmoji = getSkillEmoji;
 
@@ -1125,7 +1122,45 @@ export class TalentosComponent implements OnInit {
   }
 
   openCard(t: Talento): void {
+    if (this.isSwiping) {
+      this.isSwiping = false;
+      return;
+    }
     this.flippedId = this.flippedId === t.id ? null : t.id;
+  }
+
+  onTouchStart(event: TouchEvent | MouseEvent): void {
+    this.isSwiping = false;
+    if (event instanceof MouseEvent) {
+      this.touchStartX = event.screenX;
+      this.touchStartY = event.screenY;
+    } else {
+      this.touchStartX = event.changedTouches[0].screenX;
+      this.touchStartY = event.changedTouches[0].screenY;
+    }
+  }
+
+  onTouchEnd(event: TouchEvent | MouseEvent, t: Talento): void {
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    if (event instanceof MouseEvent) {
+      touchEndX = event.screenX;
+      touchEndY = event.screenY;
+    } else {
+      touchEndX = event.changedTouches[0].screenX;
+      touchEndY = event.changedTouches[0].screenY;
+    }
+
+    const deltaX = touchEndX - this.touchStartX;
+    const deltaY = touchEndY - this.touchStartY;
+
+    // Se o arraste horizontal for maior que 50px e não for scroll vertical
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 50) {
+      this.isSwiping = true;
+      const url = this.getContactUrl(t);
+      window.open(url, '_blank');
+    }
   }
 
   handleImageError(event: any, t: Talento): void {
