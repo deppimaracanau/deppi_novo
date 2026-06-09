@@ -279,6 +279,7 @@ function diceBearUrl(seed: string): string {
             <div class="card-header-stripe"></div>
             <img
               class="card-avatar"
+              [style.transform]="t.nome.includes('Mariana') ? 'rotate(180deg)' : 'none'"
               [src]="t.foto ? t.foto : diceBearUrl(t.avatar_seed)"
               (error)="handleImageError($event, t)"
               [alt]="'Avatar de ' + t.nome"
@@ -607,6 +608,7 @@ function diceBearUrl(seed: string): string {
         cursor: pointer;
         opacity: 0;
         animation: fadeUp 0.5s ease forwards;
+        touch-action: pan-y;
       }
       .talent-card.blurred-card .card-face {
         filter: blur(6px) grayscale(50%);
@@ -1155,8 +1157,8 @@ export class TalentosComponent implements OnInit {
     const deltaX = touchEndX - this.touchStartX;
     const deltaY = touchEndY - this.touchStartY;
 
-    // Se o arraste horizontal for maior que 50px e não for scroll vertical
-    if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 50) {
+    // Se o arraste horizontal for maior que 40px e não for um scroll vertical muito grande
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaY) < 100) {
       this.isSwiping = true;
       const url = this.getContactUrl(t);
       window.open(url, '_blank');
