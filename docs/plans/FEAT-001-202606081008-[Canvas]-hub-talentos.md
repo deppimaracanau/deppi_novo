@@ -78,3 +78,9 @@
 * **Entity**: `Talento` in `talentos.module.ts`.
 * **Action**: Introduced `.market-badge` UI element that conditionally displays `⚡ Pronto pro mercado` if `t.experiencia` is truthy and includes the word "Sim".
 * **Constraint**: Must match neo-brutalism design and support Dark Mode seamlessly. Done via inline `[class]` binding and `:host-context([data-theme="dark"])`.
+
+### SPDD Feature Update: Contact Button (Ideia 1)
+* **Context**: Recruiters need a way to contact students without exposing personal phone numbers or emails.
+* **Entity**: `Talento` in `talentos.module.ts`.
+* **Action**: Added a prominent "🤝 Tenho Interesse" button on the back of the student card, linking to a Google Form. The form acts as a proxy to invert control (the student will receive an email to contact the recruiter).
+* **Constraint**: Button must be highly visible (full width), match neo-brutalism, and link to the provided Google Form.

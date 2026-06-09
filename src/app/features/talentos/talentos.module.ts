@@ -330,6 +330,17 @@ function diceBearUrl(seed: string): string {
             </div>
 
             <div class="card-links">
+              <!-- Botão principal de contato corporativo -->
+              <a
+                href="https://forms.gle/MdmFs5a7PDRHnvPg7"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-btn contact-btn"
+                (click)="$event.stopPropagation()"
+                title="Sinalizar interesse para a Coordenação de Estágio"
+              >
+                🤝 Tenho Interesse
+              </a>
               <a
                 *ngIf="t.curriculo"
                 [href]="t.curriculo"
@@ -847,6 +858,31 @@ function diceBearUrl(seed: string): string {
       .link-btn:hover {
         opacity: 0.85;
         transform: scale(0.97);
+      }
+      .contact-btn {
+        flex: 1 1 100%;
+        background-color: #5746e3;
+        color: #fff;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.85rem;
+        border: 2px solid #1a1a1a;
+        box-shadow: 2px 2px 0px #1a1a1a;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+      }
+      .contact-btn:hover {
+        background-color: #4a3bc2;
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4px 4px 0px #1a1a1a;
+        opacity: 1 !important;
+      }
+      :host-context([data-theme="dark"]) .contact-btn {
+        background-color: #7b6ae0;
+        border: 2px solid #fff;
+        box-shadow: 2px 2px 0px #fff;
+      }
+      :host-context([data-theme="dark"]) .contact-btn:hover {
+        box-shadow: 4px 4px 0px #fff;
       }
       .github-btn {
         background: #f5f0e8;
