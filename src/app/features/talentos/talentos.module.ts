@@ -206,7 +206,11 @@ function diceBearUrl(seed: string): string {
         <div class="hero-stats">
           <div class="stat-pill">🎓 {{ talentos.length }} talentos</div>
           <div class="stat-pill">🌍 Todos os cursos</div>
-          <div class="stat-pill">⚡ Prontos pro mercado</div>
+          <div class="stat-pill">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="margin-right: 4px; vertical-align: -2px;">
+              <path d="M13 2L3 14h7v8l10-12h-7V2z"/>
+            </svg> Prontos pro mercado
+          </div>
         </div>
       </section>
 
@@ -282,7 +286,9 @@ function diceBearUrl(seed: string): string {
                 class="market-badge"
                 *ngIf="t.experiencia && t.experiencia.includes('Sim')"
               >
-                ⚡ Pronto pro mercado
+                <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12" style="margin-right: 2px; vertical-align: -1px;">
+                  <path d="M13 2L3 14h7v8l10-12h-7V2z"/>
+                </svg> Pronto pro mercado
               </div>
               <div class="card-power">
                 <span class="power-label">SUPERPODER</span>
