@@ -338,7 +338,7 @@ function diceBearUrl(seed: string): string {
             <div class="card-links">
               <!-- Botão principal de contato corporativo -->
               <a
-                href="https://forms.gle/MdmFs5a7PDRHnvPg7"
+                [href]="getContactUrl(t)"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="link-btn contact-btn"
@@ -1131,6 +1131,17 @@ export class TalentosComponent implements OnInit {
   handleImageError(event: any, t: Talento): void {
     // Se a imagem do Google Drive falhar (ex: erro 403), usa o fallback do DiceBear
     event.target.src = this.diceBearUrl(t.avatar_seed);
+  }
+
+  getContactUrl(t: Talento): string {
+    const baseUrl =
+      'https://docs.google.com/forms/d/e/1FAIpQLSeqO9TJy11NAZYZKn1GasC07wff8551yds2-ue-gz26TogY-g/viewform';
+    const params = new URLSearchParams();
+    params.set('usp', 'pp_url');
+    // Preenche com o nome e ID do talento (ex: Mariana Silva de Holanda (9ab0a068))
+    params.set('entry.100655529', `${t.nome} (${t.id.substring(0, 8)})`);
+
+    return `${baseUrl}?${params.toString()}`;
   }
 }
 
