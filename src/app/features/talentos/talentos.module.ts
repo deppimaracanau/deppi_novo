@@ -1147,16 +1147,19 @@ export class TalentosComponent implements OnInit {
     elem.style.transition = 'none';
 
     if (event.type.startsWith('mouse')) {
-      this.touchStartX = event.screenX;
-      this.touchStartY = event.screenY;
+      this.touchStartX = event.clientX;
+      this.touchStartY = event.clientY;
+    } else if (event.touches && event.touches.length > 0) {
+      this.touchStartX = event.touches[0].clientX;
+      this.touchStartY = event.touches[0].clientY;
     } else if (event.changedTouches && event.changedTouches.length > 0) {
-      this.touchStartX = event.changedTouches[0].screenX;
-      this.touchStartY = event.changedTouches[0].screenY;
+      this.touchStartX = event.changedTouches[0].clientX;
+      this.touchStartY = event.changedTouches[0].clientY;
     }
   }
 
   onTouchMove(event: any): void {
-    if (!this.activeCardElement || !this.touchStartX) return;
+    if (!this.activeCardElement) return;
 
     let currentX = 0;
     if (event.type.startsWith('mouse')) {
@@ -1165,9 +1168,11 @@ export class TalentosComponent implements OnInit {
         this.onTouchEnd(event, null);
         return;
       }
-      currentX = event.screenX;
+      currentX = event.clientX;
+    } else if (event.touches && event.touches.length > 0) {
+      currentX = event.touches[0].clientX;
     } else if (event.changedTouches && event.changedTouches.length > 0) {
-      currentX = event.changedTouches[0].screenX;
+      currentX = event.changedTouches[0].clientX;
     }
 
     const deltaX = currentX - this.touchStartX;
@@ -1193,11 +1198,14 @@ export class TalentosComponent implements OnInit {
     let touchEndY = 0;
 
     if (event.type.startsWith('mouse')) {
-      touchEndX = event.screenX;
-      touchEndY = event.screenY;
+      touchEndX = event.clientX;
+      touchEndY = event.clientY;
     } else if (event.changedTouches && event.changedTouches.length > 0) {
-      touchEndX = event.changedTouches[0].screenX;
-      touchEndY = event.changedTouches[0].screenY;
+      touchEndX = event.changedTouches[0].clientX;
+      touchEndY = event.changedTouches[0].clientY;
+    } else if (event.touches && event.touches.length > 0) {
+      touchEndX = event.touches[0].clientX;
+      touchEndY = event.touches[0].clientY;
     } else {
       return;
     }
