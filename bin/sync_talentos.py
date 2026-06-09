@@ -93,9 +93,9 @@ def main():
         if foto_url:
             drive_id = extract_drive_id(foto_url)
             if drive_id:
-                # O endpoint /uc foi bloqueado pelo Google para uso em tag <img> (retorna 403).
-                # Usamos o endpoint de thumbnail como alternativa mais estável.
-                foto_direta = f"https://drive.google.com/thumbnail?id={drive_id}&sz=w800"
+                # O endpoint lh3.googleusercontent.com/d/ preserva os metadados EXIF (orientação da foto) 
+                # e funciona diretamente agora que a pasta é pública.
+                foto_direta = f"https://lh3.googleusercontent.com/d/{drive_id}"
                 
         avatar_seed = slugify(nome)
         email = row.get('Endereço de e-mail', '')

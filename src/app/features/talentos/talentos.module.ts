@@ -690,6 +690,7 @@ function diceBearUrl(seed: string): string {
         margin: 1rem auto 0;
         display: block;
         background: #f0e8d8;
+        object-fit: cover;
       }
       .card-body {
         padding: 0.75rem 1.25rem;
