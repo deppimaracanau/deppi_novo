@@ -279,6 +279,7 @@ function diceBearUrl(seed: string): string {
             <div class="card-header-stripe"></div>
             <img
               class="card-avatar"
+              draggable="false"
               [style.transform]="t.nome.includes('Mariana') ? 'rotate(180deg)' : 'none'"
               [src]="t.foto ? t.foto : diceBearUrl(t.avatar_seed)"
               (error)="handleImageError($event, t)"
@@ -609,6 +610,8 @@ function diceBearUrl(seed: string): string {
         opacity: 0;
         animation: fadeUp 0.5s ease forwards;
         touch-action: pan-y;
+        user-select: none;
+        -webkit-user-select: none;
       }
       .talent-card.blurred-card .card-face {
         filter: blur(6px) grayscale(50%);
@@ -1131,27 +1134,29 @@ export class TalentosComponent implements OnInit {
     this.flippedId = this.flippedId === t.id ? null : t.id;
   }
 
-  onTouchStart(event: TouchEvent | MouseEvent): void {
+  onTouchStart(event: any): void {
     this.isSwiping = false;
-    if (event instanceof MouseEvent) {
+    if (event.type.startsWith('mouse')) {
       this.touchStartX = event.screenX;
       this.touchStartY = event.screenY;
-    } else {
+    } else if (event.changedTouches && event.changedTouches.length > 0) {
       this.touchStartX = event.changedTouches[0].screenX;
       this.touchStartY = event.changedTouches[0].screenY;
     }
   }
 
-  onTouchEnd(event: TouchEvent | MouseEvent, t: Talento): void {
+  onTouchEnd(event: any, t: Talento): void {
     let touchEndX = 0;
     let touchEndY = 0;
 
-    if (event instanceof MouseEvent) {
+    if (event.type.startsWith('mouse')) {
       touchEndX = event.screenX;
       touchEndY = event.screenY;
-    } else {
+    } else if (event.changedTouches && event.changedTouches.length > 0) {
       touchEndX = event.changedTouches[0].screenX;
       touchEndY = event.changedTouches[0].screenY;
+    } else {
+      return;
     }
 
     const deltaX = touchEndX - this.touchStartX;
