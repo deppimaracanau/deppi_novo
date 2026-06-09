@@ -93,7 +93,9 @@ def main():
         if foto_url:
             drive_id = extract_drive_id(foto_url)
             if drive_id:
-                foto_direta = f"https://drive.google.com/uc?export=view&id={drive_id}"
+                # O endpoint /uc foi bloqueado pelo Google para uso em tag <img> (retorna 403).
+                # Usamos o endpoint de thumbnail como alternativa mais estável.
+                foto_direta = f"https://drive.google.com/thumbnail?id={drive_id}&sz=w800"
                 
         avatar_seed = slugify(nome)
         email = row.get('Endereço de e-mail', '')
