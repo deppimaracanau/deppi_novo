@@ -54,5 +54,33 @@
     "experiencia": "Sim, informal (projetos, voluntariado)",
     "curriculo": "https://drive.google.com/file/d/1TUudhQSOs2An1XOjbDB1jelUBLa_WcAE/view?usp=drivesdk",
     "autorizado": true
+  },
+  {
+    "id": "076ba476",
+    "nome": "Arthur Feitosa Fernandes Lima",
+    "curso": "Técnico Integrado em Informática",
+    "semestre": "4° Semestre",
+    "superpoder": "Programação e Desenvolvimento (Front-...",
+    "bio": "Experiência sólida em montagem e manutenção de hardwares, conhecimento básico em criação de planilhas Excel, conhecimento básico em linguagem de pr...",
+    "skills": [
+      "Programação e Desenvolvimento (Front-end/Back-end/Mobile)",
+      "Redes de Computadores e Segurança",
+      "Análise e Qualidade de Software",
+      "Trainee"
+    ],
+    "github": null,
+    "linkedin": "https://www.linkedin.com/in/arthur-feitosa-fernandes-lima-6a821a351?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+    "avatar_seed": "arthur-feitosa-fernandes-lima",
+    "foto": "https://drive.google.com/uc?export=view&id=15vKbJrqW-hUWAghOmLxuGn3phkME_N88",
+    "turno": "Diurno (Manhã e/ou Tarde)",
+    "disponibilidade": "Parcial (Tarde)",
+    "idiomas": [
+      "Inglês: Básico",
+      "Espanhol: Básico",
+      "Outro: Básico"
+    ],
+    "experiencia": "Sim, formal (registrada)",
+    "curriculo": "https://drive.google.com/file/d/12SVJRJJBbW9DxIr9dGeBXttoy6ffBzAf/view?usp=sharing",
+    "autorizado": true
   }
 ]
