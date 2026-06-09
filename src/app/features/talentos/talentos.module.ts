@@ -278,6 +278,12 @@ function diceBearUrl(seed: string): string {
             <div class="card-body">
               <h3 class="card-name">{{ t.nome }}</h3>
               <span class="card-course">{{ t.curso }} · {{ t.semestre }}</span>
+              <div
+                class="market-badge"
+                *ngIf="t.experiencia && t.experiencia.includes('Sim')"
+              >
+                ⚡ Pronto pro mercado
+              </div>
               <div class="card-power">
                 <span class="power-label">SUPERPODER</span>
                 <span class="power-value">{{ t.superpoder }}</span>
@@ -709,6 +715,21 @@ function diceBearUrl(seed: string): string {
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        display: block;
+      }
+      .market-badge {
+        display: inline-block;
+        background: #f5c842;
+        color: #1a1a1a;
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.2rem 0.5rem;
+        border: 2px solid #1a1a1a;
+        border-radius: 4px;
+        box-shadow: 2px 2px 0 #1a1a1a;
+        margin-top: 0.5rem;
       }
       .card-power {
         margin: 0.75rem 0;
@@ -966,6 +987,10 @@ function diceBearUrl(seed: string): string {
         background: var(--color-surface-secondary);
         border-color: var(--color-border);
         box-shadow: 4px 4px 0 var(--color-border);
+      }
+      :host-context([data-theme='dark']) .market-badge {
+        box-shadow: 2px 2px 0 var(--color-border);
+        border-color: var(--color-border);
       }
       :host-context([data-theme='dark']) .card-avatar {
         background: var(--color-background);

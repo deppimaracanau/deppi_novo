@@ -72,3 +72,9 @@
 - **Performance:** DiceBear avatars must use standard seed URLs and be cached by the browser.
 - **UI Integrity:** Long bios must use CSS line-clamping to avoid breaking card layout (`-webkit-line-clamp: 3`).
 - **Database:** Bio length is constrained at the database level (`varchar(150)`).
+
+### SPDD Feature Update: Market Ready Badge
+* **Context**: We need to highlight students who have experience so recruiters can quickly spot them.
+* **Entity**: `Talento` in `talentos.module.ts`.
+* **Action**: Introduced `.market-badge` UI element that conditionally displays `⚡ Pronto pro mercado` if `t.experiencia` is truthy and includes the word "Sim".
+* **Constraint**: Must match neo-brutalism design and support Dark Mode seamlessly. Done via inline `[class]` binding and `:host-context([data-theme="dark"])`.
