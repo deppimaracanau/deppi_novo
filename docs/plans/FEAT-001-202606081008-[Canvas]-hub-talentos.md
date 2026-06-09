@@ -84,3 +84,9 @@
 * **Entity**: `Talento` in `talentos.module.ts`.
 * **Action**: Added a prominent "🤝 Tenho Interesse" button on the back of the student card, linking to a Google Form. The form acts as a proxy to invert control (the student will receive an email to contact the recruiter).
 * **Constraint**: Button must be highly visible (full width), match neo-brutalism, and link to the provided Google Form.
+
+### SPDD Feature Update: Swipe to Contact
+* **Context**: Clicking the card flips it to show skills. The user wants a swipe gesture on the card to trigger the contact action instead of clicking a button.
+* **Entity**: `TalentosComponent` (TypeScript logic + HTML).
+* **Action**: Added `touchstart` and `touchend` handlers to detect horizontal swipes (deltaX > 50). Removed the "Tenho Interesse" button, transferring its behavior to the swipe action. Added visual hint for swiping.
+* **Constraint**: Must not interfere with vertical scrolling (deltaY threshold) and must prevent the card from flipping when swiped.
