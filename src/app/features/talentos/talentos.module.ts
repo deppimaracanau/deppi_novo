@@ -263,11 +263,15 @@ function diceBearUrl(seed: string): string {
           class="talent-card"
           *ngFor="let t of filtered; let i = index"
           [style.animation-delay]="i * 60 + 'ms'"
+          #cardElem
           (click)="openCard(t)"
-          (touchstart)="onTouchStart($event)"
+          (touchstart)="onTouchStart($event, cardElem)"
+          (touchmove)="onTouchMove($event)"
           (touchend)="onTouchEnd($event, t)"
-          (mousedown)="onTouchStart($event)"
+          (mousedown)="onTouchStart($event, cardElem)"
+          (mousemove)="onTouchMove($event)"
           (mouseup)="onTouchEnd($event, t)"
+          (mouseleave)="onTouchEnd($event, null)"
           [class.flipped]="flippedId === t.id"
           [class.blurred-card]="t.autorizado === false"
           tabindex="0"
@@ -1083,6 +1087,7 @@ export class TalentosComponent implements OnInit {
   touchStartX = 0;
   touchStartY = 0;
   isSwiping = false;
+  activeCardElement: HTMLElement | null = null;
 
   readonly diceBearUrl = diceBearUrl;
   readonly getEmoji = getSkillEmoji;
@@ -1134,8 +1139,13 @@ export class TalentosComponent implements OnInit {
     this.flippedId = this.flippedId === t.id ? null : t.id;
   }
 
-  onTouchStart(event: any): void {
+  onTouchStart(event: any, elem: HTMLElement): void {
     this.isSwiping = false;
+    this.activeCardElement = elem;
+    
+    // Removemos a transição de volta para que o arraste seja em tempo real
+    elem.style.transition = 'none';
+
     if (event.type.startsWith('mouse')) {
       this.touchStartX = event.screenX;
       this.touchStartY = event.screenY;
@@ -1145,7 +1155,40 @@ export class TalentosComponent implements OnInit {
     }
   }
 
-  onTouchEnd(event: any, t: Talento): void {
+  onTouchMove(event: any): void {
+    if (!this.activeCardElement || !this.touchStartX) return;
+
+    let currentX = 0;
+    if (event.type.startsWith('mouse')) {
+      // Se soltar o botão do mouse fora do card, encerramos
+      if (event.buttons !== 1) {
+        this.onTouchEnd(event, null);
+        return;
+      }
+      currentX = event.screenX;
+    } else if (event.changedTouches && event.changedTouches.length > 0) {
+      currentX = event.changedTouches[0].screenX;
+    }
+
+    const deltaX = currentX - this.touchStartX;
+    
+    // Dá um efeito visual no cartão arrastando e girando um pouquinho
+    const rotation = deltaX * 0.05;
+    this.activeCardElement.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+  }
+
+  onTouchEnd(event: any, t: Talento | null): void {
+    if (!this.activeCardElement) return;
+
+    const elem = this.activeCardElement;
+    this.activeCardElement = null;
+
+    // Retorna a animação para a placa voltar pro centro suavemente
+    elem.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    elem.style.transform = '';
+
+    if (!t) return; // Disparado por mouseleave ou soltar fora
+
     let touchEndX = 0;
     let touchEndY = 0;
 
