@@ -272,6 +272,7 @@ function diceBearUrl(seed: string): string {
             <img
               class="card-avatar"
               [src]="t.foto ? t.foto : diceBearUrl(t.avatar_seed)"
+              (error)="handleImageError($event, t)"
               [alt]="'Avatar de ' + t.nome"
             />
             <div class="card-body">
@@ -1057,6 +1058,11 @@ export class TalentosComponent implements OnInit {
 
   openCard(t: Talento): void {
     this.flippedId = this.flippedId === t.id ? null : t.id;
+  }
+
+  handleImageError(event: any, t: Talento): void {
+    // Se a imagem do Google Drive falhar (ex: erro 403), usa o fallback do DiceBear
+    event.target.src = this.diceBearUrl(t.avatar_seed);
   }
 }
 
