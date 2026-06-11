@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
-import { Component, OnInit, OnDestroy, inject, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Renderer2, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
@@ -312,7 +312,18 @@ function diceBearUrl(seed: string): string {
               </div>
               <p class="card-bio">{{ t.bio }}</p>
             </div>
-            <div class="card-tap-hint">toque para ver skills ↗ &bull; arraste para contatar ↔️</div>
+            <div class="card-tap-hint">
+              <span class="hint-swipe">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+                </svg>
+                arrastar para contatar
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M14 5l7 7-7 7"/>
+                </svg>
+              </span>
+              <span class="hint-tap">toque para ver skills ↗</span>
+            </div>
           </div>
 
           <!-- Back -->
@@ -828,10 +839,38 @@ function diceBearUrl(seed: string): string {
         overflow: hidden;
       }
       .card-tap-hint {
-        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.5rem 0.25rem 0.25rem;
+        border-top: 1px solid rgba(0,0,0,0.06);
+        margin-top: 0.5rem;
+      }
+      .hint-swipe {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
         font-size: 0.72rem;
-        color: #bbb;
-        padding: 0.5rem;
+        font-weight: 700;
+        color: #16a34a;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+      .hint-swipe svg {
+        animation: swipe-pulse 1.4s ease-in-out infinite;
+        flex-shrink: 0;
+      }
+      .hint-swipe svg:first-child {
+        animation-direction: reverse;
+      }
+      @keyframes swipe-pulse {
+        0%, 100% { transform: translateX(0); opacity: 0.5; }
+        50%       { transform: translateX(4px); opacity: 1; }
+      }
+      .hint-tap {
+        font-size: 0.65rem;
+        color: #aaa;
         font-weight: 600;
       }
 
@@ -1122,6 +1161,7 @@ function diceBearUrl(seed: string): string {
 export class TalentosComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly renderer = inject(Renderer2);
+  private readonly ngZone = inject(NgZone);
 
   talentos: Talento[] = [];
   filtered: Talento[] = [];
@@ -1232,11 +1272,13 @@ export class TalentosComponent implements OnInit, OnDestroy {
       this.activeCardEl.style.transition = 'none';
     }
 
-    // Para mouse: registra listeners no document para não perder o drag
+    // Para mouse: registra listeners no document FORA da zona (performance)
     if (event.type === 'mousedown') {
       event.preventDefault();
-      this.mouseMoveUnsub = this.renderer.listen('document', 'mousemove', (e) => this.onSwipeMove(e));
-      this.mouseUpUnsub   = this.renderer.listen('document', 'mouseup',   (e) => this.onSwipeEnd(e));
+      this.ngZone.runOutsideAngular(() => {
+        this.mouseMoveUnsub = this.renderer.listen('document', 'mousemove', (e) => this.onSwipeMove(e));
+        this.mouseUpUnsub   = this.renderer.listen('document', 'mouseup',   (e) => this.onSwipeEnd(e));
+      });
     }
   }
 
@@ -1245,11 +1287,13 @@ export class TalentosComponent implements OnInit, OnDestroy {
 
     const currentX = this.getClientX(event);
     const deltaX = currentX - this.swipeStartX;
-    this.swipeDelta = deltaX; // atualiza para os overlays reagirem
 
-    // Feedback visual: move e rotaciona o card
+    // Feedback DOM direto (rápido, sem change detection)
     const rotation = deltaX * 0.05;
     this.activeCardEl.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+
+    // Força change detection para os overlays reagirem
+    this.ngZone.run(() => { this.swipeDelta = deltaX; });
   }
 
   onSwipeCancelled(): void {
