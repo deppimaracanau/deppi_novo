@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
@@ -264,13 +264,10 @@ function diceBearUrl(seed: string): string {
           *ngFor="let t of filtered; let i = index"
           [style.animation-delay]="i * 60 + 'ms'"
           (click)="openCard(t)"
-          (touchstart)="onSwipeStart($event)"
+          (touchstart)="onSwipeStart($event, t)"
           (touchmove)="onSwipeMove($event)"
-          (touchend)="onSwipeEnd($event, t)"
-          (mousedown)="onSwipeStart($event)"
-          (mousemove)="onSwipeMove($event)"
-          (mouseup)="onSwipeEnd($event, t)"
-          (mouseleave)="onSwipeCancelled()"
+          (touchend)="onSwipeEnd($event)"
+          (mousedown)="onSwipeStart($event, t)"
           [class.flipped]="flippedId === t.id"
           [class.blurred-card]="t.autorizado === false"
           tabindex="0"
@@ -1072,8 +1069,9 @@ function diceBearUrl(seed: string): string {
     `,
   ],
 })
-export class TalentosComponent implements OnInit {
+export class TalentosComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
+  private readonly renderer = inject(Renderer2);
 
   talentos: Talento[] = [];
   filtered: Talento[] = [];
@@ -1088,6 +1086,11 @@ export class TalentosComponent implements OnInit {
   swipeActive = false;
   isSwiping = false;
   activeCardEl: HTMLElement | null = null;
+  private pendingTalento: any = null;
+
+  // Listeners globais de mouse (removidos após o drag)
+  private mouseMoveUnsub: (() => void) | null = null;
+  private mouseUpUnsub: (() => void) | null = null;
 
   readonly diceBearUrl = diceBearUrl;
   readonly getEmoji = getSkillEmoji;
@@ -1151,26 +1154,37 @@ export class TalentosComponent implements OnInit {
     return event.clientY ?? 0;
   }
 
-  onSwipeStart(event: any): void {
+  ngOnDestroy(): void {
+    this.removeMouseListeners();
+  }
+
+  private removeMouseListeners(): void {
+    if (this.mouseMoveUnsub) { this.mouseMoveUnsub(); this.mouseMoveUnsub = null; }
+    if (this.mouseUpUnsub)   { this.mouseUpUnsub();   this.mouseUpUnsub   = null; }
+  }
+
+  onSwipeStart(event: any, talento?: Talento): void {
     this.isSwiping = false;
     this.swipeActive = true;
     this.swipeStartX = this.getClientX(event);
     this.swipeStartY = this.getClientY(event);
     this.activeCardEl = event.currentTarget as HTMLElement;
+    if (talento) this.pendingTalento = talento;
 
     if (this.activeCardEl) {
       this.activeCardEl.style.transition = 'none';
+    }
+
+    // Para mouse: registra listeners no document para não perder o drag
+    if (event.type === 'mousedown') {
+      event.preventDefault();
+      this.mouseMoveUnsub = this.renderer.listen('document', 'mousemove', (e) => this.onSwipeMove(e));
+      this.mouseUpUnsub   = this.renderer.listen('document', 'mouseup',   (e) => this.onSwipeEnd(e));
     }
   }
 
   onSwipeMove(event: any): void {
     if (!this.swipeActive || !this.activeCardEl) return;
-
-    // No desktop, verifica se o botão ainda está pressionado
-    if (event.type === 'mousemove' && event.buttons !== 1) {
-      this.onSwipeCancelled();
-      return;
-    }
 
     const currentX = this.getClientX(event);
     const deltaX = currentX - this.swipeStartX;
@@ -1181,22 +1195,26 @@ export class TalentosComponent implements OnInit {
   }
 
   onSwipeCancelled(): void {
-    if (!this.activeCardEl) return;
-    this.activeCardEl.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    this.activeCardEl.style.transform = '';
+    if (this.activeCardEl) {
+      this.activeCardEl.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      this.activeCardEl.style.transform = '';
+    }
     this.activeCardEl = null;
     this.swipeActive = false;
+    this.removeMouseListeners();
   }
 
-  onSwipeEnd(event: any, t: Talento | null): void {
+  onSwipeEnd(event: any): void {
     if (!this.swipeActive) return;
 
     const endX = this.getClientX(event);
     const endY = this.getClientY(event);
     const deltaX = endX - this.swipeStartX;
     const deltaY = endY - this.swipeStartY;
+    const t = this.pendingTalento;
+    this.pendingTalento = null;
 
-    // Anima o card de volta ao lugar
+    // Anima o card de volta ao lugar e limpa listeners
     this.onSwipeCancelled();
 
     if (!t) return;
