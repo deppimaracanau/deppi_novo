@@ -263,15 +263,14 @@ function diceBearUrl(seed: string): string {
           class="talent-card"
           *ngFor="let t of filtered; let i = index"
           [style.animation-delay]="i * 60 + 'ms'"
-          #cardElem
           (click)="openCard(t)"
-          (touchstart)="onTouchStart($event, cardElem)"
-          (touchmove)="onTouchMove($event)"
-          (touchend)="onTouchEnd($event, t)"
-          (mousedown)="onTouchStart($event, cardElem)"
-          (mousemove)="onTouchMove($event)"
-          (mouseup)="onTouchEnd($event, t)"
-          (mouseleave)="onTouchEnd($event, null)"
+          (touchstart)="onSwipeStart($event)"
+          (touchmove)="onSwipeMove($event)"
+          (touchend)="onSwipeEnd($event, t)"
+          (mousedown)="onSwipeStart($event)"
+          (mousemove)="onSwipeMove($event)"
+          (mouseup)="onSwipeEnd($event, t)"
+          (mouseleave)="onSwipeCancelled()"
           [class.flipped]="flippedId === t.id"
           [class.blurred-card]="t.autorizado === false"
           tabindex="0"
@@ -1084,10 +1083,11 @@ export class TalentosComponent implements OnInit {
   loading = true;
   flippedId: string | null = null;
 
-  touchStartX = 0;
-  touchStartY = 0;
+  swipeStartX = 0;
+  swipeStartY = 0;
+  swipeActive = false;
   isSwiping = false;
-  activeCardElement: HTMLElement | null = null;
+  activeCardEl: HTMLElement | null = null;
 
   readonly diceBearUrl = diceBearUrl;
   readonly getEmoji = getSkillEmoji;
@@ -1139,82 +1139,70 @@ export class TalentosComponent implements OnInit {
     this.flippedId = this.flippedId === t.id ? null : t.id;
   }
 
-  onTouchStart(event: any, elem: HTMLElement): void {
+  private getClientX(event: any): number {
+    if (event.touches?.length > 0) return event.touches[0].clientX;
+    if (event.changedTouches?.length > 0) return event.changedTouches[0].clientX;
+    return event.clientX ?? 0;
+  }
+
+  private getClientY(event: any): number {
+    if (event.touches?.length > 0) return event.touches[0].clientY;
+    if (event.changedTouches?.length > 0) return event.changedTouches[0].clientY;
+    return event.clientY ?? 0;
+  }
+
+  onSwipeStart(event: any): void {
     this.isSwiping = false;
-    this.activeCardElement = elem;
-    
-    // Removemos a transição de volta para que o arraste seja em tempo real
-    elem.style.transition = 'none';
+    this.swipeActive = true;
+    this.swipeStartX = this.getClientX(event);
+    this.swipeStartY = this.getClientY(event);
+    this.activeCardEl = event.currentTarget as HTMLElement;
 
-    if (event.type.startsWith('mouse')) {
-      this.touchStartX = event.clientX;
-      this.touchStartY = event.clientY;
-    } else if (event.touches && event.touches.length > 0) {
-      this.touchStartX = event.touches[0].clientX;
-      this.touchStartY = event.touches[0].clientY;
-    } else if (event.changedTouches && event.changedTouches.length > 0) {
-      this.touchStartX = event.changedTouches[0].clientX;
-      this.touchStartY = event.changedTouches[0].clientY;
+    if (this.activeCardEl) {
+      this.activeCardEl.style.transition = 'none';
     }
   }
 
-  onTouchMove(event: any): void {
-    if (!this.activeCardElement) return;
+  onSwipeMove(event: any): void {
+    if (!this.swipeActive || !this.activeCardEl) return;
 
-    let currentX = 0;
-    if (event.type.startsWith('mouse')) {
-      // Se soltar o botão do mouse fora do card, encerramos
-      if (event.buttons !== 1) {
-        this.onTouchEnd(event, null);
-        return;
-      }
-      currentX = event.clientX;
-    } else if (event.touches && event.touches.length > 0) {
-      currentX = event.touches[0].clientX;
-    } else if (event.changedTouches && event.changedTouches.length > 0) {
-      currentX = event.changedTouches[0].clientX;
-    }
-
-    const deltaX = currentX - this.touchStartX;
-    
-    // Dá um efeito visual no cartão arrastando e girando um pouquinho
-    const rotation = deltaX * 0.05;
-    this.activeCardElement.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
-  }
-
-  onTouchEnd(event: any, t: Talento | null): void {
-    if (!this.activeCardElement) return;
-
-    const elem = this.activeCardElement;
-    this.activeCardElement = null;
-
-    // Retorna a animação para a placa voltar pro centro suavemente
-    elem.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    elem.style.transform = '';
-
-    if (!t) return; // Disparado por mouseleave ou soltar fora
-
-    let touchEndX = 0;
-    let touchEndY = 0;
-
-    if (event.type.startsWith('mouse')) {
-      touchEndX = event.clientX;
-      touchEndY = event.clientY;
-    } else if (event.changedTouches && event.changedTouches.length > 0) {
-      touchEndX = event.changedTouches[0].clientX;
-      touchEndY = event.changedTouches[0].clientY;
-    } else if (event.touches && event.touches.length > 0) {
-      touchEndX = event.touches[0].clientX;
-      touchEndY = event.touches[0].clientY;
-    } else {
+    // No desktop, verifica se o botão ainda está pressionado
+    if (event.type === 'mousemove' && event.buttons !== 1) {
+      this.onSwipeCancelled();
       return;
     }
 
-    const deltaX = touchEndX - this.touchStartX;
-    const deltaY = touchEndY - this.touchStartY;
+    const currentX = this.getClientX(event);
+    const deltaX = currentX - this.swipeStartX;
 
-    // Se o arraste horizontal for maior que 40px e não for um scroll vertical muito grande
-    if (Math.abs(deltaX) > 40 && Math.abs(deltaY) < 100) {
+    // Feedback visual: move e rotaciona o card
+    const rotation = deltaX * 0.05;
+    this.activeCardEl.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+  }
+
+  onSwipeCancelled(): void {
+    if (!this.activeCardEl) return;
+    this.activeCardEl.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    this.activeCardEl.style.transform = '';
+    this.activeCardEl = null;
+    this.swipeActive = false;
+  }
+
+  onSwipeEnd(event: any, t: Talento | null): void {
+    if (!this.swipeActive) return;
+
+    const endX = this.getClientX(event);
+    const endY = this.getClientY(event);
+    const deltaX = endX - this.swipeStartX;
+    const deltaY = endY - this.swipeStartY;
+
+    // Anima o card de volta ao lugar
+    this.onSwipeCancelled();
+
+    if (!t) return;
+
+    // Dispara contato se foi um swipe horizontal >= 40px e não foi scroll vertical
+    if (Math.abs(deltaX) >= 40 && Math.abs(deltaY) < 80) {
       this.isSwiping = true;
       const url = this.getContactUrl(t);
       window.open(url, '_blank');
