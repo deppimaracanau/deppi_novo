@@ -1278,18 +1278,17 @@ export class TalentosComponent implements OnInit, OnDestroy {
     this.swipeActive = false;
 
     // Swipe confirmado: anima para fora da tela (estilo Tinder) depois abre o form
-    if (t && Math.abs(deltaX) >= 40 && Math.abs(deltaY) < 80) {
+    if (t && deltaX >= 40 && Math.abs(deltaY) < 80) {
+      // Swipe para DIREITA → CONTATAR
       this.isSwiping = true;
-      const flyDir = deltaX > 0 ? 1 : -1;
       const elem = this.activeCardEl;
 
       if (elem) {
-        // Voa para fora da tela
+        // Voa para fora da tela (direita)
         elem.style.transition = 'transform 0.45s cubic-bezier(0.6, 0, 1, 1), opacity 0.45s ease';
-        elem.style.transform = `translateX(${flyDir * 120}vw) rotate(${flyDir * 30}deg)`;
+        elem.style.transform = `translateX(120vw) rotate(30deg)`;
         elem.style.opacity = '0';
 
-        // Após a animação: abre o form e restaura o card
         setTimeout(() => {
           if (elem) {
             elem.style.transition = 'none';
@@ -1306,6 +1305,25 @@ export class TalentosComponent implements OnInit, OnDestroy {
         this.swipingCardId = null;
         this.activeCardEl = null;
         window.open(this.getContactUrl(t), '_blank');
+      }
+    } else if (t && deltaX <= -40 && Math.abs(deltaY) < 80) {
+      // Swipe para ESQUERDA → PASSAR (descarta sem ação)
+      this.isSwiping = true;
+      const elem = this.activeCardEl;
+      if (elem) {
+        elem.style.transition = 'transform 0.45s cubic-bezier(0.6, 0, 1, 1), opacity 0.45s ease';
+        elem.style.transform = `translateX(-120vw) rotate(-30deg)`;
+        elem.style.opacity = '0';
+        setTimeout(() => {
+          if (elem) { elem.style.transition = 'none'; elem.style.transform = ''; elem.style.opacity = ''; }
+          this.swipeDelta = 0;
+          this.swipingCardId = null;
+          this.activeCardEl = null;
+        }, 460);
+      } else {
+        this.swipeDelta = 0;
+        this.swipingCardId = null;
+        this.activeCardEl = null;
       }
     } else {
       // Não atingiu threshold: volta pro lugar
