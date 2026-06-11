@@ -274,6 +274,16 @@ function diceBearUrl(seed: string): string {
           (keydown.enter)="openCard(t)"
           [attr.aria-label]="'Ver perfil de ' + t.nome"
         >
+          <!-- Overlay CONTATAR (swipe direita) -->
+          <div class="swipe-overlay swipe-yes"
+               [style.opacity]="swipingCardId === t.id && swipeDelta > 0 ? swipeDelta / 120 : 0">
+            <span>🤝 CONTATAR</span>
+          </div>
+          <!-- Overlay PASSAR (swipe esquerda) -->
+          <div class="swipe-overlay swipe-no"
+               [style.opacity]="swipingCardId === t.id && swipeDelta < 0 ? -swipeDelta / 120 : 0">
+            <span>↩ PASSAR</span>
+          </div>
           <!-- Front -->
           <div class="card-face card-front">
             <div class="card-header-stripe"></div>
@@ -612,6 +622,46 @@ function diceBearUrl(seed: string): string {
         touch-action: pan-y;
         user-select: none;
         -webkit-user-select: none;
+      }
+
+      /* ─── Swipe Overlays (estilo Tinder) ─────────────── */
+      .swipe-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        transition: opacity 0.05s linear;
+      }
+      .swipe-overlay span {
+        font-size: 1.4rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        padding: 0.5rem 1.2rem;
+        border-radius: 12px;
+        border: 3px solid currentColor;
+        text-transform: uppercase;
+      }
+      .swipe-yes {
+        background: rgba(34, 197, 94, 0.18);
+        color: #16a34a;
+      }
+      .swipe-yes span {
+        transform: rotate(-15deg);
+        color: #16a34a;
+        border-color: #16a34a;
+      }
+      .swipe-no {
+        background: rgba(107, 114, 128, 0.15);
+        color: #4b5563;
+      }
+      .swipe-no span {
+        transform: rotate(15deg);
+        color: #4b5563;
+        border-color: #4b5563;
       }
       .talent-card.blurred-card .card-face {
         filter: blur(6px) grayscale(50%);
@@ -1084,6 +1134,8 @@ export class TalentosComponent implements OnInit, OnDestroy {
   swipeStartX = 0;
   swipeStartY = 0;
   swipeActive = false;
+  swipeDelta = 0;         // delta X atual do arraste (-120 a +120 para opacidade)
+  swipingCardId: string | null = null;  // ID do card sendo arrastado
   isSwiping = false;
   activeCardEl: HTMLElement | null = null;
   private pendingTalento: any = null;
@@ -1166,10 +1218,15 @@ export class TalentosComponent implements OnInit, OnDestroy {
   onSwipeStart(event: any, talento?: Talento): void {
     this.isSwiping = false;
     this.swipeActive = true;
+    this.swipeDelta = 0;
     this.swipeStartX = this.getClientX(event);
     this.swipeStartY = this.getClientY(event);
     this.activeCardEl = event.currentTarget as HTMLElement;
-    if (talento) this.pendingTalento = talento;
+
+    if (talento) {
+      this.pendingTalento = talento;
+      this.swipingCardId = talento.id;
+    }
 
     if (this.activeCardEl) {
       this.activeCardEl.style.transition = 'none';
@@ -1188,6 +1245,7 @@ export class TalentosComponent implements OnInit, OnDestroy {
 
     const currentX = this.getClientX(event);
     const deltaX = currentX - this.swipeStartX;
+    this.swipeDelta = deltaX; // atualiza para os overlays reagirem
 
     // Feedback visual: move e rotaciona o card
     const rotation = deltaX * 0.05;
@@ -1201,6 +1259,8 @@ export class TalentosComponent implements OnInit, OnDestroy {
     }
     this.activeCardEl = null;
     this.swipeActive = false;
+    this.swipeDelta = 0;
+    this.swipingCardId = null;
     this.removeMouseListeners();
   }
 
@@ -1214,16 +1274,42 @@ export class TalentosComponent implements OnInit, OnDestroy {
     const t = this.pendingTalento;
     this.pendingTalento = null;
 
-    // Anima o card de volta ao lugar e limpa listeners
-    this.onSwipeCancelled();
+    this.removeMouseListeners();
+    this.swipeActive = false;
 
-    if (!t) return;
-
-    // Dispara contato se foi um swipe horizontal >= 40px e não foi scroll vertical
-    if (Math.abs(deltaX) >= 40 && Math.abs(deltaY) < 80) {
+    // Swipe confirmado: anima para fora da tela (estilo Tinder) depois abre o form
+    if (t && Math.abs(deltaX) >= 40 && Math.abs(deltaY) < 80) {
       this.isSwiping = true;
-      const url = this.getContactUrl(t);
-      window.open(url, '_blank');
+      const flyDir = deltaX > 0 ? 1 : -1;
+      const elem = this.activeCardEl;
+
+      if (elem) {
+        // Voa para fora da tela
+        elem.style.transition = 'transform 0.45s cubic-bezier(0.6, 0, 1, 1), opacity 0.45s ease';
+        elem.style.transform = `translateX(${flyDir * 120}vw) rotate(${flyDir * 30}deg)`;
+        elem.style.opacity = '0';
+
+        // Após a animação: abre o form e restaura o card
+        setTimeout(() => {
+          if (elem) {
+            elem.style.transition = 'none';
+            elem.style.transform = '';
+            elem.style.opacity = '';
+          }
+          this.swipeDelta = 0;
+          this.swipingCardId = null;
+          this.activeCardEl = null;
+          window.open(this.getContactUrl(t), '_blank');
+        }, 460);
+      } else {
+        this.swipeDelta = 0;
+        this.swipingCardId = null;
+        this.activeCardEl = null;
+        window.open(this.getContactUrl(t), '_blank');
+      }
+    } else {
+      // Não atingiu threshold: volta pro lugar
+      this.onSwipeCancelled();
     }
   }
 
